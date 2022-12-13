@@ -1,5 +1,7 @@
 #include <iostream>
-#include "gameElem.hpp"
+#include <gtk/gtk.h>
+
+#include "TetrisElements.hpp"
 
 void PrintPiece(Piece piece) {
 	for (int i = 0; i < PIECE_MAT_SIZE; i++) {

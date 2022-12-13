@@ -1,4 +1,4 @@
-
+#include <iostream>
 
 #define TERR_NBR_LINES 22
 #define TERR_NBR_COL 10
@@ -9,12 +9,19 @@ enum PieceType { Square, I, L, LMirrored, N, NMirrored, T };
 class Piece {
 private:
     bool matrix[PIECE_MAT_SIZE][PIECE_MAT_SIZE];
+    char orientation; // 0 = pointe vers le haut, 1 = droite, 2 = bas, 3 = 
 
 public:
     Piece(PieceType type) {
         switch (type)
         {
         case Square:
+            matrix = {
+                {0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0}};
             
             break;
         case I:

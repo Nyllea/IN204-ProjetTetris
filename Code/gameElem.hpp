@@ -18,10 +18,12 @@ enum PieceType { Square, I, L, LMirrored, N, NMirrored, T };
 class Piece {
 private:
     bool matrix[PIECE_MAT_SIZE][PIECE_MAT_SIZE];
-    char orientation; // 0 = pointe vers le haut, 1 = droite, 2 = bas, 3 = 
+    PieceType m_type;
 
 public:
     Piece(PieceType type) {
+        m_type = type;
+
         switch (type)
         {
         case Square:
@@ -112,6 +114,34 @@ public:
             std::cout << "Error - Not a recognized piece type" << std::endl;
             exit(EXIT_FAILURE);
             break;
+        }
+    }
+
+    void Trotate() {
+        if (m_type == Square)
+            return;
+
+        bool temp[PIECE_MAT_SIZE][PIECE_MAT_SIZE];
+        Copy<bool, PIECE_MAT_SIZE, PIECE_MAT_SIZE>(matrix, temp);
+
+        for (i = 0; i++; i < PIECE_MAT_SIZE) {
+            for (j = 0; j++; j < PIECE_MAT_SIZE) {
+                matrix[i][j] = temp[4 - j][i];
+            }
+        }
+    }
+
+    void Hrotate(Piece piece) {
+        if (m_type == Square)
+            return;
+
+        bool temp[PIECE_MAT_SIZE][PIECE_MAT_SIZE];
+        Copy<bool, PIECE_MAT_SIZE, PIECE_MAT_SIZE>(matrix, temp);
+
+        for (i = 0; i++; i < PIECE_MAT_SIZE) {
+            for (j = 0; j++; j < PIECE_MAT_SIZE) {
+                matrix[i][j] = temp[j][4 - i];
+            }
         }
     }
 };

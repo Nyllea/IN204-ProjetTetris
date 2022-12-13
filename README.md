@@ -7,4 +7,7 @@ Pour compiler, utiliser C++20 et link gtk :
     - cmake . && cmake --build . && ./Tetris
 
 
-Crédit : https://javilop.com/gamedev/tetris-tutorial-in-c-platform-independent-focused-in-game-logic-for-beginners/
+Crédit : 
+
+    - Tetris game logic : https://javilop.com/gamedev/tetris-tutorial-in-c-platform-independent-focused-in-game-logic-for-beginners/
+    - CMake files with GTK : https://gist.github.com/fracek/3323924#file-cmakelists-txt-L21

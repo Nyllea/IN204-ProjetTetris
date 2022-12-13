@@ -4,6 +4,6 @@
 int main() {
 	std::cout << "Tet" << std::endl;
 
-	Piece piece(N);
+	Piece piece(Square);
 	return 0;
 }

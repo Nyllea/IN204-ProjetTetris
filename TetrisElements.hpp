@@ -3,6 +3,9 @@
 
 #include <bitset>
 #include <iostream>
+#include <algorithm>
+
+#include <gtk-3.0/gtk/gtk.h>
 
 #define TERR_NBR_LINES 22
 #define TERR_NBR_COL 10
@@ -11,10 +14,13 @@
 class Piece {
 public:
     enum Type { Square, I, L, LMirrored, N, NMirrored, T };
+    enum Color { Grey = 0, Red = 1 };
 
 private:
     std::bitset<PIECE_MAT_SIZE*PIECE_MAT_SIZE> matrix;
     Type m_type;
+    unsigned char posX, posY;
+    Color m_color;
 
     // Storing the matrices for the different shapes
     /*
@@ -69,23 +75,50 @@ private:
 
 public:
     Piece(const Piece& source): m_type(source.m_type), matrix(source.matrix) {}
-    Piece(Type type);
+    Piece(Type type, Color color);
 
     Piece& operator = (const Piece& source);
-    bool operator ()(const int x, const int y) const;
+    bool operator ()(const unsigned char x, const unsigned char y) const;
 
     void RotateLeft();
-    void RotateRight();    
+    void RotateRight();
+
+    bool IsAt(const unsigned char x, const unsigned char y) const;
+
+    void Move(const char dirX, const char dirY);
+
+    char GetColorChar() const;
 };
 
 class Terrain {
-private:
+protected:
     char matrix[TERR_NBR_LINES*TERR_NBR_COL];
 
 public:
     Terrain();
 
-    char operator ()(const int x, const int y) const;
+    char operator ()(const unsigned char x, const unsigned char y) const;
+};
+
+class TerrainGraphic : Terrain {
+public:
+    GtkWidget *terrainGrid;
+
+private:
+    static constexpr GdkRGBA emptyColor = { 0.66f, 0.66f, 0.66f, 1.0f };
+
+    static constexpr GdkRGBA red = { 1.0f, 0, 0, 1.0f };
+
+
+    GdkRGBA const* CharToColor(const char colorVal) const;
+
+public:
+    TerrainGraphic() : Terrain() {};
+    TerrainGraphic(Terrain terrain) : Terrain(terrain) {}
+
+    void FillGrid(const int windowHeight, const int windowWidth);
+
+    void Render_Terrain(const Piece* const piece);
 };
 
 #endif

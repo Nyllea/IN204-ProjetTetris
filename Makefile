@@ -129,6 +129,30 @@ Tetris/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/build
 .PHONY : Tetris/fast
 
+GTK-UI.o: GTK-UI.cpp.o
+.PHONY : GTK-UI.o
+
+# target to build an object file
+GTK-UI.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/GTK-UI.cpp.o
+.PHONY : GTK-UI.cpp.o
+
+GTK-UI.i: GTK-UI.cpp.i
+.PHONY : GTK-UI.i
+
+# target to preprocess a source file
+GTK-UI.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/GTK-UI.cpp.i
+.PHONY : GTK-UI.cpp.i
+
+GTK-UI.s: GTK-UI.cpp.s
+.PHONY : GTK-UI.s
+
+# target to generate assembly for a file
+GTK-UI.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/GTK-UI.cpp.s
+.PHONY : GTK-UI.cpp.s
+
 TetrisElements.o: TetrisElements.cpp.o
 .PHONY : TetrisElements.o
 
@@ -186,6 +210,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... Tetris"
+	@echo "... GTK-UI.o"
+	@echo "... GTK-UI.i"
+	@echo "... GTK-UI.s"
 	@echo "... TetrisElements.o"
 	@echo "... TetrisElements.i"
 	@echo "... TetrisElements.s"

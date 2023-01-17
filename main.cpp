@@ -1,7 +1,7 @@
 #include <iostream>
-#include <gtk/gtk.h>
 
 #include "TetrisElements.hpp"
+#include "GTK-UI.hpp"
 
 void PrintPiece(Piece piece) {
 	for (int i = 0; i < PIECE_MAT_SIZE; i++) {
@@ -23,8 +23,16 @@ void PrintTerrain(Terrain terrain) {
 	std::cout << std::endl;
 }
 
-int main() {
-	std::cout << "Tet" << std::endl;
+gboolean OnKeyPress (GtkWidget *widget, GdkEventKey *event, gpointer data) {
+    if (event->keyval == GDK_KEY_space){
+        printf("SPACE KEY PRESSED!\n");
+        return TRUE;
+    }
+    return FALSE;
+}
+
+int main(int argc, char* argv[]) {
+	/* std::cout << "Tet" << std::endl;
 
 	Piece squa(Piece::Type::N);
 
@@ -40,7 +48,24 @@ int main() {
 
 	Terrain terrain;
 
-	PrintTerrain(terrain);
+	PrintTerrain(terrain); */
 
-	return 0;
+	TerrainGraphic terrain;
+
+	// Generate an empty terrain in window and store the GtkGrid representing it in terrain
+	GtkWidget* window = Setup_Terrain(argc, argv, &terrain, 1000, 800, 5, 5);
+	
+	// Enable Gtk to detect keyboard events
+	gtk_widget_add_events(window, GDK_KEY_PRESS_MASK);
+
+	// Connect a keyboard input to a function
+	g_signal_connect(G_OBJECT(window), "key_press_event", G_CALLBACK(OnKeyPress), NULL);
+
+	// Makes it appear on-screen
+    gtk_widget_show_all(window);
+
+    // Starts event loop running
+    gtk_main();
+
+    return 0;
 }

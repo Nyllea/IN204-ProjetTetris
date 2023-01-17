@@ -6,7 +6,8 @@ Pour compiler, utiliser C++20 et link gtk :
     - cmake . && cmake --build . && ./Tetris
 
 Controles :
-    - Fleches droites et gauche pour deplacer la piece
+
+    - Fleches droite et gauche pour deplacer la piece
     - a/z pour rotation a droite/gauche
     - Espace pour placer la piece sur le terrain
 

@@ -6,9 +6,8 @@ Piece& Piece::operator = (const Piece& source) {
     return *this;
 }
 
-Piece::Piece(const Type type, const Color color) {
+Piece::Piece(const Type type) {
     m_type = type;
-    m_color = color;
 
     switch (type) {
         case Square:
@@ -39,6 +38,7 @@ Piece::Piece(const Type type, const Color color) {
     }
 }
 
+// Permet d'accéder à la case (x,y) de la matrice de la pièce
 bool Piece::operator ()(const unsigned char x, const unsigned char y) const
 {
     if (x<PIECE_MAT_SIZE && y<PIECE_MAT_SIZE)
@@ -47,6 +47,31 @@ bool Piece::operator ()(const unsigned char x, const unsigned char y) const
         std::cout << "Error - Piece matrix index out of bounds" << std::endl;
         exit(EXIT_FAILURE);
     }
+}
+
+// drop bits outside the range [R, L) == [R, L - 1]
+template<std::size_t N>
+std::bitset<N> project_range(std::bitset<N> b, size_t R, size_t L)
+{
+    if(R > L && L > N) {
+        printf("Invalid bitrange\n");
+        exit(EXIT_FAILURE);
+    }
+    b >>= R;            // drop R rightmost bits
+    b <<= (N - L + R);  // drop L-1 leftmost bits
+    b >>= (N - L);      // shift back into place
+    return b;
+}
+
+// Set the Y position for the piece to touch the upper limit of the terrain
+void Piece::SetMaxHeight() {
+    while(project_range<PIECE_MAT_SIZE*PIECE_MAT_SIZE>(matrix, -posY*PIECE_MAT_SIZE, (-posY+1)*PIECE_MAT_SIZE).none())
+        posY--;
+
+}
+
+void Piece::SetXPos(const signed char xPos) {
+    posX = xPos;
 }
 
 void Piece::RotateLeft() {
@@ -75,8 +100,9 @@ void Piece::RotateRight() {
     }
 }
 
+// Vérifie si la pièce occupe la case (x,y) du terrain (en fonction de sa position et de sa matrice)
 bool Piece::IsAt(const unsigned char x, const unsigned char y) const {
-    if (y < posY || y >= posY + PIECE_MAT_SIZE || x < posX || x >= PIECE_MAT_SIZE)
+    if (y < posY || y >= posY + PIECE_MAT_SIZE || x < posX || x >= posX + PIECE_MAT_SIZE)
         return false;
 
     return matrix[(y - posY) * PIECE_MAT_SIZE + (x - posX)] == 1;
@@ -84,13 +110,15 @@ bool Piece::IsAt(const unsigned char x, const unsigned char y) const {
     //return (matrix & (1<<(PIECE_MAT_SIZE*PIECE_MAT_SIZE - (y - posY) * PIECE_MAT_SIZE + (x - posX)))) == 0;
 }
 
-void Piece::Move(const char dirX, const char dirY) {
+// Déplace la pièce de dirX selon X et de dirY selon Y
+void Piece::Move(const signed char dirX, const signed char dirY) {
     posX += dirX;
     posY += dirY;
 }
 
-char Piece::GetColorChar() const {
-    return (char)m_color;
+// Retourne la position de la case (x,y) de la matrice de la pièce dans les coordonnées de la matrice du terrain (négatif si hors du terrain)
+char Piece::ToTerrainCoord(const unsigned char x, const unsigned char y) const {
+    return posY+y >= 0 && posX+x >= 0 && posY+y < TERR_NBR_LINES && posX+x < TERR_NBR_COL ? (posY + y)*TERR_NBR_COL + posX + x : -1;
 }
 
 
@@ -102,6 +130,7 @@ Terrain::Terrain() {
     }
 }
 
+// Permet d'accéder à la valeur(char) du bloc en position (x,y) du terrain 
 char Terrain::operator ()(const unsigned char x, const unsigned char y) const
 {
     if (x<TERR_NBR_LINES && y<TERR_NBR_COL)
@@ -109,47 +138,5 @@ char Terrain::operator ()(const unsigned char x, const unsigned char y) const
     else {
         std::cout << "Error - Terrain matrix index out of bounds" << std::endl;
         exit(EXIT_FAILURE);
-    }
-}
-
-GdkRGBA const* TerrainGraphic::CharToColor(const char colorVal) const {
-    switch (colorVal) {
-        case 1:
-            return &red;
-            break;
-        default:
-            return &emptyColor;
-            break;
-    }
-}
-
-void TerrainGraphic::FillGrid(const int windowHeight, const int windowWidth) {
-    gint blockSize = std::min(windowWidth, windowHeight) / std::max(TERR_NBR_LINES, TERR_NBR_COL);
-
-    for (int i = 0; i < TERR_NBR_LINES; i++) {
-    	for (int j = 0; j < TERR_NBR_COL; j++) {
-            GtkWidget *temp = gtk_label_new ("");
-            gtk_widget_override_background_color(temp, GTK_STATE_FLAG_NORMAL, &emptyColor);
-            gtk_widget_set_size_request(temp, blockSize, blockSize);
-            gtk_grid_attach(GTK_GRID(terrainGrid), temp, j, i, 1, 1);
-        }
-    }
-}
-
-void TerrainGraphic::Render_Terrain(const Piece* const piece = NULL) {
-    GtkWidget* block;
-    GdkRGBA const* color;
-
-    for (unsigned char i = 0; i < TERR_NBR_LINES; i++) {
-    	for (unsigned char j = 0; j < TERR_NBR_COL; j++) {
-            block = gtk_grid_get_child_at(GTK_GRID(terrainGrid), j, i);
-
-            if (piece != NULL && piece->IsAt(i, j))
-                color = CharToColor(piece->GetColorChar());
-            else
-                color = CharToColor(matrix[TERR_NBR_COL*i + j]);
-
-            gtk_widget_override_background_color(block, GTK_STATE_FLAG_NORMAL, color);
-        }
     }
 }

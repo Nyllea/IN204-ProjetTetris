@@ -129,29 +129,53 @@ Tetris/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/build
 .PHONY : Tetris/fast
 
-GTK-UI.o: GTK-UI.cpp.o
-.PHONY : GTK-UI.o
+GTK-Setup.o: GTK-Setup.cpp.o
+.PHONY : GTK-Setup.o
 
 # target to build an object file
-GTK-UI.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/GTK-UI.cpp.o
-.PHONY : GTK-UI.cpp.o
+GTK-Setup.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/GTK-Setup.cpp.o
+.PHONY : GTK-Setup.cpp.o
 
-GTK-UI.i: GTK-UI.cpp.i
-.PHONY : GTK-UI.i
+GTK-Setup.i: GTK-Setup.cpp.i
+.PHONY : GTK-Setup.i
 
 # target to preprocess a source file
-GTK-UI.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/GTK-UI.cpp.i
-.PHONY : GTK-UI.cpp.i
+GTK-Setup.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/GTK-Setup.cpp.i
+.PHONY : GTK-Setup.cpp.i
 
-GTK-UI.s: GTK-UI.cpp.s
-.PHONY : GTK-UI.s
+GTK-Setup.s: GTK-Setup.cpp.s
+.PHONY : GTK-Setup.s
 
 # target to generate assembly for a file
-GTK-UI.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/GTK-UI.cpp.s
-.PHONY : GTK-UI.cpp.s
+GTK-Setup.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/GTK-Setup.cpp.s
+.PHONY : GTK-Setup.cpp.s
+
+Random.o: Random.cpp.o
+.PHONY : Random.o
+
+# target to build an object file
+Random.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/Random.cpp.o
+.PHONY : Random.cpp.o
+
+Random.i: Random.cpp.i
+.PHONY : Random.i
+
+# target to preprocess a source file
+Random.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/Random.cpp.i
+.PHONY : Random.cpp.i
+
+Random.s: Random.cpp.s
+.PHONY : Random.s
+
+# target to generate assembly for a file
+Random.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/Random.cpp.s
+.PHONY : Random.cpp.s
 
 TetrisElements.o: TetrisElements.cpp.o
 .PHONY : TetrisElements.o
@@ -176,6 +200,30 @@ TetrisElements.s: TetrisElements.cpp.s
 TetrisElements.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/TetrisElements.cpp.s
 .PHONY : TetrisElements.cpp.s
+
+TetrisElements_Graphic.o: TetrisElements_Graphic.cpp.o
+.PHONY : TetrisElements_Graphic.o
+
+# target to build an object file
+TetrisElements_Graphic.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/TetrisElements_Graphic.cpp.o
+.PHONY : TetrisElements_Graphic.cpp.o
+
+TetrisElements_Graphic.i: TetrisElements_Graphic.cpp.i
+.PHONY : TetrisElements_Graphic.i
+
+# target to preprocess a source file
+TetrisElements_Graphic.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/TetrisElements_Graphic.cpp.i
+.PHONY : TetrisElements_Graphic.cpp.i
+
+TetrisElements_Graphic.s: TetrisElements_Graphic.cpp.s
+.PHONY : TetrisElements_Graphic.s
+
+# target to generate assembly for a file
+TetrisElements_Graphic.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/TetrisElements_Graphic.cpp.s
+.PHONY : TetrisElements_Graphic.cpp.s
 
 main.o: main.cpp.o
 .PHONY : main.o
@@ -210,12 +258,18 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... Tetris"
-	@echo "... GTK-UI.o"
-	@echo "... GTK-UI.i"
-	@echo "... GTK-UI.s"
+	@echo "... GTK-Setup.o"
+	@echo "... GTK-Setup.i"
+	@echo "... GTK-Setup.s"
+	@echo "... Random.o"
+	@echo "... Random.i"
+	@echo "... Random.s"
 	@echo "... TetrisElements.o"
 	@echo "... TetrisElements.i"
 	@echo "... TetrisElements.s"
+	@echo "... TetrisElements_Graphic.o"
+	@echo "... TetrisElements_Graphic.i"
+	@echo "... TetrisElements_Graphic.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

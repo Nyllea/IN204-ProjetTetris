@@ -5,6 +5,13 @@
 #include "GTK-Setup.hpp"
 #include "Random.hpp"
 
+#define WINDOW_NAME "Tetris"
+#define WINDOW_WIDTH 1000
+#define WINDOW_HEIGHT 800
+#define WINDOW_BORDER 5
+
+#define GRID_SPACING 5
+
 #define SPAWN_POS (TERR_NBR_COL / 2) - (PIECE_MAT_SIZE / 2)
 
 struct TerrainPiece {
@@ -112,25 +119,31 @@ int main(int argc, char* argv[]) {
 	TerrainGraphic terrain;
 	PieceGraphic* currentPiece = SpawnPiece();
 
-	// Generate an empty terrain in window and store the GtkGrid representing it in terrain
-	GtkWidget* window = Setup_Terrain(argc, argv, &terrain, 1000, 800, 5, 5, &currentPiece);
+	// Initialise Gtk
+    Gtk::Main app(argc, argv);
+
+	// Generate an empty window with a GtkGrid (for the game terrain)
+	GameWindow window(WINDOW_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_BORDER, GRID_SPACING);
+
+	terrain.SetGrid(window.GetGrid());
+	terrain.FillGrid(WINDOW_HEIGHT, WINDOW_WIDTH);
 	
 	// Enable Gtk to detect keyboard events
-	gtk_widget_add_events(window, GDK_KEY_PRESS_MASK);
+	//gtk_widget_add_events(window, GDK_KEY_PRESS_MASK);
 
 	// Connect a keyboard input to a function
-	struct TerrainPiece* tp;
+/* 	struct TerrainPiece* tp;
 	tp->terrain = &terrain;
 	tp->piece = &currentPiece;
-	g_signal_connect(G_OBJECT(window), "key_press_event", G_CALLBACK(OnKeyPress), tp);
+	g_signal_connect(G_OBJECT(window), "key_press_event", G_CALLBACK(OnKeyPress), tp); */
 
-	terrain.Render_Terrain(currentPiece);
+	//terrain.Render_Terrain(currentPiece);
 
-	// Makes it appear on-screen
-    gtk_widget_show_all(window);
+	// Makes everything appear on-screen
+	window.show_all();
 
     // Starts event loop running
-    gtk_main();
+	Gtk::Main::run(window);
 
     return 0;
 }

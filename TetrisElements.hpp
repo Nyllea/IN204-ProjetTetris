@@ -103,6 +103,9 @@ public:
 
     // Permet d'accéder à la valeur(char) du bloc en position (x,y) du terrain 
     char operator ()(const unsigned char x, const unsigned char y) const;
+
+    // Retourne vrai si la pièce est hors du terrain ou touche un block, faux sinon
+    bool CheckCollision(const Piece* const piece) const;
 };
 
 #endif

@@ -60,21 +60,47 @@ gboolean OnKeyPress (GtkWidget *widget, GdkEventKey *event, gpointer _data) {
 			break;
 		case GDK_KEY_a:
 			((Piece*)(*data->piece))->RotateLeft();
+			// Implémentation du 'Wall kick' si on essaye de tourner alors qu'il y a un obstacle
+			if (((Terrain*)data->terrain)->CheckCollision((Piece*)(*data->piece))) {
+				((Piece*)(*data->piece))->Move(1, 0);
+				if (((Terrain*)data->terrain)->CheckCollision((Piece*)(*data->piece))) {
+					((Piece*)(*data->piece))->Move(-2, 0);
+					if (((Terrain*)data->terrain)->CheckCollision((Piece*)(*data->piece))) {
+						((Piece*)(*data->piece))->Move(1, 0);
+						((Piece*)(*data->piece))->RotateRight();
+					}
+				}
+			}
 			data->terrain->Render_Terrain(*data->piece);
 			return TRUE;
 			break;
 		case GDK_KEY_z:
 			((Piece*)(*data->piece))->RotateRight();
+			// Implémentation du 'Wall kick' si on essaye de tourner alors qu'il y a un obstacle
+			if (((Terrain*)data->terrain)->CheckCollision((Piece*)(*data->piece))) {
+				((Piece*)(*data->piece))->Move(1, 0);
+				if (((Terrain*)data->terrain)->CheckCollision((Piece*)(*data->piece))) {
+					((Piece*)(*data->piece))->Move(-2, 0);
+					if (((Terrain*)data->terrain)->CheckCollision((Piece*)(*data->piece))) {
+						((Piece*)(*data->piece))->Move(1, 0);
+						((Piece*)(*data->piece))->RotateLeft();
+					}
+				}
+			}
 			data->terrain->Render_Terrain(*data->piece);
 			return TRUE;
 			break;
 		case GDK_KEY_Left:
 			((Piece*)(*data->piece))->Move(-1, 0);
+			if (((Terrain*)data->terrain)->CheckCollision((Piece*)(*data->piece)))
+				((Piece*)(*data->piece))->Move(1, 0);
 			data->terrain->Render_Terrain(*data->piece);
 			return TRUE;
 			break;
 		case GDK_KEY_Right:
 			((Piece*)(*data->piece))->Move(1, 0);
+			if (((Terrain*)data->terrain)->CheckCollision((Piece*)(*data->piece)))
+				((Piece*)(*data->piece))->Move(-1, 0);
 			data->terrain->Render_Terrain(*data->piece);
 			return TRUE;
 			break;

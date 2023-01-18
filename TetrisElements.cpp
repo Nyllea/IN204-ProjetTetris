@@ -140,3 +140,19 @@ char Terrain::operator ()(const unsigned char x, const unsigned char y) const
         exit(EXIT_FAILURE);
     }
 }
+
+// Retourne vrai si la pièce est hors du terrain ou touche un block, faux sinon
+bool Terrain::CheckCollision(const Piece* const piece) const {
+    for (int i=0; i<PIECE_MAT_SIZE; i++) {
+        for (int j=0; j<PIECE_MAT_SIZE; j++) {
+            if ((*piece)(i, j) == 1) {
+                char terrCoord = piece->ToTerrainCoord(j, i);
+
+                if (terrCoord < 0 || matrix[terrCoord] != 0)
+                    return true;
+            }
+        }
+    }
+
+    return false;
+}

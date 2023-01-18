@@ -109,24 +109,6 @@ gboolean OnKeyPress (GtkWidget *widget, GdkEventKey *event, gpointer _data) {
 }
 
 int main(int argc, char* argv[]) {
-	/* std::cout << "Tet" << std::endl;
-
-	Piece squa(Piece::Type::N);
-
-	PrintPiece(squa);
-
-	squa.RotateLeft();
-
-	PrintPiece(squa);
-
-	squa.RotateRight();
-
-	PrintPiece(squa);
-
-	Terrain terrain;
-
-	PrintTerrain(terrain); */
-
 	TerrainGraphic terrain;
 	PieceGraphic* currentPiece = SpawnPiece();
 

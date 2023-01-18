@@ -129,29 +129,29 @@ Tetris/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/build
 .PHONY : Tetris/fast
 
-GTK-Setup.o: GTK-Setup.cpp.o
-.PHONY : GTK-Setup.o
+GameWindow.o: GameWindow.cpp.o
+.PHONY : GameWindow.o
 
 # target to build an object file
-GTK-Setup.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/GTK-Setup.cpp.o
-.PHONY : GTK-Setup.cpp.o
+GameWindow.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/GameWindow.cpp.o
+.PHONY : GameWindow.cpp.o
 
-GTK-Setup.i: GTK-Setup.cpp.i
-.PHONY : GTK-Setup.i
+GameWindow.i: GameWindow.cpp.i
+.PHONY : GameWindow.i
 
 # target to preprocess a source file
-GTK-Setup.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/GTK-Setup.cpp.i
-.PHONY : GTK-Setup.cpp.i
+GameWindow.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/GameWindow.cpp.i
+.PHONY : GameWindow.cpp.i
 
-GTK-Setup.s: GTK-Setup.cpp.s
-.PHONY : GTK-Setup.s
+GameWindow.s: GameWindow.cpp.s
+.PHONY : GameWindow.s
 
 # target to generate assembly for a file
-GTK-Setup.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/GTK-Setup.cpp.s
-.PHONY : GTK-Setup.cpp.s
+GameWindow.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/GameWindow.cpp.s
+.PHONY : GameWindow.cpp.s
 
 Random.o: Random.cpp.o
 .PHONY : Random.o
@@ -258,9 +258,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... Tetris"
-	@echo "... GTK-Setup.o"
-	@echo "... GTK-Setup.i"
-	@echo "... GTK-Setup.s"
+	@echo "... GameWindow.o"
+	@echo "... GameWindow.i"
+	@echo "... GameWindow.s"
 	@echo "... Random.o"
 	@echo "... Random.i"
 	@echo "... Random.s"

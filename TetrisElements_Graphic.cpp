@@ -64,17 +64,32 @@ void TerrainGraphic::Render_Terrain(const PieceGraphic* const piece = NULL) {
     }
 }
 
+// Instancie une piece sur le terrain et en retourne une reference
+PieceGraphic* TerrainGraphic::SpawnPiece() const {
+	PieceGraphic* piece = new PieceGraphic(GetRandomType(), GetRandomColor());
+
+	((Piece*)piece)->SetMaxHeight();
+	((Piece*)piece)->SetXPos(SPAWN_POS);
+
+	return piece;
+}
+
 // Ajoute la piece à la matrice du terrain
-void TerrainGraphic::ImprintPiece(const PieceGraphic* const piece) {
+void TerrainGraphic::ImprintPiece(PieceGraphic** const piece) {
     for (int i=0; i<PIECE_MAT_SIZE; i++) {
         for (int j=0; j<PIECE_MAT_SIZE; j++) {
-            if ((*(Piece*)piece)(i, j) == 1) {
-                char terrainCoord = ((Piece*)piece)->ToTerrainCoord(j, i);
+            if ((**(Piece**)piece)(i, j) == 1) {
+                char terrainCoord = (*(Piece**)piece)->ToTerrainCoord(j, i);
                 if (terrainCoord < 0) // Si les coordonnées pointent en dehors du terrain
                     continue;
 
-                matrix[terrainCoord] = piece->GetColorChar();
+                matrix[terrainCoord] = (*piece)->GetColorChar();
             }
         }
     }
+
+    delete *piece;
+
+    *piece = SpawnPiece();
+    Render_Terrain(*piece);
 }

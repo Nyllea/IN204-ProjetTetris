@@ -1,9 +1,12 @@
 #ifndef TETRISELEMENTS_GRAPHIC_HPP
 #define TETRISELEMENTS_GRAPHIC_HPP
 
+#include "TetrisElements.hpp"
+
 #include <gtkmm-3.0/gtkmm/grid.h>
 #include <gtkmm-3.0/gtkmm/label.h>
-#include "TetrisElements.hpp"
+
+#define SPAWN_POS (TERR_NBR_COL/2)-(PIECE_MAT_SIZE/2)
 
 class PieceGraphic : Piece {
     public:
@@ -23,22 +26,24 @@ class PieceGraphic : Piece {
 
 };
 
+#include "Random.hpp" // Doit etre mis ici pour que PieceGraphic soit defini quand on importe Random.hpp
+
 class TerrainGraphic : Terrain {
     private:
         Gtk::Grid *terrainGrid;
 
         // Valeur des couleurs
         static constexpr char emptyColor[] = "rgba(168, 168, 168, 1.0)";
-        static constexpr char red[] = "rgba(255, 0, 0, 1.0f)";
+        static constexpr char red[] = "rgba(255, 0, 0, 1.0)";
         static constexpr char green[] = "rgba(0, 255, 0, 1.0)";
-        static constexpr char blue[] = "rgba(0, 0, 255, 1.0f)";
+        static constexpr char blue[] = "rgba(0, 0, 255, 1.0)";
 
         // Convertit le code couleur(char) en une couleur GdkRGBA
         Gdk::RGBA CharToColor(const char colorVal) const;
 
     public:
         TerrainGraphic() : Terrain() {};
-        TerrainGraphic(Terrain terrain) : Terrain(terrain) {}
+        TerrainGraphic(const Terrain terrain) : Terrain(terrain) {}
 
         // Setter pour la grille graphique représentant le terrain
         void SetGrid(Gtk::Grid* const grid);
@@ -49,8 +54,11 @@ class TerrainGraphic : Terrain {
         // Actualisation graphique du terrain
         void Render_Terrain(const PieceGraphic* const piece);
 
+        // Instancie une piece sur le terrain et en retourne une reference
+        PieceGraphic* SpawnPiece() const;
+
         // Ajoute la piece à la matrice du terrain
-        void ImprintPiece(const PieceGraphic* const piece);
+        void ImprintPiece(PieceGraphic** const piece);
 };
 
 #endif

@@ -41,13 +41,15 @@
                 "/usr/lib/x86_64-linux-gnu/atkmm-1.6/include",
                 "/usr/include/gtk-3.0/unix-print",
                 "/usr/include/gdkmm-3.0",
-                "/usr/lib/x86_64-linux-gnu/gdkmm-3.0/include"
+                "/usr/lib/x86_64-linux-gnu/gdkmm-3.0/include",
+                "/usr/include/x86_64-linux-gnu"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",
             "cStandard": "c17",
             "cppStandard": "c++14",
-            "intelliSenseMode": "linux-clang-x64"
+            "intelliSenseMode": "linux-clang-x64",
+            "configurationProvider": "ms-vscode.cmake-tools"
         }
     ],
     "version": 4

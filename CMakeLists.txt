@@ -21,5 +21,5 @@ LINK_DIRECTORIES(${GTKMM_LIBRARY_DIRS})
 # Add other flags to the compiler
 ADD_DEFINITIONS(${GTKMM_CFLAGS_OTHER})
 
-add_executable(Tetris TetrisElements.cpp TetrisElements_Graphic.cpp GTK-Setup.cpp Random.cpp main.cpp)
+add_executable(Tetris TetrisElements.cpp TetrisElements_Graphic.cpp GameWindow.cpp Random.cpp main.cpp)
 TARGET_LINK_LIBRARIES(Tetris ${GTKMM_LIBRARIES})

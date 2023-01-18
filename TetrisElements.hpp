@@ -3,7 +3,6 @@
 
 #include <bitset>
 #include <iostream>
-#include <algorithm>
 
 #define TERR_NBR_LINES 22
 #define TERR_NBR_COL 10
@@ -69,7 +68,7 @@ class Piece {
         static constexpr std::bitset<PIECE_MAT_SIZE*PIECE_MAT_SIZE> TMatrix{0x23800};
 
     public:
-        Piece(const Piece& source): m_type(source.m_type), matrix(source.matrix) {}
+        Piece(const Piece& source): m_type(source.m_type), matrix(source.matrix), posX(source.posX), posY(source.posY) {}
         Piece(const Type type);
 
         Piece& operator = (const Piece& source);

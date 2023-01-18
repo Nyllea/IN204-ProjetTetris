@@ -8,25 +8,25 @@ char PieceGraphic::GetColorChar() const {
 
 
 // Convertit le code couleur(char) en une couleur GdkRGBA
-GdkRGBA const* TerrainGraphic::CharToColor(const char colorVal) const {
+Gdk::RGBA TerrainGraphic::CharToColor(const char colorVal) const {
     switch (colorVal) {
         case 1:
-            return &red;
+            return Gdk::RGBA(red);
             break;
         case 2:
-            return &green;
+            return Gdk::RGBA(green);
             break;
         case 3:
-            return &blue;
+            return Gdk::RGBA(blue);
             break;
         default:
-            return &emptyColor;
+            return Gdk::RGBA(emptyColor);
             break;
     }
 }
 
 // Setter pour la grille graphique représentant le terrain
-void TerrainGraphic::SetGrid(GtkWidget* const grid) {
+void TerrainGraphic::SetGrid(Gtk::Grid* const grid) {
     terrainGrid = grid;
 }
 
@@ -36,44 +36,60 @@ void TerrainGraphic::FillGrid(const int windowHeight, const int windowWidth) {
 
     for (int i = 0; i < TERR_NBR_LINES; i++) {
     	for (int j = 0; j < TERR_NBR_COL; j++) {
-            GtkWidget *temp = gtk_label_new ("");
-            gtk_widget_override_background_color(temp, GTK_STATE_FLAG_NORMAL, &emptyColor);
-            gtk_widget_set_size_request(temp, blockSize, blockSize);
-            gtk_grid_attach(GTK_GRID(terrainGrid), temp, j, i, 1, 1);
+            Gtk::Label *temp = Gtk::make_managed<Gtk::Label>();
+            temp->override_background_color(Gdk::RGBA(emptyColor), Gtk::STATE_FLAG_NORMAL);
+            temp->set_size_request(blockSize, blockSize);
+            //terrainGrid->add(*temp);
+            terrainGrid->attach(*temp, j, i, 1, 1);
         }
     }
 }
 
 // Actualisation graphique du terrain
 void TerrainGraphic::Render_Terrain(const PieceGraphic* const piece = NULL) {
-    GtkWidget* block;
-    GdkRGBA const* color;
+    Gtk::Widget* block;
+    Gdk::RGBA color;
 
     for (unsigned char i = 0; i < TERR_NBR_LINES; i++) {
     	for (unsigned char j = 0; j < TERR_NBR_COL; j++) {
-            block = gtk_grid_get_child_at(GTK_GRID(terrainGrid), j, i);
+            block = terrainGrid->get_child_at(j, i);
 
             if (piece != NULL && ((Piece*)piece)->IsAt(j, i))
                 color = CharToColor(piece->GetColorChar());
             else
                 color = CharToColor(matrix[TERR_NBR_COL*i + j]);
 
-            gtk_widget_override_background_color(block, GTK_STATE_FLAG_NORMAL, color);
+            block->override_background_color(color, Gtk::STATE_FLAG_NORMAL);
         }
     }
 }
 
+// Instancie une piece sur le terrain et en retourne une reference
+PieceGraphic* TerrainGraphic::SpawnPiece() const {
+	PieceGraphic* piece = new PieceGraphic(GetRandomType(), GetRandomColor());
+
+	((Piece*)piece)->SetMaxHeight();
+	((Piece*)piece)->SetXPos(SPAWN_POS);
+
+	return piece;
+}
+
 // Ajoute la piece à la matrice du terrain
-void TerrainGraphic::ImprintPiece(const PieceGraphic* const piece) {
+void TerrainGraphic::ImprintPiece(PieceGraphic** const piece) {
     for (int i=0; i<PIECE_MAT_SIZE; i++) {
         for (int j=0; j<PIECE_MAT_SIZE; j++) {
-            if ((*(Piece*)piece)(i, j) == 1) {
-                char terrainCoord = ((Piece*)piece)->ToTerrainCoord(j, i);
+            if ((**(Piece**)piece)(i, j) == 1) {
+                char terrainCoord = (*(Piece**)piece)->ToTerrainCoord(j, i);
                 if (terrainCoord < 0) // Si les coordonnées pointent en dehors du terrain
                     continue;
 
-                matrix[terrainCoord] = piece->GetColorChar();
+                matrix[terrainCoord] = (*piece)->GetColorChar();
             }
         }
     }
+
+    delete *piece;
+
+    *piece = SpawnPiece();
+    Render_Terrain(*piece);
 }

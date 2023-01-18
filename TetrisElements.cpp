@@ -3,12 +3,14 @@
 Piece& Piece::operator = (const Piece& source) {
     m_type = source.m_type;
     matrix = source.matrix;
+    
+    posX = source.posX;
+    posY = source.posY;
+
     return *this;
 }
 
-Piece::Piece(const Type type) {
-    m_type = type;
-
+Piece::Piece(const Type type) : m_type(type), posX(0), posY(0) {
     switch (type) {
         case Square:
             matrix = Piece::SquareMatrix;
@@ -49,7 +51,7 @@ bool Piece::operator ()(const unsigned char x, const unsigned char y) const
     }
 }
 
-// drop bits outside the range [R, L) == [R, L - 1]
+// Drop bits outside the range [R, L) == [R, L - 1]
 template<std::size_t N>
 std::bitset<N> project_range(std::bitset<N> b, size_t R, size_t L)
 {
@@ -67,7 +69,6 @@ std::bitset<N> project_range(std::bitset<N> b, size_t R, size_t L)
 void Piece::SetMaxHeight() {
     while(project_range<PIECE_MAT_SIZE*PIECE_MAT_SIZE>(matrix, -posY*PIECE_MAT_SIZE, (-posY+1)*PIECE_MAT_SIZE).none())
         posY--;
-
 }
 
 void Piece::SetXPos(const signed char xPos) {

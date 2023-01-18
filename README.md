@@ -5,11 +5,17 @@ Pour compiler, utiliser C++20 et link gtk :
     - (deprecated) clang++ -std=c++20 TetrisElements.cpp main.cpp `pkg-config --cflags --libs gtk+-3.0` && ./a.out
     - cmake . && cmake --build . && ./Tetris
 
+Pour pouvoir debug avec gdb apres :
+
+    - cmake -DCMAKE_BUILD_TYPE=Debug . && cmake --build . && ./Tetris
+
+
 Controles :
 
     - Fleches droite et gauche pour deplacer la piece
     - a/z pour rotation a droite/gauche
     - Espace pour placer la piece sur le terrain
+
 
 Crédit : 
 

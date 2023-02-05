@@ -83,26 +83,33 @@ PieceGraphic *TerrainGraphic::SpawnPiece() const
     return piece;
 }
 
-// Ajoute la piece à la matrice du terrain
+// Ajoute la piece à la matrice du terrain, enlève les lignes complètes et génère une nouvelle piece
 void TerrainGraphic::ImprintPiece(PieceGraphic **const piece)
 {
     for (int i = 0; i < PIECE_MAT_SIZE; i++)
     {
+        short int terrainCoord = (*(Piece **)piece)->ToTerrainCoord(0, i);
+
         for (int j = 0; j < PIECE_MAT_SIZE; j++)
         {
             if ((**(Piece **)piece)(i, j) == 1)
             {
-                short int terrainCoord = (*(Piece **)piece)->ToTerrainCoord(j, i);
+                terrainCoord = (*(Piece **)piece)->ToTerrainCoord(j, i);
                 if (terrainCoord < 0) // Si les coordonnées pointent en dehors du terrain
                     continue;
 
                 matrix[terrainCoord] = (*piece)->GetColorChar();
             }
         }
+
+        // Si la ligne est complète
+        if (CheckLine(terrainCoord))
+            RemoveLine(terrainCoord);
     }
 
+    // Générer une nouvelle pièce
     delete *piece;
-
     *piece = SpawnPiece();
+
     Render_Terrain(*piece);
 }

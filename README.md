@@ -1,6 +1,6 @@
 # IN204-ProjetTetris
 
-Idée: Utiliser du CSS pour les menus
+A faire : Utiliser du CSS pour les menus
 
 Pour compiler, utiliser C++20 et link gtk :
 

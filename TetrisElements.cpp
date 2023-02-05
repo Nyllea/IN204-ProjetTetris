@@ -180,3 +180,36 @@ bool Terrain::CheckCollision(const Piece *const piece) const
 
     return false;
 }
+
+// Vérifie si la ligne contenant le bloc en terrainCoord est complète
+bool Terrain::CheckLine(const short int terrainCoord)
+{
+    // Numéro de la ligne à vérifier
+    short int line = terrainCoord / TERR_NBR_COL;
+
+    for (int i = line * TERR_NBR_COL; i < (line + 1) * TERR_NBR_COL; i++)
+    {
+        if (matrix[i] == 0)
+            return false;
+    }
+
+    return true;
+}
+
+// Retire la ligne contenant le bloc en terrainCoord
+void Terrain::RemoveLine(const int terrainCoord)
+{
+    // Numéro de la ligne à retirer
+    short int line = terrainCoord / TERR_NBR_COL;
+
+    for (int i = line; i > 0; i--)
+    {
+        for (int j = 0; j < TERR_NBR_COL; j++)
+        {
+            matrix[i * TERR_NBR_COL + j] = matrix[(i - 1) * TERR_NBR_COL + j];
+        }
+    }
+
+    for (int j = 0; j < TERR_NBR_COL; j++)
+        matrix[j] = 0;
+}

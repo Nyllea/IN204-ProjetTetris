@@ -28,7 +28,11 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 	// Creation de la grille de jeu
 	terrainGrid = Gtk::make_managed<Gtk::Grid>(); // Laisse Gtk delete le terrain quand la fenetre se ferme
 	SetupGrid(terrainGrid, gridSpacing);
-	add(*terrainGrid); // Ajout à la fenêtre
+
+	// Création de l'overlay
+	overlay = Gtk::make_managed<Gtk::Overlay>();
+	overlay->add(*terrainGrid);
+	add(*overlay); // Ajout de l'overlay à la fenêtre
 
 	// Gestion des entrées clavier
 	add_events(Gdk::KEY_PRESS_MASK);
@@ -58,6 +62,22 @@ bool TryMovePieceDown(const TerrainPiece *data)
 void GameWindow::GameOver()
 {
 	std::cout << "Game Over !" << std::endl;
+
+	Gtk::Label *gameOverLabel = Gtk::make_managed<Gtk::Label>();
+
+	// Utiliser CSS pour éviter de hardcoder la taille
+	gameOverLabel->set_text("<span size='170000'>Game Over !</span>");
+	gameOverLabel->set_use_markup(true);
+	gameOverLabel->override_color(Gdk::RGBA(GAMEOVER_COLOR), Gtk::STATE_FLAG_NORMAL);
+
+	gameOverLabel->set_hexpand(true);
+	gameOverLabel->set_halign(Gtk::Align::ALIGN_CENTER);
+	gameOverLabel->set_vexpand(true);
+	gameOverLabel->set_valign(Gtk::Align::ALIGN_CENTER);
+
+	overlay->add_overlay(*gameOverLabel);
+
+	overlay->show_all();
 
 	keyboardControls.disconnect();
 	mainGameLoop.disconnect();

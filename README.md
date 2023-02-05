@@ -1,5 +1,7 @@
 # IN204-ProjetTetris
 
+Idée: Utiliser du CSS pour les menus
+
 Pour compiler, utiliser C++20 et link gtk :
 
     - (deprecated) clang++ -std=c++20 TetrisElements.cpp main.cpp `pkg-config --cflags --libs gtk+-3.0` && ./a.out

@@ -32,11 +32,11 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 
 	// Gestion des entrées clavier
 	add_events(Gdk::KEY_PRESS_MASK);
-	signal_key_press_event().connect(sigc::bind<-1>(sigc::mem_fun(*this, &GameWindow::OnKeyPress), tp), false);
+	keyboardControls = signal_key_press_event().connect(sigc::bind<-1>(sigc::mem_fun(*this, &GameWindow::OnKeyPress), tp), false);
 	// m_entry.signal_key_press_event().connect(sigc::mem_fun(this, &GameWindow::OnKeyPress), tp);
 
 	// Boucle de jeu principale
-	Glib::signal_timeout().connect(sigc::bind<-1>(sigc::mem_fun(*this, &GameWindow::MainGameLoop), tp), MAIN_LOOP_TIMEOUT);
+	mainGameLoop = Glib::signal_timeout().connect(sigc::bind<-1>(sigc::mem_fun(*this, &GameWindow::MainGameLoop), tp), MAIN_LOOP_TIMEOUT);
 }
 
 bool TryMovePieceDown(const TerrainPiece *data)
@@ -55,12 +55,29 @@ bool TryMovePieceDown(const TerrainPiece *data)
 	return true;
 }
 
+void GameWindow::GameOver()
+{
+	std::cout << "Game Over !" << std::endl;
+
+	keyboardControls.disconnect();
+	mainGameLoop.disconnect();
+}
+
 // Fonction appelée toute les MAIN_LOOP_TIMEOUT ms tant qu'elle retourne true
 bool GameWindow::MainGameLoop(const TerrainPiece *data)
 {
 	// Si la piece n'a pas pu etre descendu, alors il y a un obstacle l'empechant -> La piece doit etre placée
 	if (!TryMovePieceDown(data))
+	{
 		data->terrainGraph->ImprintPiece(data->pieceGraph);
+
+		Piece *piece = (Piece *)(*data->pieceGraph);
+		Terrain *terrain = (Terrain *)(data->terrainGraph);
+
+		// Si la piece nouvellement spawn touche un bloc -> Game over
+		if (terrain->CheckCollision(piece))
+			GameOver();
+	}
 
 	data->terrainGraph->Render_Terrain(*data->pieceGraph);
 

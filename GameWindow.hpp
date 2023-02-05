@@ -18,10 +18,13 @@ class GameWindow : public Gtk::Window
 {
 private:
     Gtk::Grid *terrainGrid;
+    sigc::connection keyboardControls, mainGameLoop;
 
     bool OnKeyPress(GdkEventKey *const event, const TerrainPiece *data);
 
     bool MainGameLoop(const TerrainPiece *data);
+
+    void GameOver();
 
 public:
     GameWindow(const Glib::ustring &name, const int width, const int height, const guint borderSize, const guint gridSpacing, const TerrainPiece *tp);

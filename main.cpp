@@ -14,53 +14,54 @@
 /*
 void PrintPiece(Piece& piece) {
 	for (int i = 0; i < PIECE_MAT_SIZE; i++) {
-    	for (int j = 0; j < PIECE_MAT_SIZE; j++) {
-            std::cout << piece(i,j);
-        }
+		for (int j = 0; j < PIECE_MAT_SIZE; j++) {
+			std::cout << piece(i,j);
+		}
 		std::cout << std::endl;
-    }
+	}
 	std::cout << std::endl;
 }
 
 void PrintTerrain(Terrain& terrain) {
 	for (int i = 0; i < TERR_NBR_LINES; i++) {
-    	for (int j = 0; j < TERR_NBR_COL; j++) {
-            std::cout << (int)terrain(i,j);
-        }
+		for (int j = 0; j < TERR_NBR_COL; j++) {
+			std::cout << (int)terrain(i,j);
+		}
 		std::cout << std::endl;
-    }
+	}
 	std::cout << std::endl;
 }
 */
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[])
+{
 	// Creation du terrain et de la premiere piece
-	TerrainGraphic terrain;
-	PieceGraphic* currentPiece = terrain.SpawnPiece();
+	TerrainGraphic terrainGraph;
+	PieceGraphic *currentPieceGraph = terrainGraph.SpawnPiece();
 
-	// Creation de la structure referencant le terrain et la piece pour la gestion des evenements clavier
+	// Creation de la structure referencant le terrain et la piece pour la gestion des evenements clavier et de la boucle de jeu
 	struct TerrainPiece tp;
-	tp.terrain = &terrain;
-	tp.piece = &currentPiece;
+	tp.terrainGraph = &terrainGraph;
+	tp.pieceGraph = &currentPieceGraph;
 
 	// Initialise Gtk
-    Gtk::Main app(argc, argv);
+	Gtk::Main app(argc, argv);
 
 	// Generate an empty window with a GtkGrid (for the game terrain)
-	GameWindow window(WINDOW_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_BORDER, GRID_SPACING, &tp);
+	GameWindow gWindow(WINDOW_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_BORDER, GRID_SPACING, &tp);
 
-	terrain.SetGrid(window.GetGrid());
-	terrain.FillGrid(WINDOW_HEIGHT, WINDOW_WIDTH);
+	terrainGraph.SetGrid(gWindow.GetGrid());
+	terrainGraph.FillGrid(WINDOW_HEIGHT, WINDOW_WIDTH);
 
-	terrain.Render_Terrain(currentPiece);
+	terrainGraph.Render_Terrain(currentPieceGraph);
 
 	// Makes everything appear on-screen
-	window.show_all();
+	gWindow.show_all();
 
-    // Starts event loop running
-	Gtk::Main::run(window);
+	// Starts event loop running
+	Gtk::Main::run(gWindow);
 
-	delete currentPiece;
+	delete currentPieceGraph;
 
-    return 0;
+	return 0;
 }

@@ -9,15 +9,13 @@ Pour pouvoir debug avec gdb apres :
 
     - cmake -DCMAKE_BUILD_TYPE=Debug . && cmake --build . && ./Tetris
 
-
 Controles :
 
     - Fleches droite et gauche pour deplacer la piece
     - a/z pour rotation a droite/gauche
-    - Espace pour placer la piece sur le terrain
+    - Fleche bas pour descendre la piece plus vite
 
-
-Crédit : 
+Crédit :
 
     - Tetris game logic : https://javilop.com/gamedev/tetris-tutorial-in-c-platform-independent-focused-in-game-logic-for-beginners/
     - Regles de rotation Tetris : https://strategywiki.org/wiki/Tetris/Rotation_systems

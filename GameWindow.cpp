@@ -24,6 +24,7 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 	set_resizable(true);
 	set_border_width(borderSize);
 	set_position(Gtk::WIN_POS_CENTER);
+	override_background_color(Gdk::RGBA(BACKGROUND_COLOR), Gtk::StateFlags::STATE_FLAG_NORMAL);
 
 	// Creation de la grille de jeu
 	terrainGrid = Gtk::make_managed<Gtk::Grid>(); // Laisse Gtk delete le terrain quand la fenetre se ferme
@@ -41,6 +42,8 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 
 	// Boucle de jeu principale
 	mainGameLoop = Glib::signal_timeout().connect(sigc::bind<-1>(sigc::mem_fun(*this, &GameWindow::MainGameLoop), tp), MAIN_LOOP_TIMEOUT);
+
+	GameOver();
 }
 
 bool TryMovePieceDown(const TerrainPiece *data)
@@ -59,23 +62,38 @@ bool TryMovePieceDown(const TerrainPiece *data)
 	return true;
 }
 
-void GameWindow::GameOver()
+Gtk::Box *MakeGameOverMenu()
 {
-	std::cout << "Game Over !" << std::endl;
-
+	Gtk::Box *wrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_VERTICAL);
 	Gtk::Label *gameOverLabel = Gtk::make_managed<Gtk::Label>();
+	Gtk::Button *retryBtn = Gtk::make_managed<Gtk::Button>("Retry");
+	Gtk::Button *mainMenuBtn = Gtk::make_managed<Gtk::Button>("Main menu");
+	Gtk::Button *exitBtn = Gtk::make_managed<Gtk::Button>("Exit");
 
 	// Utiliser CSS pour éviter de hardcoder la taille
-	gameOverLabel->set_text("<span size='170000'>Game Over !</span>");
+	gameOverLabel->set_text("<span size='17000'>Game Over !</span>");
 	gameOverLabel->set_use_markup(true);
 	gameOverLabel->override_color(Gdk::RGBA(GAMEOVER_COLOR), Gtk::STATE_FLAG_NORMAL);
 
-	gameOverLabel->set_hexpand(true);
-	gameOverLabel->set_halign(Gtk::Align::ALIGN_CENTER);
-	gameOverLabel->set_vexpand(true);
-	gameOverLabel->set_valign(Gtk::Align::ALIGN_CENTER);
+	// gameOverLabel->set_hexpand(true);
+	// gameOverLabel->set_halign(Gtk::Align::ALIGN_CENTER);
+	// gameOverLabel->set_vexpand(true);
+	// gameOverLabel->set_valign(Gtk::Align::ALIGN_CENTER);
 
-	overlay->add_overlay(*gameOverLabel);
+	wrapper->pack_start(*gameOverLabel);
+	wrapper->pack_start(*retryBtn);
+	wrapper->pack_start(*mainMenuBtn);
+	wrapper->pack_start(*exitBtn);
+
+	return wrapper;
+}
+
+void GameWindow::GameOver()
+{
+	if (gameOverMenu == NULL)
+		gameOverMenu = MakeGameOverMenu();
+
+	overlay->add_overlay(*gameOverMenu);
 
 	overlay->show_all();
 

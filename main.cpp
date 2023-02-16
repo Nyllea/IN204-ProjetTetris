@@ -8,7 +8,7 @@
 #define WINDOW_HEIGHT 800
 #define WINDOW_BORDER 5
 
-#define GRID_SPACING 5
+#define GRID_SPACING 1
 
 // To help with debugging
 /*

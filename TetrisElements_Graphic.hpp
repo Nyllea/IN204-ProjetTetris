@@ -41,9 +41,9 @@ private:
 
     // Valeur des couleurs
     static constexpr char emptyColor[] = "rgba(168, 168, 168, 1.0)";
-    static constexpr char red[] = "rgba(255, 0, 0, 1.0)";
-    static constexpr char green[] = "rgba(0, 255, 0, 1.0)";
-    static constexpr char blue[] = "rgba(0, 0, 255, 1.0)";
+    static constexpr char red[] = "rgba(255, 0, 50, 1.0)";
+    static constexpr char green[] = "rgba(50, 255, 0, 1.0)";
+    static constexpr char blue[] = "rgba(0, 50, 255, 1.0)";
 
     // Convertit le code couleur(char) en une couleur GdkRGBA
     Gdk::RGBA CharToColor(const char colorVal) const;

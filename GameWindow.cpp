@@ -42,8 +42,6 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 
 	// Boucle de jeu principale
 	mainGameLoop = Glib::signal_timeout().connect(sigc::bind<-1>(sigc::mem_fun(*this, &GameWindow::MainGameLoop), tp), MAIN_LOOP_TIMEOUT);
-
-	GameOver();
 }
 
 bool TryMovePieceDown(const TerrainPiece *data)
@@ -51,7 +49,7 @@ bool TryMovePieceDown(const TerrainPiece *data)
 	Piece *piece = (Piece *)(*data->pieceGraph);
 	Terrain *terrain = (Terrain *)(data->terrainGraph);
 
-	// Check si peut descendre
+	// Check si la pièce peut descendre
 	piece->Move(0, 1);
 	if (terrain->CheckCollision(piece))
 	{

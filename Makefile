@@ -129,6 +129,30 @@ Tetris/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/build
 .PHONY : Tetris/fast
 
+GameOverMenu.o: GameOverMenu.cpp.o
+.PHONY : GameOverMenu.o
+
+# target to build an object file
+GameOverMenu.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/GameOverMenu.cpp.o
+.PHONY : GameOverMenu.cpp.o
+
+GameOverMenu.i: GameOverMenu.cpp.i
+.PHONY : GameOverMenu.i
+
+# target to preprocess a source file
+GameOverMenu.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/GameOverMenu.cpp.i
+.PHONY : GameOverMenu.cpp.i
+
+GameOverMenu.s: GameOverMenu.cpp.s
+.PHONY : GameOverMenu.s
+
+# target to generate assembly for a file
+GameOverMenu.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/GameOverMenu.cpp.s
+.PHONY : GameOverMenu.cpp.s
+
 GameWindow.o: GameWindow.cpp.o
 .PHONY : GameWindow.o
 
@@ -258,6 +282,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... Tetris"
+	@echo "... GameOverMenu.o"
+	@echo "... GameOverMenu.i"
+	@echo "... GameOverMenu.s"
 	@echo "... GameWindow.o"
 	@echo "... GameWindow.i"
 	@echo "... GameWindow.s"

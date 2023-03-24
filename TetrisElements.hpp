@@ -108,6 +108,15 @@ class Terrain
 protected:
     char matrix[TERR_NBR_LINES * TERR_NBR_COL];
 
+    // Réinitialise le terrain
+    void ResetMatrix();
+
+    // Vérifie si la ligne contenant le bloc en terrainCoord est complète
+    bool CheckLine(const short int terrainCoord);
+
+    // Retire la ligne contenant le bloc en terrainCoord
+    void RemoveLine(const int teerainCoord);
+
 public:
     Terrain();
 
@@ -116,12 +125,6 @@ public:
 
     // Retourne vrai si la pièce est hors du terrain ou touche un bloc, faux sinon
     bool CheckCollision(const Piece *const piece) const;
-
-    // Vérifie si la ligne contenant le bloc en terrainCoord est complète
-    bool CheckLine(const short int terrainCoord);
-
-    // Retire la ligne contenant le bloc en terrainCoord
-    void RemoveLine(const int teerainCoord);
 };
 
 #endif

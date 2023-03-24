@@ -213,3 +213,10 @@ void Terrain::RemoveLine(const int terrainCoord)
     for (int j = 0; j < TERR_NBR_COL; j++)
         matrix[j] = 0;
 }
+
+// Réinitialise le terrain
+void Terrain::ResetMatrix()
+{
+    for (int i = 0; i < TERR_NBR_LINES * TERR_NBR_COL; i++)
+        matrix[i] = 0;
+}

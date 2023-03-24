@@ -16,7 +16,7 @@ void SetupGrid(Gtk::Grid *grid, const guint spacing)
 	grid->set_valign(Gtk::Align::ALIGN_CENTER);
 }
 
-GameWindow::GameWindow(const Glib::ustring &name, const int width, const int height, const guint borderSize, const guint gridSpacing, const TerrainPiece *tp)
+GameWindow::GameWindow(const Glib::ustring &name, const int width, const int height, const guint borderSize, const guint gridSpacing, const TerrainPiece *tp) : terrainPiece(tp)
 {
 	// Paramétrage de la fenetre
 	set_title(name);
@@ -44,6 +44,77 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 	mainGameLoop = Glib::signal_timeout().connect(sigc::bind<-1>(sigc::mem_fun(*this, &GameWindow::MainGameLoop), tp), MAIN_LOOP_TIMEOUT);
 }
 
+GameWindow::~GameWindow()
+{
+	keyboardControls.disconnect();
+	mainGameLoop.disconnect();
+}
+
+void GameWindow::RetryButton()
+{
+	// On enlève le menu Game Over
+	gameOverMenu->hide();
+
+	// On recrée la connection lancant la boucle principale
+	mainGameLoop = Glib::signal_timeout().connect(sigc::bind<-1>(sigc::mem_fun(*this, &GameWindow::MainGameLoop), terrainPiece), MAIN_LOOP_TIMEOUT);
+
+	// On débloque les entrées clavier
+	keyboardControls.unblock();
+
+	// On réinitialise le terrain pour une nouvelle partie
+	terrainPiece->terrainGraph->ResetTerrain(terrainPiece->pieceGraph);
+}
+
+Gtk::Box *GameWindow::MakeGameOverMenu()
+{
+	Gtk::Box *wrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_VERTICAL);
+	Gtk::Label *gameOverLabel = Gtk::make_managed<Gtk::Label>();
+	Gtk::Button *retryBtn = Gtk::make_managed<Gtk::Button>("Retry");
+	Gtk::Button *mainMenuBtn = Gtk::make_managed<Gtk::Button>("Main menu");
+	Gtk::Button *exitBtn = Gtk::make_managed<Gtk::Button>("Exit");
+
+	// Utiliser CSS pour éviter de hardcoder la taille
+	gameOverLabel->set_text("<span size='34000'>Game Over !</span>");
+	gameOverLabel->set_use_markup(true);
+	gameOverLabel->override_color(Gdk::RGBA(GAMEOVER_COLOR), Gtk::STATE_FLAG_NORMAL);
+
+	// gameOverLabel->set_hexpand(true);
+	// gameOverLabel->set_halign(Gtk::Align::ALIGN_CENTER);
+	// gameOverLabel->set_vexpand(true);
+	// gameOverLabel->set_valign(Gtk::Align::ALIGN_CENTER);
+
+	// Style : A faire avec CSS
+	wrapper->set_homogeneous(true);
+	wrapper->set_hexpand(false);
+	wrapper->set_margin_bottom(100);
+
+	// Connecte les boutons aux actions à réaliser
+	retryBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::RetryButton));
+
+	wrapper->pack_start(*gameOverLabel, Gtk::PACK_SHRINK, 0);
+	wrapper->pack_start(*retryBtn, Gtk::PACK_SHRINK, 0);
+	wrapper->pack_start(*mainMenuBtn, Gtk::PACK_SHRINK, 0);
+	wrapper->pack_start(*exitBtn, Gtk::PACK_SHRINK, 0);
+
+	return wrapper;
+}
+
+void GameWindow::GameOver()
+{
+	if (gameOverMenu == NULL)
+	{
+		gameOverMenu = MakeGameOverMenu();
+		overlay->add_overlay(*gameOverMenu);
+		overlay->show_all();
+	}
+	else
+		gameOverMenu->show();
+
+	keyboardControls.block();
+	// Un block sur une connection de type signal_timeout revient à un disconnect: on perd la connection
+	mainGameLoop.disconnect();
+}
+
 bool TryMovePieceDown(const TerrainPiece *data)
 {
 	Piece *piece = (Piece *)(*data->pieceGraph);
@@ -58,45 +129,6 @@ bool TryMovePieceDown(const TerrainPiece *data)
 	}
 
 	return true;
-}
-
-Gtk::Box *MakeGameOverMenu()
-{
-	Gtk::Box *wrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_VERTICAL);
-	Gtk::Label *gameOverLabel = Gtk::make_managed<Gtk::Label>();
-	Gtk::Button *retryBtn = Gtk::make_managed<Gtk::Button>("Retry");
-	Gtk::Button *mainMenuBtn = Gtk::make_managed<Gtk::Button>("Main menu");
-	Gtk::Button *exitBtn = Gtk::make_managed<Gtk::Button>("Exit");
-
-	// Utiliser CSS pour éviter de hardcoder la taille
-	gameOverLabel->set_text("<span size='17000'>Game Over !</span>");
-	gameOverLabel->set_use_markup(true);
-	gameOverLabel->override_color(Gdk::RGBA(GAMEOVER_COLOR), Gtk::STATE_FLAG_NORMAL);
-
-	// gameOverLabel->set_hexpand(true);
-	// gameOverLabel->set_halign(Gtk::Align::ALIGN_CENTER);
-	// gameOverLabel->set_vexpand(true);
-	// gameOverLabel->set_valign(Gtk::Align::ALIGN_CENTER);
-
-	wrapper->pack_start(*gameOverLabel);
-	wrapper->pack_start(*retryBtn);
-	wrapper->pack_start(*mainMenuBtn);
-	wrapper->pack_start(*exitBtn);
-
-	return wrapper;
-}
-
-void GameWindow::GameOver()
-{
-	if (gameOverMenu == NULL)
-		gameOverMenu = MakeGameOverMenu();
-
-	overlay->add_overlay(*gameOverMenu);
-
-	overlay->show_all();
-
-	keyboardControls.disconnect();
-	mainGameLoop.disconnect();
 }
 
 // Fonction appelée toute les MAIN_LOOP_TIMEOUT ms tant qu'elle retourne true
@@ -115,7 +147,7 @@ bool GameWindow::MainGameLoop(const TerrainPiece *data)
 			GameOver();
 	}
 
-	data->terrainGraph->Render_Terrain(*data->pieceGraph);
+	data->terrainGraph->RenderTerrain(*data->pieceGraph);
 
 	return true;
 }
@@ -146,7 +178,7 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event, const TerrainPiece *data)
 			}
 		}
 
-		data->terrainGraph->Render_Terrain(*data->pieceGraph);
+		data->terrainGraph->RenderTerrain(*data->pieceGraph);
 		return true;
 		break;
 	case GDK_KEY_z:
@@ -168,7 +200,7 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event, const TerrainPiece *data)
 			}
 		}
 
-		data->terrainGraph->Render_Terrain(*data->pieceGraph);
+		data->terrainGraph->RenderTerrain(*data->pieceGraph);
 		return true;
 		break;
 	case GDK_KEY_Left:
@@ -176,7 +208,7 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event, const TerrainPiece *data)
 		if (terrain->CheckCollision(piece))
 			piece->Move(1, 0);
 
-		data->terrainGraph->Render_Terrain(*data->pieceGraph);
+		data->terrainGraph->RenderTerrain(*data->pieceGraph);
 		return true;
 		break;
 	case GDK_KEY_Right:
@@ -184,13 +216,13 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event, const TerrainPiece *data)
 		if (terrain->CheckCollision(piece))
 			piece->Move(-1, 0);
 
-		data->terrainGraph->Render_Terrain(*data->pieceGraph);
+		data->terrainGraph->RenderTerrain(*data->pieceGraph);
 		return true;
 		break;
 	case GDK_KEY_Down:
 		// Actualise le terrain seulement si la piece a été déplacée
 		if (TryMovePieceDown(data))
-			data->terrainGraph->Render_Terrain(*data->pieceGraph);
+			data->terrainGraph->RenderTerrain(*data->pieceGraph);
 
 		return true;
 		break;

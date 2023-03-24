@@ -48,6 +48,9 @@ private:
     // Convertit le code couleur(char) en une couleur GdkRGBA
     Gdk::RGBA CharToColor(const char colorVal) const;
 
+    // Supprime l'ancienne pièce et en génère une nouvelle
+    void SpawnRandomPiece(PieceGraphic **const piece);
+
 public:
     TerrainGraphic() : Terrain(){};
     TerrainGraphic(const Terrain terrain) : Terrain(terrain) {}
@@ -59,10 +62,13 @@ public:
     void FillGrid(const int windowHeight, const int windowWidth);
 
     // Actualisation graphique du terrain
-    void Render_Terrain(const PieceGraphic *const piece);
+    void RenderTerrain(const PieceGraphic *const piece);
+
+    // Réinitialise le terrain avec une nouvelle pièce
+    void ResetTerrain(PieceGraphic **const piece);
 
     // Instancie une piece sur le terrain et en retourne une reference
-    PieceGraphic *SpawnPiece() const;
+    PieceGraphic *CreateRandomPiece() const;
 
     // Ajoute la piece à la matrice du terrain
     void ImprintPiece(PieceGraphic **const piece);

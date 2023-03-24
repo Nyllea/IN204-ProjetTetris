@@ -27,6 +27,7 @@ private:
     // For the game
     Gtk::Grid *terrainGrid;
     sigc::connection keyboardControls, mainGameLoop;
+    const TerrainPiece *terrainPiece;
 
     Gtk::Box *gameOverMenu;
 
@@ -34,10 +35,16 @@ private:
 
     bool MainGameLoop(const TerrainPiece *data);
 
+    void RetryButton();
+
+    Gtk::Box *MakeGameOverMenu();
+
     void GameOver();
 
 public:
     GameWindow(const Glib::ustring &name, const int width, const int height, const guint borderSize, const guint gridSpacing, const TerrainPiece *tp);
+
+    ~GameWindow();
 
     Gtk::Grid *GetGrid() const;
 };

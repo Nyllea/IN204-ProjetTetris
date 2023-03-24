@@ -26,6 +26,15 @@ Gdk::RGBA TerrainGraphic::CharToColor(const char colorVal) const
     }
 }
 
+// Supprime l'ancienne pièce et en génère une nouvelle
+void TerrainGraphic::SpawnRandomPiece(PieceGraphic **const piece)
+{
+    if (*piece != NULL)
+        delete *piece;
+
+    *piece = CreateRandomPiece();
+}
+
 // Setter pour la grille graphique représentant le terrain
 void TerrainGraphic::SetGrid(Gtk::Grid *const grid)
 {
@@ -51,7 +60,7 @@ void TerrainGraphic::FillGrid(const int windowHeight, const int windowWidth)
 }
 
 // Actualisation graphique du terrain
-void TerrainGraphic::Render_Terrain(const PieceGraphic *const piece = NULL)
+void TerrainGraphic::RenderTerrain(const PieceGraphic *const piece = NULL)
 {
     Gtk::Widget *block;
     Gdk::RGBA color;
@@ -72,8 +81,16 @@ void TerrainGraphic::Render_Terrain(const PieceGraphic *const piece = NULL)
     }
 }
 
+// Réinitialise le terrain avec une nouvelle pièce
+void TerrainGraphic::ResetTerrain(PieceGraphic **const piece)
+{
+    ResetMatrix();
+    SpawnRandomPiece(piece);
+    RenderTerrain(*piece);
+}
+
 // Instancie une piece sur le terrain et en retourne une reference
-PieceGraphic *TerrainGraphic::SpawnPiece() const
+PieceGraphic *TerrainGraphic::CreateRandomPiece() const
 {
     PieceGraphic *piece = new PieceGraphic(GetRandomType(), GetRandomColor());
 
@@ -107,9 +124,6 @@ void TerrainGraphic::ImprintPiece(PieceGraphic **const piece)
             RemoveLine(terrainCoord);
     }
 
-    // Générer une nouvelle pièce
-    delete *piece;
-    *piece = SpawnPiece();
-
-    Render_Terrain(*piece);
+    SpawnRandomPiece(piece);
+    RenderTerrain(*piece);
 }

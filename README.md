@@ -1,6 +1,9 @@
 # IN204-ProjetTetris
 
-A faire : Utiliser du CSS pour les menus
+A faire :
+
+    - Utiliser du CSS pour les menus
+    - Ajouter régularité: quand on appuie sur bas, l'actualisation par la MainGameLoop se fait indépendemment ce qui donne un coté peu fluide
 
 Pour compiler, utiliser C++20 et link gtk :
 

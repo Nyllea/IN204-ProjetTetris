@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 {
 	// Creation du terrain et de la premiere piece
 	TerrainGraphic terrainGraph;
-	PieceGraphic *currentPieceGraph = terrainGraph.SpawnPiece();
+	PieceGraphic *currentPieceGraph = terrainGraph.CreateRandomPiece();
 
 	// Creation de la structure referencant le terrain et la piece pour la gestion des evenements clavier et de la boucle de jeu
 	struct TerrainPiece tp;
@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
 	terrainGraph.SetGrid(gWindow.GetGrid());
 	terrainGraph.FillGrid(WINDOW_HEIGHT, WINDOW_WIDTH);
 
-	terrainGraph.Render_Terrain(currentPieceGraph);
+	terrainGraph.RenderTerrain(currentPieceGraph);
 
 	// Makes everything appear on-screen
 	gWindow.show_all();

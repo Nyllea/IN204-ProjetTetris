@@ -4,11 +4,13 @@ A faire :
 
     - Utiliser du CSS pour les menus
     - Ajouter régularité: quand on appuie sur bas, l'actualisation par la MainGameLoop se fait indépendemment ce qui donne un coté peu fluide
+    - Améliorer le choix aléatoire des couleurs pour éviter d'avoir 3 fois la même
 
 Pour compiler, utiliser C++20 et link gtk :
 
     - (deprecated) clang++ -std=c++20 TetrisElements.cpp main.cpp `pkg-config --cflags --libs gtk+-3.0` && ./a.out
     - cmake . && cmake --build . && ./Tetris
+    - Peut résoudre erreurs de type symbol lookup error : cmake . && cmake --build . && sudo ./Tetris
 
 Pour pouvoir debug avec gdb apres :
 

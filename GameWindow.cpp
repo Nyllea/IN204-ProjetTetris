@@ -26,22 +26,22 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 	set_position(Gtk::WIN_POS_CENTER);
 	override_background_color(Gdk::RGBA(BACKGROUND_COLOR), Gtk::StateFlags::STATE_FLAG_NORMAL);
 
-	// Creation de la grille de jeu
+	// Initialization
 	terrainGrid = Gtk::make_managed<Gtk::Grid>(); // Laisse Gtk delete le terrain quand la fenetre se ferme
 	SetupGrid(terrainGrid, gridSpacing);
 
 	// Création de l'overlay
 	overlay = Gtk::make_managed<Gtk::Overlay>();
-	overlay->add(*terrainGrid);
 	add(*overlay); // Ajout de l'overlay à la fenêtre
+
+	// Ajout du menu principal à l'overlay
+	mainMenu = MakeMainMenu();
+	overlay->add_overlay(*mainMenu);
 
 	// Gestion des entrées clavier
 	add_events(Gdk::KEY_PRESS_MASK);
 	keyboardControls = signal_key_press_event().connect(sigc::bind<-1>(sigc::mem_fun(*this, &GameWindow::OnKeyPress), tp), false);
-	// m_entry.signal_key_press_event().connect(sigc::mem_fun(this, &GameWindow::OnKeyPress), tp);
-
-	// Boucle de jeu principale
-	mainGameLoop = Glib::signal_timeout().connect(sigc::bind<-1>(sigc::mem_fun(*this, &GameWindow::MainGameLoop), tp), MAIN_LOOP_TIMEOUT);
+	keyboardControls.block();
 }
 
 GameWindow::~GameWindow()
@@ -50,25 +50,92 @@ GameWindow::~GameWindow()
 	mainGameLoop.disconnect();
 }
 
-void GameWindow::RetryButton()
+void GameWindow::ExitGame()
 {
-	// On enlève le menu Game Over
-	gameOverMenu->hide();
+	this->close();
+}
 
-	// On recrée la connection lancant la boucle principale
-	mainGameLoop = Glib::signal_timeout().connect(sigc::bind<-1>(sigc::mem_fun(*this, &GameWindow::MainGameLoop), terrainPiece), MAIN_LOOP_TIMEOUT);
+void GameWindow::RestartGame()
+{
+	// On cache les widget déjà présent
+	HideAll();
 
-	// On débloque les entrées clavier
-	keyboardControls.unblock();
+	// On affiche le terrain
+	terrainGrid->show();
+
+	ReconnectGameControls();
 
 	// On réinitialise le terrain pour une nouvelle partie
 	terrainPiece->terrainGraph->ResetTerrain(terrainPiece->pieceGraph);
+}
+
+void GameWindow::MainMenuButton()
+{
+	HideAll();
+
+	DisconnectGameControls();
+
+	mainMenu->show();
+}
+
+void GameWindow::StartButton()
+{
+	// On ajoute le terrain à l'overlay s'il n'y est pas déjà
+	if (terrainGrid->get_parent() == 0)
+	{
+		overlay->add(*terrainGrid);
+		overlay->show_all();
+	}
+
+	RestartGame();
+}
+
+Gtk::Box *GameWindow::MakeMainMenu()
+{
+	Gtk::Box *wrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_VERTICAL);
+	Gtk::Label *mainMenuLabel = Gtk::make_managed<Gtk::Label>();
+	Gtk::Label *bestScoreLabel = Gtk::make_managed<Gtk::Label>();
+	Gtk::Button *startBtn = Gtk::make_managed<Gtk::Button>("Start Game");
+	// Gtk::Button *optionBtn = Gtk::make_managed<Gtk::Button>("Options");
+	Gtk::Button *exitBtn = Gtk::make_managed<Gtk::Button>("Exit");
+
+	// Utiliser CSS pour éviter de hardcoder la taille
+	mainMenuLabel->set_text("<span size='34000'>Main Menu</span>");
+	mainMenuLabel->set_use_markup(true);
+	mainMenuLabel->override_color(Gdk::RGBA(MAINMENU_COLOR), Gtk::STATE_FLAG_NORMAL);
+
+	bestScoreLabel->set_text("<span size='34000'>Best Score : </span>");
+	bestScoreLabel->set_use_markup(true);
+	bestScoreLabel->override_color(Gdk::RGBA(MAINMENU_COLOR), Gtk::STATE_FLAG_NORMAL);
+
+	// Style : A faire avec CSS
+	wrapper->set_homogeneous(true);
+	wrapper->set_hexpand(false);
+	wrapper->set_margin_bottom(100);
+
+	// Connecte les boutons aux actions à réaliser
+	startBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::StartButton));
+	// optionBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::OptionButton));
+	exitBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::ExitGame));
+
+	// Ajouter les widget au wrapper
+	wrapper->pack_start(*mainMenuLabel, Gtk::PACK_SHRINK, 0);
+	wrapper->pack_start(*startBtn, Gtk::PACK_SHRINK, 0);
+	// wrapper->pack_start(*optionBtn, Gtk::PACK_SHRINK, 0);
+	wrapper->pack_start(*exitBtn, Gtk::PACK_SHRINK, 0);
+
+	return wrapper;
 }
 
 Gtk::Box *GameWindow::MakeGameOverMenu()
 {
 	Gtk::Box *wrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_VERTICAL);
 	Gtk::Label *gameOverLabel = Gtk::make_managed<Gtk::Label>();
+
+	Gtk::Box *scoreBox = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_HORIZONTAL);
+	Gtk::Label *scoreLabel = Gtk::make_managed<Gtk::Label>();
+	Gtk::Label *bestScoreLabel = Gtk::make_managed<Gtk::Label>();
+
 	Gtk::Button *retryBtn = Gtk::make_managed<Gtk::Button>("Retry");
 	Gtk::Button *mainMenuBtn = Gtk::make_managed<Gtk::Button>("Main menu");
 	Gtk::Button *exitBtn = Gtk::make_managed<Gtk::Button>("Exit");
@@ -77,6 +144,14 @@ Gtk::Box *GameWindow::MakeGameOverMenu()
 	gameOverLabel->set_text("<span size='34000'>Game Over !</span>");
 	gameOverLabel->set_use_markup(true);
 	gameOverLabel->override_color(Gdk::RGBA(GAMEOVER_COLOR), Gtk::STATE_FLAG_NORMAL);
+
+	scoreLabel->set_text("<span size='34000'>Score : </span>");
+	scoreLabel->set_use_markup(true);
+	scoreLabel->override_color(Gdk::RGBA(GAMEOVER_COLOR), Gtk::STATE_FLAG_NORMAL);
+
+	bestScoreLabel->set_text("<span size='34000'>Best Score : </span>");
+	bestScoreLabel->set_use_markup(true);
+	bestScoreLabel->override_color(Gdk::RGBA(GAMEOVER_COLOR), Gtk::STATE_FLAG_NORMAL);
 
 	// gameOverLabel->set_hexpand(true);
 	// gameOverLabel->set_halign(Gtk::Align::ALIGN_CENTER);
@@ -88,10 +163,21 @@ Gtk::Box *GameWindow::MakeGameOverMenu()
 	wrapper->set_hexpand(false);
 	wrapper->set_margin_bottom(100);
 
-	// Connecte les boutons aux actions à réaliser
-	retryBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::RetryButton));
+	scoreBox->set_homogeneous(true);
+	scoreBox->set_hexpand(false);
 
+	// Connecte les boutons aux actions à réaliser
+	retryBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::RestartGame));
+	mainMenuBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::MainMenuButton));
+	exitBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::ExitGame));
+
+	// Ajouter les widget au wrapper
 	wrapper->pack_start(*gameOverLabel, Gtk::PACK_SHRINK, 0);
+
+	scoreBox->pack_start(*scoreLabel, Gtk::PACK_SHRINK, 0);
+	scoreBox->pack_start(*bestScoreLabel, Gtk::PACK_SHRINK, 0);
+	wrapper->pack_start(*scoreBox, Gtk::PACK_SHRINK, 0);
+
 	wrapper->pack_start(*retryBtn, Gtk::PACK_SHRINK, 0);
 	wrapper->pack_start(*mainMenuBtn, Gtk::PACK_SHRINK, 0);
 	wrapper->pack_start(*exitBtn, Gtk::PACK_SHRINK, 0);
@@ -99,20 +185,57 @@ Gtk::Box *GameWindow::MakeGameOverMenu()
 	return wrapper;
 }
 
+void GameWindow::HideAll()
+{
+	if (gameOverMenu != NULL)
+		gameOverMenu->hide();
+
+	if (mainMenu != NULL)
+		mainMenu->hide();
+
+	if (terrainGrid != NULL)
+		terrainGrid->hide();
+}
+
+void GameWindow::DisconnectGameControls()
+{
+	// On bloque les entrées clavier
+	keyboardControls.block();
+
+	// On déconnecte la boucle de jeu
+	// Un block sur une connection de type signal_timeout revient à un disconnect: on perd la connection
+	mainGameLoop.disconnect();
+}
+
+void GameWindow::ReconnectGameControls()
+{
+	// On recrée la connection lancant la boucle principale
+	mainGameLoop = Glib::signal_timeout().connect(sigc::bind<-1>(sigc::mem_fun(*this, &GameWindow::MainGameLoop), terrainPiece), MAIN_LOOP_TIMEOUT);
+
+	// On débloque les entrées clavier
+	keyboardControls.unblock();
+}
+
 void GameWindow::GameOver()
 {
 	if (gameOverMenu == NULL)
 	{
+		// Ajout du menu Game Over à l'overlay
 		gameOverMenu = MakeGameOverMenu();
 		overlay->add_overlay(*gameOverMenu);
+
+		// Quand on ajoute un widget à l'overlay, GTK ajoute un composant intermédiaire enfant de l'overlay et dont le widget est enfant
+		// Ainsi, il est nécessaire d'afficher cet enfant intermédiare dont on n'a aucune information
+		// C'est pour cela que l'on utilise show_all(), puis que l'on cache les widgets inutiles
 		overlay->show_all();
 	}
-	else
-		gameOverMenu->show();
 
-	keyboardControls.block();
-	// Un block sur une connection de type signal_timeout revient à un disconnect: on perd la connection
-	mainGameLoop.disconnect();
+	HideAll();
+
+	DisconnectGameControls();
+
+	// On affiche le menu game over
+	gameOverMenu->show();
 }
 
 bool TryMovePieceDown(const TerrainPiece *data)

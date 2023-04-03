@@ -330,7 +330,7 @@ bool GameWindow::MainGameLoop()
 			GameOver();
 	}
 
-	terrainPiece.terrainGraph->RenderTerrain(*terrainPiece.pieceGraph);
+	terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
 
 	return true;
 }
@@ -361,7 +361,7 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 				}
 			}
 
-			terrainPiece.terrainGraph->RenderTerrain(*terrainPiece.pieceGraph);
+			terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
 			return true;
 			break;
 		case GDK_KEY_z:
@@ -383,7 +383,7 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 				}
 			}
 
-			terrainPiece.terrainGraph->RenderTerrain(*terrainPiece.pieceGraph);
+			terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
 			return true;
 			break;
 		case GDK_KEY_Left:
@@ -391,7 +391,7 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 			if (terrain->CheckCollision(piece))
 				piece->Move(1, 0);
 
-			terrainPiece.terrainGraph->RenderTerrain(*terrainPiece.pieceGraph);
+			terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
 			return true;
 			break;
 		case GDK_KEY_Right:
@@ -399,13 +399,13 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 			if (terrain->CheckCollision(piece))
 				piece->Move(-1, 0);
 
-			terrainPiece.terrainGraph->RenderTerrain(*terrainPiece.pieceGraph);
+			terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
 			return true;
 			break;
 		case GDK_KEY_Down:
 			// Actualise le terrain seulement si la piece a été déplacée
 			if (TryMovePieceDown(terrainPiece))
-				terrainPiece.terrainGraph->RenderTerrain(*terrainPiece.pieceGraph);
+				terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
 
 			return true;
 			break;

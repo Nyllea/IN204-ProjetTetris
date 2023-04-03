@@ -51,6 +51,9 @@ class GridGraphic
 	// Remplissage de la grille graphique avec des blocs vides
 	void FillGrid(const int windowHeight, const int windowWidth, const int lineNbr, const int colNbr);
 
+	// Actualisation graphique de la grille
+	void RenderGrid(const PieceGraphic *const piece, const int lineNbr, const int colNbr, const char *matrix = NULL);
+
   public:
 	// Setter pour la grille graphique
 	void SetGrid(Gtk::Grid *const grid);
@@ -67,13 +70,10 @@ class TerrainGraphic : public Terrain, public GridGraphic
 	TerrainGraphic(const Terrain terrain) : Terrain(terrain){};
 
 	// Remplissage de le grille graphique représentant le terrain avec des blocs vides
-	void FillGrid(const int windowHeight, const int windowWidth)
-	{
-		GridGraphic::FillGrid(windowHeight, windowWidth, TERR_NBR_LINES, TERR_NBR_COL);
-	};
+	void FillGrid(const int windowHeight, const int windowWidth) { GridGraphic::FillGrid(windowHeight, windowWidth, TERR_NBR_LINES, TERR_NBR_COL); };
 
 	// Actualisation graphique du terrain
-	void RenderTerrain(const PieceGraphic *const piece);
+	void RenderGrid(const PieceGraphic *const piece) { GridGraphic::RenderGrid(piece, TERR_NBR_LINES, TERR_NBR_COL, matrix); };
 
 	// Réinitialise le terrain avec une nouvelle pièce
 	void ResetTerrain(PieceGraphic **const piece);
@@ -90,6 +90,9 @@ class PreviewGraphic : public GridGraphic
   public:
 	// Remplissage de la grille graphique représentant la prochaine pièce avec des blocs vides
 	void FillGrid(const int windowHeight, const int windowWidth) { GridGraphic::FillGrid(windowHeight, windowWidth, PIECE_MAT_SIZE, PIECE_MAT_SIZE); };
+
+	// Actualisation graphique de la preview
+	void RenderGrid(const PieceGraphic *const piece) { GridGraphic::RenderGrid(piece, PIECE_MAT_SIZE, PIECE_MAT_SIZE); };
 };
 
 #endif

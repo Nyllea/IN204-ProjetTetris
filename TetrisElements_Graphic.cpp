@@ -26,6 +26,30 @@ Gdk::RGBA GridGraphic::CharToColor(const char colorVal) const
 // Setter pour la grille graphique
 void GridGraphic::SetGrid(Gtk::Grid *const _grid) { grid = _grid; }
 
+// Actualisation graphique de la grille
+void GridGraphic::RenderGrid(const PieceGraphic *const piece, const int lineNbr, const int colNbr, const char *matrix)
+{
+	Gtk::Widget *block;
+	Gdk::RGBA color;
+
+	for (unsigned char i = 0; i < lineNbr; i++)
+	{
+		for (unsigned char j = 0; j < colNbr; j++)
+		{
+			block = grid->get_child_at(j, i);
+
+			if (piece != NULL && ((Piece *)piece)->IsAt(j, i))
+				color = CharToColor(piece->GetColorChar());
+			else if (matrix != NULL)
+				color = CharToColor(matrix[TERR_NBR_COL * i + j]);
+			else
+				color = Gdk::RGBA(emptyColor);
+
+			block->override_background_color(color, Gtk::STATE_FLAG_NORMAL);
+		}
+	}
+}
+
 // Remplissage de la grille graphique avec des blocs vides
 void GridGraphic::FillGrid(const int windowHeight, const int windowWidth, const int lineNbr, const int colNbr)
 {
@@ -52,34 +76,12 @@ void TerrainGraphic::SpawnRandomPiece(PieceGraphic **const piece)
 	*piece = CreateRandomPiece();
 }
 
-// Actualisation graphique du terrain
-void TerrainGraphic::RenderTerrain(const PieceGraphic *const piece = NULL)
-{
-	Gtk::Widget *block;
-	Gdk::RGBA color;
-
-	for (unsigned char i = 0; i < TERR_NBR_LINES; i++)
-	{
-		for (unsigned char j = 0; j < TERR_NBR_COL; j++)
-		{
-			block = grid->get_child_at(j, i);
-
-			if (piece != NULL && ((Piece *)piece)->IsAt(j, i))
-				color = CharToColor(piece->GetColorChar());
-			else
-				color = CharToColor(matrix[TERR_NBR_COL * i + j]);
-
-			block->override_background_color(color, Gtk::STATE_FLAG_NORMAL);
-		}
-	}
-}
-
 // Réinitialise le terrain avec une nouvelle pièce
 void TerrainGraphic::ResetTerrain(PieceGraphic **const piece)
 {
 	ResetMatrix();
 	SpawnRandomPiece(piece);
-	RenderTerrain(*piece);
+	RenderGrid(*piece);
 }
 
 // Instancie une piece sur le terrain et en retourne une reference
@@ -118,5 +120,5 @@ void TerrainGraphic::ImprintPiece(PieceGraphic **const piece)
 	}
 
 	SpawnRandomPiece(piece);
-	RenderTerrain(*piece);
+	RenderGrid(*piece);
 }

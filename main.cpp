@@ -1,5 +1,5 @@
-#include "TetrisElements_Graphic.hpp"
 #include "GameWindow.hpp"
+#include "TetrisElements_Graphic.hpp"
 
 #include <gtkmm-3.0/gtkmm/main.h>
 
@@ -35,33 +35,17 @@ void PrintTerrain(Terrain& terrain) {
 
 int main(int argc, char *argv[])
 {
-	// Creation du terrain et de la premiere piece
-	TerrainGraphic terrainGraph;
-	PieceGraphic *currentPieceGraph = terrainGraph.CreateRandomPiece();
-
-	// Creation de la structure referencant le terrain et la piece pour la gestion des evenements clavier et de la boucle de jeu
-	struct TerrainPiece tp;
-	tp.terrainGraph = &terrainGraph;
-	tp.pieceGraph = &currentPieceGraph;
-
 	// Initialise Gtk
 	Gtk::Main app(argc, argv);
 
 	// Generate an empty window with a GtkGrid (for the game terrain)
-	GameWindow gWindow(WINDOW_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_BORDER, GRID_SPACING, &tp);
-
-	terrainGraph.SetGrid(gWindow.GetGrid());
-	terrainGraph.FillGrid(WINDOW_HEIGHT, WINDOW_WIDTH);
-
-	terrainGraph.RenderTerrain(currentPieceGraph);
+	GameWindow gWindow(WINDOW_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_BORDER, GRID_SPACING);
 
 	// Makes everything appear on-screen
 	gWindow.show_all();
 
 	// Starts event loop running
 	Gtk::Main::run(gWindow);
-
-	delete currentPieceGraph;
 
 	return 0;
 }

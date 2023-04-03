@@ -5,6 +5,7 @@ A faire :
     - Utiliser du CSS pour les menus
     - Ajouter régularité: quand on appuie sur bas, l'actualisation par la MainGameLoop se fait indépendemment ce qui donne un coté peu fluide
     - Améliorer le choix aléatoire des couleurs pour éviter d'avoir 3 fois la même
+    - Resize le terrain de jeu quand on resize la fenêtre
 
 Pour compiler, utiliser C++20 et link gtk :
 

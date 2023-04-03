@@ -16,7 +16,7 @@ void SetupGrid(Gtk::Grid *grid, const guint spacing)
 	grid->set_valign(Gtk::Align::ALIGN_CENTER);
 }
 
-GameWindow::GameWindow(const Glib::ustring &name, const int width, const int height, const guint borderSize, const guint gridSpacing, const TerrainPiece *tp) : terrainPiece(tp)
+GameWindow::GameWindow(const Glib::ustring &name, const int width, const int height, const guint borderSize, const guint gridSpacing) : gameOverMenu(NULL)
 {
 	// Paramétrage de la fenetre
 	set_title(name);
@@ -26,9 +26,29 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 	set_position(Gtk::WIN_POS_CENTER);
 	override_background_color(Gdk::RGBA(BACKGROUND_COLOR), Gtk::StateFlags::STATE_FLAG_NORMAL);
 
-	// Initialization
-	terrainGrid = Gtk::make_managed<Gtk::Grid>(); // Laisse Gtk delete le terrain quand la fenetre se ferme
-	SetupGrid(terrainGrid, gridSpacing);
+	// Génération des classes de jeu
+	terrainPiece.terrainGraph = new TerrainGraphic();
+	terrainPiece.previewGraph = new PreviewGraphic();
+
+	PieceGraphic *currentPieceGraph = terrainPiece.terrainGraph->CreateRandomPiece();
+	terrainPiece.pieceGraph = new (PieceGraphic *)(currentPieceGraph);
+
+	// Initialisation de la grille de jeu
+	Gtk::Grid *m_terrainGrid = Gtk::make_managed<Gtk::Grid>(); // Laisse Gtk delete la grille quand la fenetre se ferme
+	SetupGrid(m_terrainGrid, gridSpacing);
+
+	terrainPiece.terrainGraph->SetGrid(m_terrainGrid);
+	terrainPiece.terrainGraph->FillGrid(width, height);
+
+	// Initialisation de la prévisualisation de la pièce
+	Gtk::Grid *m_previewGrid = Gtk::make_managed<Gtk::Grid>();
+	SetupGrid(m_previewGrid, gridSpacing);
+
+	terrainPiece.previewGraph->SetGrid(m_previewGrid);
+	terrainPiece.previewGraph->FillGrid(width, height);
+
+	// Création du terrain de jeu
+	gameBoard = MakeGameBoard(m_terrainGrid, m_previewGrid);
 
 	// Création de l'overlay
 	overlay = Gtk::make_managed<Gtk::Overlay>();
@@ -40,7 +60,7 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 
 	// Gestion des entrées clavier
 	add_events(Gdk::KEY_PRESS_MASK);
-	keyboardControls = signal_key_press_event().connect(sigc::bind<-1>(sigc::mem_fun(*this, &GameWindow::OnKeyPress), tp), false);
+	keyboardControls = signal_key_press_event().connect(sigc::mem_fun(*this, &GameWindow::OnKeyPress), false);
 	keyboardControls.block();
 }
 
@@ -48,6 +68,11 @@ GameWindow::~GameWindow()
 {
 	keyboardControls.disconnect();
 	mainGameLoop.disconnect();
+
+	delete *terrainPiece.pieceGraph;
+	delete terrainPiece.pieceGraph;
+	delete terrainPiece.previewGraph;
+	delete terrainPiece.terrainGraph;
 }
 
 void GameWindow::ExitGame()
@@ -59,14 +84,13 @@ void GameWindow::RestartGame()
 {
 	// On cache les widget déjà présent
 	HideAll();
-
 	// On affiche le terrain
-	terrainGrid->show();
+	gameBoard->show();
 
 	ReconnectGameControls();
 
 	// On réinitialise le terrain pour une nouvelle partie
-	terrainPiece->terrainGraph->ResetTerrain(terrainPiece->pieceGraph);
+	terrainPiece.terrainGraph->ResetTerrain(terrainPiece.pieceGraph);
 }
 
 void GameWindow::MainMenuButton()
@@ -81,13 +105,49 @@ void GameWindow::MainMenuButton()
 void GameWindow::StartButton()
 {
 	// On ajoute le terrain à l'overlay s'il n'y est pas déjà
-	if (terrainGrid->get_parent() == 0)
+	if (gameBoard->get_parent() == 0)
 	{
-		overlay->add(*terrainGrid);
+		overlay->add(*gameBoard);
 		overlay->show_all();
 	}
 
 	RestartGame();
+}
+
+Gtk::Box *GameWindow::MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGrid)
+{
+	Gtk::Box *wrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_HORIZONTAL);
+
+	Gtk::Box *scoreWrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_VERTICAL);
+	Gtk::Label *scoreLabel = Gtk::make_managed<Gtk::Label>();
+	Gtk::Label *bestScoreLabel = Gtk::make_managed<Gtk::Label>();
+
+	// Utiliser CSS pour éviter de hardcoder la taille
+	scoreLabel->set_text("<span size='34000'>Score : </span>");
+	scoreLabel->set_use_markup(true);
+	scoreLabel->override_color(Gdk::RGBA(MAINMENU_COLOR), Gtk::STATE_FLAG_NORMAL);
+
+	bestScoreLabel->set_text("<span size='34000'>Best Score : </span>");
+	bestScoreLabel->set_use_markup(true);
+	bestScoreLabel->override_color(Gdk::RGBA(MAINMENU_COLOR), Gtk::STATE_FLAG_NORMAL);
+
+	scoreWrapper->set_homogeneous(true);
+	scoreWrapper->set_hexpand(false);
+
+	scoreWrapper->pack_start(*scoreLabel, Gtk::PACK_SHRINK, 0);
+	scoreWrapper->pack_start(*bestScoreLabel, Gtk::PACK_SHRINK, 0);
+
+	// Style : A faire avec CSS
+	wrapper->set_homogeneous(true);
+	wrapper->set_hexpand(false);
+	// wrapper->set_margin_bottom(100);
+
+	// Ajouter les widget au wrapper
+	wrapper->pack_start(*scoreWrapper, Gtk::PACK_SHRINK, 0);
+	wrapper->pack_start(*terrainGrid, Gtk::PACK_SHRINK, 0);
+	wrapper->pack_start(*previewGrid, Gtk::PACK_SHRINK, 0);
+
+	return wrapper;
 }
 
 Gtk::Box *GameWindow::MakeMainMenu()
@@ -193,8 +253,8 @@ void GameWindow::HideAll()
 	if (mainMenu != NULL)
 		mainMenu->hide();
 
-	if (terrainGrid != NULL)
-		terrainGrid->hide();
+	if (gameBoard != NULL)
+		gameBoard->hide();
 }
 
 void GameWindow::DisconnectGameControls()
@@ -210,7 +270,7 @@ void GameWindow::DisconnectGameControls()
 void GameWindow::ReconnectGameControls()
 {
 	// On recrée la connection lancant la boucle principale
-	mainGameLoop = Glib::signal_timeout().connect(sigc::bind<-1>(sigc::mem_fun(*this, &GameWindow::MainGameLoop), terrainPiece), MAIN_LOOP_TIMEOUT);
+	mainGameLoop = Glib::signal_timeout().connect(sigc::mem_fun(*this, &GameWindow::MainGameLoop), MAIN_LOOP_TIMEOUT);
 
 	// On débloque les entrées clavier
 	keyboardControls.unblock();
@@ -238,10 +298,10 @@ void GameWindow::GameOver()
 	gameOverMenu->show();
 }
 
-bool TryMovePieceDown(const TerrainPiece *data)
+bool TryMovePieceDown(const TerrainPiece &data)
 {
-	Piece *piece = (Piece *)(*data->pieceGraph);
-	Terrain *terrain = (Terrain *)(data->terrainGraph);
+	Piece *piece = (Piece *)(*data.pieceGraph);
+	Terrain *terrain = (Terrain *)(data.terrainGraph);
 
 	// Check si la pièce peut descendre
 	piece->Move(0, 1);
@@ -255,106 +315,101 @@ bool TryMovePieceDown(const TerrainPiece *data)
 }
 
 // Fonction appelée toute les MAIN_LOOP_TIMEOUT ms tant qu'elle retourne true
-bool GameWindow::MainGameLoop(const TerrainPiece *data)
+bool GameWindow::MainGameLoop()
 {
 	// Si la piece n'a pas pu etre descendu, alors il y a un obstacle l'empechant -> La piece doit etre placée
-	if (!TryMovePieceDown(data))
+	if (!TryMovePieceDown(terrainPiece))
 	{
-		data->terrainGraph->ImprintPiece(data->pieceGraph);
+		terrainPiece.terrainGraph->ImprintPiece(terrainPiece.pieceGraph);
 
-		Piece *piece = (Piece *)(*data->pieceGraph);
-		Terrain *terrain = (Terrain *)(data->terrainGraph);
+		Piece *piece = (Piece *)(*terrainPiece.pieceGraph);
+		Terrain *terrain = (Terrain *)(terrainPiece.terrainGraph);
 
 		// Si la piece nouvellement spawn touche un bloc -> Game over
 		if (terrain->CheckCollision(piece))
 			GameOver();
 	}
 
-	data->terrainGraph->RenderTerrain(*data->pieceGraph);
+	terrainPiece.terrainGraph->RenderTerrain(*terrainPiece.pieceGraph);
 
 	return true;
 }
 
-bool GameWindow::OnKeyPress(GdkEventKey *const event, const TerrainPiece *data)
+bool GameWindow::OnKeyPress(GdkEventKey *const event)
 {
-	Piece *piece = (Piece *)(*data->pieceGraph);
-	Terrain *terrain = (Terrain *)(data->terrainGraph);
+	Piece *piece = (Piece *)(*terrainPiece.pieceGraph);
+	Terrain *terrain = (Terrain *)(terrainPiece.terrainGraph);
 
 	switch (event->keyval)
 	{
-	case GDK_KEY_a:
-		piece->RotateLeft();
-		// Implémentation du 'Wall kick' si on essaye de tourner alors qu'il y a un obstacle
-		if (terrain->CheckCollision(piece))
-		{
-			piece->Move(1, 0);
+		case GDK_KEY_a:
+			piece->RotateLeft();
+			// Implémentation du 'Wall kick' si on essaye de tourner alors qu'il y a un obstacle
 			if (terrain->CheckCollision(piece))
 			{
-				piece->Move(-2, 0);
+				piece->Move(1, 0);
 				if (terrain->CheckCollision(piece))
 				{
-					piece->Move(1, 0);
-					piece->RotateRight();
+					piece->Move(-2, 0);
+					if (terrain->CheckCollision(piece))
+					{
+						piece->Move(1, 0);
+						piece->RotateRight();
 
-					return true;
+						return true;
+					}
 				}
 			}
-		}
 
-		data->terrainGraph->RenderTerrain(*data->pieceGraph);
-		return true;
-		break;
-	case GDK_KEY_z:
-		piece->RotateRight();
-		// Implémentation du 'Wall kick' si on essaye de tourner alors qu'il y a un obstacle
-		if (terrain->CheckCollision(piece))
-		{
-			piece->Move(1, 0);
+			terrainPiece.terrainGraph->RenderTerrain(*terrainPiece.pieceGraph);
+			return true;
+			break;
+		case GDK_KEY_z:
+			piece->RotateRight();
+			// Implémentation du 'Wall kick' si on essaye de tourner alors qu'il y a un obstacle
 			if (terrain->CheckCollision(piece))
 			{
-				piece->Move(-2, 0);
+				piece->Move(1, 0);
 				if (terrain->CheckCollision(piece))
 				{
-					piece->Move(1, 0);
-					piece->RotateLeft();
+					piece->Move(-2, 0);
+					if (terrain->CheckCollision(piece))
+					{
+						piece->Move(1, 0);
+						piece->RotateLeft();
 
-					return true;
+						return true;
+					}
 				}
 			}
-		}
 
-		data->terrainGraph->RenderTerrain(*data->pieceGraph);
-		return true;
-		break;
-	case GDK_KEY_Left:
-		piece->Move(-1, 0);
-		if (terrain->CheckCollision(piece))
-			piece->Move(1, 0);
-
-		data->terrainGraph->RenderTerrain(*data->pieceGraph);
-		return true;
-		break;
-	case GDK_KEY_Right:
-		piece->Move(1, 0);
-		if (terrain->CheckCollision(piece))
+			terrainPiece.terrainGraph->RenderTerrain(*terrainPiece.pieceGraph);
+			return true;
+			break;
+		case GDK_KEY_Left:
 			piece->Move(-1, 0);
+			if (terrain->CheckCollision(piece))
+				piece->Move(1, 0);
 
-		data->terrainGraph->RenderTerrain(*data->pieceGraph);
-		return true;
-		break;
-	case GDK_KEY_Down:
-		// Actualise le terrain seulement si la piece a été déplacée
-		if (TryMovePieceDown(data))
-			data->terrainGraph->RenderTerrain(*data->pieceGraph);
+			terrainPiece.terrainGraph->RenderTerrain(*terrainPiece.pieceGraph);
+			return true;
+			break;
+		case GDK_KEY_Right:
+			piece->Move(1, 0);
+			if (terrain->CheckCollision(piece))
+				piece->Move(-1, 0);
 
-		return true;
-		break;
+			terrainPiece.terrainGraph->RenderTerrain(*terrainPiece.pieceGraph);
+			return true;
+			break;
+		case GDK_KEY_Down:
+			// Actualise le terrain seulement si la piece a été déplacée
+			if (TryMovePieceDown(terrainPiece))
+				terrainPiece.terrainGraph->RenderTerrain(*terrainPiece.pieceGraph);
+
+			return true;
+			break;
 	}
 	// Si l'évènement n'a pas été gérer, appeler la classe de base
 	return Gtk::Window::on_key_press_event(event);
-}
-
-Gtk::Grid *GameWindow::GetGrid() const
-{
-	return terrainGrid;
 }

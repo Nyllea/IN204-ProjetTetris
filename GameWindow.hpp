@@ -3,11 +3,11 @@
 
 #include "TetrisElements_Graphic.hpp"
 
-#include <gtkmm-3.0/gtkmm/window.h>
-#include <gtkmm-3.0/gtkmm/overlay.h>
+#include <glibmm.h>
 #include <gtkmm-3.0/gtkmm/box.h>
 #include <gtkmm-3.0/gtkmm/button.h>
-#include <glibmm.h>
+#include <gtkmm-3.0/gtkmm/overlay.h>
+#include <gtkmm-3.0/gtkmm/window.h>
 
 #define MAIN_LOOP_TIMEOUT 1000 // Game loop called every 1000ms = 1s
 #define BACKGROUND_COLOR "rgba(100, 100, 100, 1.0)"
@@ -16,46 +16,52 @@
 
 struct TerrainPiece
 {
-    TerrainGraphic *terrainGraph;
-    PieceGraphic **pieceGraph;
+	TerrainGraphic *terrainGraph;
+	PreviewGraphic *previewGraph;
+	PieceGraphic **pieceGraph;
+
+	void SetTerrainPiece(TerrainGraphic *_terrainGraph, PreviewGraphic *_previewGraph, PieceGraphic **_pieceGraph)
+	{
+		terrainGraph = _terrainGraph;
+		previewGraph = _previewGraph;
+		pieceGraph = _pieceGraph;
+	};
 };
 
 class GameWindow : public Gtk::Window
 {
-private:
-    Gtk::Overlay *overlay;
+  private:
+	Gtk::Overlay *overlay;
 
-    // For the game
-    Gtk::Grid *terrainGrid;
-    sigc::connection keyboardControls, mainGameLoop;
-    const TerrainPiece *terrainPiece;
+	// For the game
+	sigc::connection keyboardControls, mainGameLoop;
+	TerrainPiece terrainPiece;
 
-    Gtk::Box *gameOverMenu, *mainMenu;
+	Gtk::Box *gameOverMenu, *mainMenu, *gameBoard;
 
-    bool OnKeyPress(GdkEventKey *const event, const TerrainPiece *data);
+	bool OnKeyPress(GdkEventKey *const event);
 
-    bool MainGameLoop(const TerrainPiece *data);
+	bool MainGameLoop();
 
-    void ExitGame();
-    void RestartGame();
-    void MainMenuButton();
-    void StartButton();
+	void ExitGame();
+	void RestartGame();
+	void MainMenuButton();
+	void StartButton();
 
-    Gtk::Box *MakeMainMenu();
-    Gtk::Box *MakeGameOverMenu();
+	Gtk::Box *MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGrid);
+	Gtk::Box *MakeMainMenu();
+	Gtk::Box *MakeGameOverMenu();
 
-    void HideAll();
-    void DisconnectGameControls();
-    void ReconnectGameControls();
+	void HideAll();
+	void DisconnectGameControls();
+	void ReconnectGameControls();
 
-    void GameOver();
+	void GameOver();
 
-public:
-    GameWindow(const Glib::ustring &name, const int width, const int height, const guint borderSize, const guint gridSpacing, const TerrainPiece *tp);
+  public:
+	GameWindow(const Glib::ustring &name, const int width, const int height, const guint borderSize, const guint gridSpacing);
 
-    ~GameWindow();
-
-    Gtk::Grid *GetGrid() const;
+	~GameWindow();
 };
 
 #endif

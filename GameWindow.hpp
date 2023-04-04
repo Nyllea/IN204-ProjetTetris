@@ -1,8 +1,11 @@
 #ifndef GAME_WINDOW_HPP
 #define GAME_WINDOW_HPP
 
-#include "TetrisElements_Graphic.hpp"
+#include "PiecesManager.hpp"
+#include "TetrisElements_Graphic-Piece.hpp"
+#include "TetrisElements_Graphic-Terrain.hpp"
 
+#include <deque>
 #include <glibmm.h>
 #include <gtkmm-3.0/gtkmm/box.h>
 #include <gtkmm-3.0/gtkmm/button.h>
@@ -36,6 +39,7 @@ class GameWindow : public Gtk::Window
 	// For the game
 	sigc::connection keyboardControls, mainGameLoop;
 	TerrainPiece terrainPiece;
+	PiecesManager piecesManager;
 
 	Gtk::Box *gameOverMenu, *mainMenu, *gameBoard;
 

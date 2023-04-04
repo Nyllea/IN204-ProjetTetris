@@ -30,8 +30,9 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 	terrainPiece.terrainGraph = new TerrainGraphic();
 	terrainPiece.previewGraph = new PreviewGraphic();
 
-	PieceGraphic *currentPieceGraph = terrainPiece.terrainGraph->CreateRandomPiece();
-	terrainPiece.pieceGraph = new (PieceGraphic *)(currentPieceGraph);
+	// Génération des pièces futures et assignation d'une zone mémoire pour la piece actuelle
+	piecesManager.GeneratePieces();
+	terrainPiece.pieceGraph = new (PieceGraphic *)(piecesManager.GetNextPiece());
 
 	// Initialisation de la grille de jeu
 	Gtk::Grid *m_terrainGrid = Gtk::make_managed<Gtk::Grid>(); // Laisse Gtk delete la grille quand la fenetre se ferme
@@ -90,7 +91,8 @@ void GameWindow::RestartGame()
 	ReconnectGameControls();
 
 	// On réinitialise le terrain pour une nouvelle partie
-	terrainPiece.terrainGraph->ResetTerrain(terrainPiece.pieceGraph);
+	terrainPiece.terrainGraph->ResetTerrain(terrainPiece.pieceGraph, piecesManager);
+	terrainPiece.previewGraph->RenderGrid(piecesManager.SeeNextPiece());
 }
 
 void GameWindow::MainMenuButton()
@@ -320,7 +322,8 @@ bool GameWindow::MainGameLoop()
 	// Si la piece n'a pas pu etre descendu, alors il y a un obstacle l'empechant -> La piece doit etre placée
 	if (!TryMovePieceDown(terrainPiece))
 	{
-		terrainPiece.terrainGraph->ImprintPiece(terrainPiece.pieceGraph);
+		terrainPiece.terrainGraph->ImprintPiece(terrainPiece.pieceGraph, piecesManager);
+		terrainPiece.previewGraph->RenderGrid(piecesManager.SeeNextPiece());
 
 		Piece *piece = (Piece *)(*terrainPiece.pieceGraph);
 		Terrain *terrain = (Terrain *)(terrainPiece.terrainGraph);

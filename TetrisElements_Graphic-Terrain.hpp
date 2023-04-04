@@ -1,38 +1,12 @@
-#ifndef TETRISELEMENTS_GRAPHIC_HPP
-#define TETRISELEMENTS_GRAPHIC_HPP
+#ifndef TETRISELEMENTS_GRAPHIC_TERRAIN_HPP
+#define TETRISELEMENTS_GRAPHIC_TERRAIN_HPP
 
-#include "TetrisElements.hpp"
+#include "PiecesManager.hpp"
+#include "TetrisElements-Terrain.hpp"
 
+#include <cassert>
 #include <gtkmm-3.0/gtkmm/grid.h>
 #include <gtkmm-3.0/gtkmm/label.h>
-
-#define SPAWN_POS (TERR_NBR_COL / 2) - (PIECE_MAT_SIZE / 2)
-
-class PieceGraphic : Piece
-{
-  public:
-	enum Color
-	{
-		Grey = 0,
-		Red = 1,
-		Green = 2,
-		Blue = 3
-	};
-
-  private:
-	Color m_color;
-
-  public:
-	PieceGraphic(const PieceGraphic &source) : Piece((Piece)source), m_color(source.m_color) {}
-
-	PieceGraphic(const Piece *const piece, const Color color) : Piece(*piece), m_color(color) {}
-	PieceGraphic(const Type type, const Color color) : Piece(type), m_color(color) {}
-
-	// Permet d'acceder à la couleur (getter pour m_color)
-	char GetColorChar() const;
-};
-
-#include "Random.hpp" // Doit etre mis ici pour que PieceGraphic soit defini quand on importe Random.hpp
 
 class GridGraphic
 {
@@ -63,7 +37,7 @@ class TerrainGraphic : public Terrain, public GridGraphic
 {
   private:
 	// Supprime l'ancienne pièce et en génère une nouvelle
-	void SpawnRandomPiece(PieceGraphic **const piece);
+	void SpawnRandomPiece(PieceGraphic **const piece, PiecesManager &piecesManager);
 
   public:
 	TerrainGraphic() : Terrain(){};
@@ -76,13 +50,10 @@ class TerrainGraphic : public Terrain, public GridGraphic
 	void RenderGrid(const PieceGraphic *const piece) { GridGraphic::RenderGrid(piece, TERR_NBR_LINES, TERR_NBR_COL, matrix); };
 
 	// Réinitialise le terrain avec une nouvelle pièce
-	void ResetTerrain(PieceGraphic **const piece);
-
-	// Instancie une piece sur le terrain et en retourne une reference
-	PieceGraphic *CreateRandomPiece() const;
+	void ResetTerrain(PieceGraphic **const piece, PiecesManager &piecesManager);
 
 	// Ajoute la piece à la matrice du terrain
-	void ImprintPiece(PieceGraphic **const piece);
+	void ImprintPiece(PieceGraphic **const piece, PiecesManager &piecesManager);
 };
 
 class PreviewGraphic : public GridGraphic

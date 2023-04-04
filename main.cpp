@@ -1,5 +1,4 @@
 #include "GameWindow.hpp"
-#include "TetrisElements_Graphic.hpp"
 
 #include <gtkmm-3.0/gtkmm/main.h>
 

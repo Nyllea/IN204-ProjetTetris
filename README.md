@@ -21,6 +21,7 @@ Controles :
 
     - Fleches droite et gauche pour deplacer la piece
     - a/z pour rotation a droite/gauche
+    - e/d pour se déplacer dans le temps
     - Fleche bas pour descendre la piece plus vite
 
 Crédit :

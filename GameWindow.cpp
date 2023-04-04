@@ -29,6 +29,7 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 	// Génération des classes de jeu
 	terrainPiece.terrainGraph = new TerrainGraphic();
 	terrainPiece.previewGraph = new PreviewGraphic();
+	terrainPiece.previousPreviewGraph = new PreviewGraphic();
 
 	// Génération des pièces futures et assignation d'une zone mémoire pour la piece actuelle
 	piecesManager.GeneratePieces();
@@ -48,8 +49,15 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 	terrainPiece.previewGraph->SetGrid(m_previewGrid);
 	terrainPiece.previewGraph->FillGrid(width, height);
 
+	// Initialisation de la prévisualisation de la pièce du passé
+	Gtk::Grid *m_previousPreviewGrid = Gtk::make_managed<Gtk::Grid>();
+	SetupGrid(m_previousPreviewGrid, gridSpacing);
+
+	terrainPiece.previousPreviewGraph->SetGrid(m_previousPreviewGrid);
+	terrainPiece.previousPreviewGraph->FillGrid(width, height);
+
 	// Création du terrain de jeu
-	gameBoard = MakeGameBoard(m_terrainGrid, m_previewGrid);
+	gameBoard = MakeGameBoard(m_terrainGrid, m_previewGrid, m_previousPreviewGrid);
 
 	// Création de l'overlay
 	overlay = Gtk::make_managed<Gtk::Overlay>();
@@ -72,6 +80,7 @@ GameWindow::~GameWindow()
 
 	delete *terrainPiece.pieceGraph;
 	delete terrainPiece.pieceGraph;
+	delete terrainPiece.previousPreviewGraph;
 	delete terrainPiece.previewGraph;
 	delete terrainPiece.terrainGraph;
 }
@@ -116,11 +125,13 @@ void GameWindow::StartButton()
 	RestartGame();
 }
 
-Gtk::Box *GameWindow::MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGrid)
+Gtk::Box *GameWindow::MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGrid, Gtk::Grid *previousPreviewGrid)
 {
 	Gtk::Box *wrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_HORIZONTAL);
 
-	Gtk::Box *scoreWrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_VERTICAL);
+	Gtk::Box *leftWrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_VERTICAL);
+	Gtk::Box *rightWrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_VERTICAL);
+
 	Gtk::Label *scoreLabel = Gtk::make_managed<Gtk::Label>();
 	Gtk::Label *bestScoreLabel = Gtk::make_managed<Gtk::Label>();
 
@@ -133,11 +144,15 @@ Gtk::Box *GameWindow::MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGr
 	bestScoreLabel->set_use_markup(true);
 	bestScoreLabel->override_color(Gdk::RGBA(MAINMENU_COLOR), Gtk::STATE_FLAG_NORMAL);
 
-	scoreWrapper->set_homogeneous(true);
-	scoreWrapper->set_hexpand(false);
+	leftWrapper->set_homogeneous(true);
+	leftWrapper->set_hexpand(false);
+	leftWrapper->pack_start(*scoreLabel, Gtk::PACK_SHRINK, 0);
+	leftWrapper->pack_start(*previousPreviewGrid, Gtk::PACK_SHRINK, 0);
 
-	scoreWrapper->pack_start(*scoreLabel, Gtk::PACK_SHRINK, 0);
-	scoreWrapper->pack_start(*bestScoreLabel, Gtk::PACK_SHRINK, 0);
+	rightWrapper->set_homogeneous(true);
+	rightWrapper->set_hexpand(false);
+	rightWrapper->pack_start(*bestScoreLabel, Gtk::PACK_SHRINK, 0);
+	rightWrapper->pack_start(*previewGrid, Gtk::PACK_SHRINK, 0);
 
 	// Style : A faire avec CSS
 	wrapper->set_homogeneous(true);
@@ -145,9 +160,9 @@ Gtk::Box *GameWindow::MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGr
 	// wrapper->set_margin_bottom(100);
 
 	// Ajouter les widget au wrapper
-	wrapper->pack_start(*scoreWrapper, Gtk::PACK_SHRINK, 0);
+	wrapper->pack_start(*leftWrapper, Gtk::PACK_SHRINK, 0);
 	wrapper->pack_start(*terrainGrid, Gtk::PACK_SHRINK, 0);
-	wrapper->pack_start(*previewGrid, Gtk::PACK_SHRINK, 0);
+	wrapper->pack_start(*rightWrapper, Gtk::PACK_SHRINK, 0);
 
 	return wrapper;
 }
@@ -409,6 +424,34 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 			// Actualise le terrain seulement si la piece a été déplacée
 			if (TryMovePieceDown(terrainPiece))
 				terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
+
+			return true;
+			break;
+		case GDK_KEY_e:
+			piecesManager.MoveInTime(terrainPiece.pieceGraph);
+
+			// Si la piece nouvellement spawn touche un bloc -> Game over
+			if (terrain->CheckCollision((Piece *)(*terrainPiece.pieceGraph)))
+				GameOver();
+
+			// On affiche la pièce et actualise les preview
+			terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
+			terrainPiece.previewGraph->RenderGrid(piecesManager.SeeNextPiece());
+			terrainPiece.previousPreviewGraph->RenderGrid(piecesManager.SeePreviousPiece());
+
+			return true;
+			break;
+		case GDK_KEY_d:
+			piecesManager.BackInTime(terrainPiece.pieceGraph);
+
+			// Si la piece nouvellement spawn touche un bloc -> Game over
+			if (terrain->CheckCollision((Piece *)(*terrainPiece.pieceGraph)))
+				GameOver();
+
+			// On affiche la pièce et actualise les preview
+			terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
+			terrainPiece.previewGraph->RenderGrid(piecesManager.SeeNextPiece());
+			terrainPiece.previousPreviewGraph->RenderGrid(piecesManager.SeePreviousPiece());
 
 			return true;
 			break;

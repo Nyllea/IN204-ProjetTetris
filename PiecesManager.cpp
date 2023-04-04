@@ -4,8 +4,12 @@ PiecesManager::~PiecesManager()
 {
 	for (; !piecesQueue.empty(); piecesQueue.pop_front())
 		delete piecesQueue.front();
+
+	for (; !previousPiecesQueue.empty(); previousPiecesQueue.pop_front())
+		delete previousPiecesQueue.front();
 }
 
+// Génère une PieceGraphic avec les bons paramètres pour être spawn, puis en retourne une référence
 PieceGraphic *PiecesManager::GenerateOnePiece()
 {
 	PieceGraphic *piece = new PieceGraphic(GetRandomType(), GetRandomColor());
@@ -37,7 +41,38 @@ PieceGraphic *PiecesManager::GetNextPiece()
 	return piece;
 }
 
+// Retourne la première pièce de la queue sans la retirer, pour affichage
 const PieceGraphic *PiecesManager::SeeNextPiece() const
 {
-	return piecesQueue.front();
+	return !piecesQueue.empty() ? piecesQueue.front() : NULL;
+}
+
+// Retourne la dernière pièce de la previousQueue sans la retirer, pour affichage
+const PieceGraphic *PiecesManager::SeePreviousPiece() const
+{
+	return !previousPiecesQueue.empty() ? previousPiecesQueue.back() : NULL;
+}
+
+// Change la pièce actuelle par la pièce suivante et retient la pèce actuelle
+void PiecesManager::MoveInTime(PieceGraphic **currentPiece)
+{
+	// On ne se déplace dans le temps que si il reste au moins un élément dans la file piecesQueue
+	if (previousPiecesQueue.size() < MAX_PREDICTION - 1)
+	{
+		previousPiecesQueue.push_back(*currentPiece);
+		*currentPiece = piecesQueue.front();
+		piecesQueue.pop_front();
+	}
+}
+
+// Change la pièce actuelle par la pièce précédente et retient la pèce actuelle
+void PiecesManager::BackInTime(PieceGraphic **currentPiece)
+{
+	// On ne se déplace dans le temps que si il reste au moins un élément dans la file previousPiecesQueue
+	if (!previousPiecesQueue.empty())
+	{
+		piecesQueue.push_front(*currentPiece);
+		*currentPiece = previousPiecesQueue.back();
+		previousPiecesQueue.pop_back();
+	}
 }

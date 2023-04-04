@@ -21,12 +21,14 @@ struct TerrainPiece
 {
 	TerrainGraphic *terrainGraph;
 	PreviewGraphic *previewGraph;
+	PreviewGraphic *previousPreviewGraph;
 	PieceGraphic **pieceGraph;
 
-	void SetTerrainPiece(TerrainGraphic *_terrainGraph, PreviewGraphic *_previewGraph, PieceGraphic **_pieceGraph)
+	void SetTerrainPiece(TerrainGraphic *_terrainGraph, PreviewGraphic *_previewGraph, PreviewGraphic *_previousPreviewGraph, PieceGraphic **_pieceGraph)
 	{
 		terrainGraph = _terrainGraph;
 		previewGraph = _previewGraph;
+		previousPreviewGraph = _previousPreviewGraph;
 		pieceGraph = _pieceGraph;
 	};
 };
@@ -52,7 +54,7 @@ class GameWindow : public Gtk::Window
 	void MainMenuButton();
 	void StartButton();
 
-	Gtk::Box *MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGrid);
+	Gtk::Box *MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGrid, Gtk::Grid *previousPreviewGrid);
 	Gtk::Box *MakeMainMenu();
 	Gtk::Box *MakeGameOverMenu();
 

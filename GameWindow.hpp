@@ -44,6 +44,7 @@ class GameWindow : public Gtk::Window
 	PiecesManager piecesManager;
 
 	Gtk::Box *gameOverMenu, *mainMenu, *gameBoard;
+	Gtk::Label *scoreValue;
 
 	bool OnKeyPress(GdkEventKey *const event);
 
@@ -54,7 +55,7 @@ class GameWindow : public Gtk::Window
 	void MainMenuButton();
 	void StartButton();
 
-	Gtk::Box *MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGrid, Gtk::Grid *previousPreviewGrid);
+	Gtk::Box *MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGrid, Gtk::Grid *previousPreviewGrid, Gtk::Label *scoreValue);
 	Gtk::Box *MakeMainMenu();
 	Gtk::Box *MakeGameOverMenu();
 

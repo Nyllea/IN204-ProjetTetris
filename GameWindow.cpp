@@ -56,8 +56,17 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 	terrainPiece.previousPreviewGraph->SetGrid(m_previousPreviewGrid);
 	terrainPiece.previousPreviewGraph->FillGrid(width, height);
 
+	//Initialisation de la visualisation du score
+	scoreValue = Gtk::make_managed<Gtk::Label>();
+	int score=terrainPiece.terrainGraph->get_cleared_lines();
+	std::string temp_str=std::to_string(score); 
+	scoreValue->set_text("<span size='34000'>Score : </span>");
+	scoreValue->set_use_markup(true);
+	scoreValue->override_color(Gdk::RGBA(MAINMENU_COLOR), Gtk::STATE_FLAG_NORMAL);
+	
+
 	// Création du terrain de jeu
-	gameBoard = MakeGameBoard(m_terrainGrid, m_previewGrid, m_previousPreviewGrid);
+	gameBoard = MakeGameBoard(m_terrainGrid, m_previewGrid, m_previousPreviewGrid,scoreValue);
 
 	// Création de l'overlay
 	overlay = Gtk::make_managed<Gtk::Overlay>();
@@ -125,7 +134,7 @@ void GameWindow::StartButton()
 	RestartGame();
 }
 
-Gtk::Box *GameWindow::MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGrid, Gtk::Grid *previousPreviewGrid)
+Gtk::Box *GameWindow::MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGrid, Gtk::Grid *previousPreviewGrid, Gtk::Label *scoreValue )
 {
 	Gtk::Box *wrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_HORIZONTAL);
 
@@ -147,6 +156,7 @@ Gtk::Box *GameWindow::MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGr
 	leftWrapper->set_homogeneous(true);
 	leftWrapper->set_hexpand(false);
 	leftWrapper->pack_start(*scoreLabel, Gtk::PACK_SHRINK, 0);
+	leftWrapper->pack_start(*scoreValue);
 	leftWrapper->pack_start(*previousPreviewGrid, Gtk::PACK_SHRINK, 0);
 
 	rightWrapper->set_homogeneous(true);
@@ -157,7 +167,7 @@ Gtk::Box *GameWindow::MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGr
 	// Style : A faire avec CSS
 	wrapper->set_homogeneous(true);
 	wrapper->set_hexpand(false);
-	// wrapper->set_margin_bottom(100);
+	// wrapper->set_margin_bottom(100); 
 
 	// Ajouter les widget au wrapper
 	wrapper->pack_start(*leftWrapper, Gtk::PACK_SHRINK, 0);
@@ -332,6 +342,8 @@ bool TryMovePieceDown(const TerrainPiece &data)
 }
 
 // Fonction appelée toute les MAIN_LOOP_TIMEOUT ms tant qu'elle retourne true
+
+
 bool GameWindow::MainGameLoop()
 {
 	// Si la piece n'a pas pu etre descendu, alors il y a un obstacle l'empechant -> La piece doit etre placée
@@ -347,8 +359,11 @@ bool GameWindow::MainGameLoop()
 		if (terrain->CheckCollision(piece))
 			GameOver();
 	}
-
+	
 	terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
+	int score=terrainPiece.terrainGraph->get_cleared_lines();
+	std::string scorestr=std::to_string(score); //converting number to a string
+	scoreValue->set_text("score: "+scorestr);
 
 	return true;
 }
@@ -382,6 +397,20 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 			terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
 			return true;
 			break;
+		
+		case GDK_KEY_x:
+			// Implémentation du "hard drop" la pièce tombe instantanément
+
+			while (!terrain->CheckCollision(piece))
+			{
+				piece->Move(0, 1);
+				
+			}
+			piece->Move(0, -1);
+			terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
+			return true;
+			break;
+
 		case GDK_KEY_z:
 			piece->RotateRight();
 			// Implémentation du 'Wall kick' si on essaye de tourner alors qu'il y a un obstacle
@@ -438,6 +467,7 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 			terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
 			terrainPiece.previewGraph->RenderGrid(piecesManager.SeeNextPiece());
 			terrainPiece.previousPreviewGraph->RenderGrid(piecesManager.SeePreviousPiece());
+
 
 			return true;
 			break;

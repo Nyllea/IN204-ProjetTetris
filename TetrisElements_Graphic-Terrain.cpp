@@ -29,6 +29,8 @@ void GridGraphic::RenderGrid(const PieceGraphic *const piece, const int lineNbr,
 	Gtk::Widget *block;
 	Gdk::RGBA color = Gdk::RGBA(emptyColor);
 
+	
+
 	for (unsigned char i = 0; i < lineNbr; i++)
 	{
 		for (unsigned char j = 0; j < colNbr; j++)
@@ -82,6 +84,7 @@ void TerrainGraphic::SpawnRandomPiece(PieceGraphic **const piece, PiecesManager 
 void TerrainGraphic::ResetTerrain(PieceGraphic **const piece, PiecesManager &piecesManager)
 {
 	ResetMatrix();
+	ResetScore();
 	piecesManager.GeneratePieces();
 	*piece = piecesManager.GetNextPiece();
 	RenderGrid(*piece);
@@ -89,7 +92,8 @@ void TerrainGraphic::ResetTerrain(PieceGraphic **const piece, PiecesManager &pie
 
 // Ajoute la piece à la matrice du terrain, enlève les lignes complètes et génère une nouvelle piece
 void TerrainGraphic::ImprintPiece(PieceGraphic **const piece, PiecesManager &piecesManager)
-{
+{	
+	int cplt_lines=0;
 	for (int i = 0; i < PIECE_MAT_SIZE; i++)
 	{
 		short int terrainCoord = (*(Piece **)piece)->ToTerrainCoord(0, i);
@@ -108,9 +112,14 @@ void TerrainGraphic::ImprintPiece(PieceGraphic **const piece, PiecesManager &pie
 
 		// Si la ligne est complète
 		if (CheckLine(terrainCoord))
+		{
 			RemoveLine(terrainCoord);
+			cplt_lines+=1;
+		}
 	}
-
+	updatescore(cplt_lines);
 	SpawnRandomPiece(piece, piecesManager);
 	RenderGrid(*piece);
+
+
 }

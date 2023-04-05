@@ -117,7 +117,7 @@ void TerrainGraphic::ImprintPiece(PieceGraphic **const piece, PiecesManager &pie
 			cplt_lines+=1;
 		}
 	}
-	updatescore(cplt_lines);
+	UpdateScore(cplt_lines);
 	SpawnRandomPiece(piece, piecesManager);
 	RenderGrid(*piece);
 

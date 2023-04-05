@@ -44,7 +44,7 @@ class GameWindow : public Gtk::Window
 	PiecesManager piecesManager;
 
 	Gtk::Box *gameOverMenu, *mainMenu, *gameBoard;
-	Gtk::Label *scoreLabel, *bestScoreLabel,*levelLabel;
+	Gtk::Label *scoreLabelOverMenu, *bestScoreLabelOverMenu, *levelLabel, *scoreLabel, *bestScoreLabel, *bestScoreLabelMainMenu;
 	int bestScore=0;
 
 	bool OnKeyPress(GdkEventKey *const event);
@@ -58,14 +58,14 @@ class GameWindow : public Gtk::Window
 
 	Gtk::Box *MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGrid, Gtk::Grid *previousPreviewGrid);
 	Gtk::Box *MakeMainMenu();
-	Gtk::Box *MakeGameOverMenu(int score);
+	Gtk::Box *MakeGameOverMenu();
 
 	void HideAll();
 	void DisconnectGameControls();
 	void ReconnectGameControls();
-	void renderscore(int spec, int value);
-	void GameOver(int score);
-	
+	void RenderScore(int specs);
+	void GameOver();
+	void UpdateSpeed(int cplt_lines);
 
   public:
 	GameWindow(const Glib::ustring &name, const int width, const int height, const guint borderSize, const guint gridSpacing);

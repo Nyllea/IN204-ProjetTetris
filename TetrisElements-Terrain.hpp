@@ -6,8 +6,8 @@
 
 #include "TetrisElements-Piece.hpp"
 
-#define TERR_NBR_LINES 22
-#define TERR_NBR_COL 10
+#define TERR_NBR_LINES 15
+#define TERR_NBR_COL 7
 
 class Piece;
 
@@ -28,7 +28,7 @@ class Terrain
 
 
 	int score=0;
-	int cleared_lines=0;
+	int clearedLines=0;
 
   public:
 	Terrain();
@@ -43,11 +43,10 @@ class Terrain
 	bool CheckCollision(const Piece *const piece) const;
 
 	//permet de récupérer la valeur du score ou le mettre a jour
-	int get_cleared_lines();
-	int get_score();
-	void updatescore(int numberline);
+	int GetClearedLines();
+	int GetScore();
+	void UpdateScore(int numberline);
 	
-	int get_info(int type);
 	
 };
 

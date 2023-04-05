@@ -84,10 +84,10 @@ void Terrain::ResetMatrix()
 }
 
 
-void Terrain::updatescore(int cplt_lines)
+void Terrain::UpdateScore(int cplt_lines)
 {   
 	
-	int level=1+cleared_lines/10;
+	int level=1+clearedLines/10;
 	
     switch (cplt_lines)
     {
@@ -107,17 +107,17 @@ void Terrain::updatescore(int cplt_lines)
 	
 	// std::string temp_str=std::to_string(score); //converting number to a string
 	// std::cout << temp_str << "\n";
-	cleared_lines+=cplt_lines;
+	clearedLines+=cplt_lines;
     
 }
 
 
-int Terrain::get_cleared_lines()
+int Terrain::GetClearedLines()
 {
-	return cleared_lines;
+	return clearedLines;
 }
 
-int Terrain::get_score()
+int Terrain::GetScore()
 {
 	return score;
 }
@@ -127,6 +127,6 @@ int Terrain::get_score()
 void Terrain::ResetScore()
 {
 	score=0;
-	cleared_lines=0;
+	clearedLines=0;
 }
 

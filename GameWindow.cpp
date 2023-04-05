@@ -1,5 +1,5 @@
 #include "GameWindow.hpp"
-#include <gtkmm/cssprovider.h>
+#include <gtkmm-3.0/gtkmm/cssprovider.h>
 
 void SetupGrid(Gtk::Grid *grid, const guint spacing)
 {
@@ -31,10 +31,10 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 	set_position(Gtk::WIN_POS_CENTER);
 	override_background_color(Gdk::RGBA(BACKGROUND_COLOR), Gtk::StateFlags::STATE_FLAG_NORMAL);
 
-	data = ".startBtn {background-image: url('GObackground.png'); color: red; border:solid 2px #ffffff; border-radius: 7px; border: 7px; padding: 15px 32px; }";
-	// provider->create();
-	
-	provider->load_from_data(data);
+	// Initialisation du provider
+	// datas= ".startBtn {background-image: url('GObackground.png'); color: red; border:solid 2px #ffffff; border-radius: 7px; border: 7px; padding: 15px 32px; }";
+	provider=Gtk::CssProvider::create();
+	provider->load_from_path("Data.css");
 
 	// Génération des classes de jeu
 	terrainPiece.terrainGraph = new TerrainGraphic();
@@ -218,12 +218,10 @@ Gtk::Box *GameWindow::MakeMainMenu()
 	bestScoreLabel2->override_color(Gdk::RGBA(MAINMENU_COLOR), Gtk::STATE_FLAG_NORMAL);
 
 	//CSS style
-	// Glib::ustring data = ".startBtn {background-image: url('GObackground.png'); color: red; border:solid 2px #ffffff; border-radius: 7px; border: 7px; padding: 15px 32px; }";
-	// auto provider = Gtk::CssProvider::create();
-	// provider->load_from_data(data);
-	auto ctx = wrapper->get_style_context();
-	ctx->add_class("startBtn");
-	ctx->add_provider(provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
+
+	auto wrapperStyleContext = wrapper->get_style_context();
+	styleContext->add_class("mainMenuBackgroud");
+	styleContext->add_provider(provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
 
 	// Style : A faire avec CSS
 	wrapper->set_homogeneous(true);

@@ -52,7 +52,7 @@ class GameWindow : public Gtk::Window
 	Glib::ustring data;
 	// Gtk::StyleProvider provider;
 	// Glib::RefPtr< GtkCssProvider > provider=;
-	Glib::RefPtr< GtkCssProvider > provider = Gtk::CssProvider::create();
+	Glib::RefPtr< Gtk::CssProvider > provider;
 	int bestScore=0;
 	int timeStep=0;
 

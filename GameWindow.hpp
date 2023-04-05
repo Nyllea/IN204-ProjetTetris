@@ -48,6 +48,7 @@ class GameWindow : public Gtk::Window
 	Gtk::Label *scoreLabelOverMenu, *bestScoreLabelOverMenu, *levelLabel, *scoreLabel, *bestScoreLabel, *bestScoreLabelMainMenu;
 
 	Glib::ustring data;
+
 	Glib::RefPtr<Gtk::CssProvider> provider;
 
 	int bestScore;

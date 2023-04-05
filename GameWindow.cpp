@@ -1,5 +1,4 @@
 #include "GameWindow.hpp"
-#include <gtkmm-3.0/gtkmm/cssprovider.h>
 
 void SetupGrid(Gtk::Grid *grid, const guint spacing)
 {
@@ -212,8 +211,8 @@ Gtk::Box *GameWindow::MakeMainMenu()
 
 	//CSS style
 	auto wrapperStyleContext = wrapper->get_style_context();
-	styleContext->add_class("mainMenuBackgroud");
-	styleContext->add_provider(provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
+	wrapperStyleContext->add_class("mainMenuBackgroud");
+	wrapperStyleContext->add_provider(provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
 
 	// Style : A faire avec CSS
 	wrapper->set_homogeneous(true);
@@ -324,10 +323,10 @@ void GameWindow::DisconnectGameControls()
 
 void GameWindow::UpdateSpeed(int cplt_lines)
 {
-	int TIME = 1000 / (terrainPiece.terrainGraph->GetClearedLines() + 1);
-
+	
 	if (cplt_lines % 10 == 0)
 	{
+		int TIME = std::max(MAIN_LOOP_TIMEOUT/20,MAIN_LOOP_TIMEOUT-50*(cplt_lines/10));
 		mainGameLoop.disconnect();
 		mainGameLoop = Glib::signal_timeout().connect(sigc::mem_fun(*this, &GameWindow::MainGameLoop), TIME);
 	}

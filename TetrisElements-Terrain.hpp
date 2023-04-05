@@ -6,8 +6,8 @@
 
 #include "TetrisElements-Piece.hpp"
 
-#define TERR_NBR_LINES 15
-#define TERR_NBR_COL 7
+#define TERR_NBR_LINES 22
+#define TERR_NBR_COL 10
 
 class Piece;
 

@@ -9,10 +9,9 @@
 #include <glibmm.h>
 #include <gtkmm-3.0/gtkmm/box.h>
 #include <gtkmm-3.0/gtkmm/button.h>
+#include <gtkmm-3.0/gtkmm/cssprovider.h>
 #include <gtkmm-3.0/gtkmm/overlay.h>
 #include <gtkmm-3.0/gtkmm/window.h>
-#include <gtkmm-3.0/gtkmm/cssprovider.h>
-
 
 #define MAIN_LOOP_TIMEOUT 40 // Game loop called every 1000ms = 1s
 #define BACKGROUND_COLOR "rgba(100, 100, 100, 1.0)"
@@ -40,8 +39,6 @@ class GameWindow : public Gtk::Window
   private:
 	Gtk::Overlay *overlay;
 
-
-
 	// For the game
 	sigc::connection keyboardControls, mainGameLoop;
 	TerrainPiece terrainPiece;
@@ -49,12 +46,11 @@ class GameWindow : public Gtk::Window
 
 	Gtk::Box *gameOverMenu, *mainMenu, *gameBoard;
 	Gtk::Label *scoreLabelOverMenu, *bestScoreLabelOverMenu, *levelLabel, *scoreLabel, *bestScoreLabel, *bestScoreLabelMainMenu;
+
 	Glib::ustring data;
-	// Gtk::StyleProvider provider;
-	// Glib::RefPtr< GtkCssProvider > provider=;
-	Glib::RefPtr< GtkCssProvider > provider = Gtk::CssProvider::create();
-	int bestScore=0;
-	int timeStep=0;
+	Glib::RefPtr<Gtk::CssProvider> provider;
+
+	int bestScore;
 
 	bool OnKeyPress(GdkEventKey *const event);
 

@@ -31,7 +31,10 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 	set_position(Gtk::WIN_POS_CENTER);
 	override_background_color(Gdk::RGBA(BACKGROUND_COLOR), Gtk::StateFlags::STATE_FLAG_NORMAL);
 
-
+	data = ".startBtn {background-image: url('GObackground.png'); color: red; border:solid 2px #ffffff; border-radius: 7px; border: 7px; padding: 15px 32px; }";
+	// provider->create();
+	
+	provider->load_from_data(data);
 
 	// Génération des classes de jeu
 	terrainPiece.terrainGraph = new TerrainGraphic();
@@ -215,10 +218,9 @@ Gtk::Box *GameWindow::MakeMainMenu()
 	bestScoreLabel2->override_color(Gdk::RGBA(MAINMENU_COLOR), Gtk::STATE_FLAG_NORMAL);
 
 	//CSS style
-	Glib::ustring data = ".startBtn {background-image: url('GObackground.png'); color: red; border:solid 2px #ffffff; border-radius: 7px; border: 7px; padding: 15px 32px; }";
-	
-	auto provider = Gtk::CssProvider::create();
-	provider->load_from_data(data);
+	// Glib::ustring data = ".startBtn {background-image: url('GObackground.png'); color: red; border:solid 2px #ffffff; border-radius: 7px; border: 7px; padding: 15px 32px; }";
+	// auto provider = Gtk::CssProvider::create();
+	// provider->load_from_data(data);
 	auto ctx = wrapper->get_style_context();
 	ctx->add_class("startBtn");
 	ctx->add_provider(provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
@@ -290,12 +292,9 @@ Gtk::Box *GameWindow::MakeGameOverMenu()
 	mainMenuBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::MainMenuButton));
 	exitBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::ExitGame));
 
-	Glib::ustring blu = ".gamover {background-image: url('GObackground.png'); color: red; border:solid 2px #ffffff; border-radius: 7px; border: 7px; padding: 15px 32px; }";
-	auto ok = Gtk::CssProvider::create();
-	ok->load_from_data(blu);
 	auto blublu = wrapper->get_style_context();
-	blublu->add_class("gameover");
-	blublu->add_provider(ok, GTK_STYLE_PROVIDER_PRIORITY_USER);
+	blublu->add_class("startBtn");
+	blublu->add_provider(provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
 
 	// Ajouter les widget au wrapper
 	wrapper->pack_start(*gameOverLabel, Gtk::PACK_SHRINK, 0);

@@ -1,4 +1,5 @@
 #include "GameWindow.hpp"
+#include <gtkmm/cssprovider.h>
 
 void SetupGrid(Gtk::Grid *grid, const guint spacing)
 {
@@ -70,6 +71,9 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 	bestScoreLabelOverMenu = Gtk::make_managed<Gtk::Label>();
 	bestScoreLabelMainMenu =  Gtk::make_managed<Gtk::Label>();
 	
+
+	
+
 	//initialisation de l'affichage des scores
 	RenderScore(0);
 	RenderScore(1);
@@ -210,6 +214,14 @@ Gtk::Box *GameWindow::MakeMainMenu()
 	bestScoreLabel2->set_use_markup(true);
 	bestScoreLabel2->override_color(Gdk::RGBA(MAINMENU_COLOR), Gtk::STATE_FLAG_NORMAL);
 
+	//CSS style
+	Glib::ustring data = ".startBtn {background-image: url('GObackground.png'); color: red; border:solid 2px #ffffff; border-radius: 7px; border: 7px; padding: 15px 32px; }";
+	
+	auto provider = Gtk::CssProvider::create();
+	provider->load_from_data(data);
+	auto ctx = wrapper->get_style_context();
+	ctx->add_class("startBtn");
+	ctx->add_provider(provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
 
 	// Style : A faire avec CSS
 	wrapper->set_homogeneous(true);
@@ -277,6 +289,13 @@ Gtk::Box *GameWindow::MakeGameOverMenu()
 	retryBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::RestartGame));
 	mainMenuBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::MainMenuButton));
 	exitBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::ExitGame));
+
+	Glib::ustring blu = ".gamover {background-image: url('GObackground.png'); color: red; border:solid 2px #ffffff; border-radius: 7px; border: 7px; padding: 15px 32px; }";
+	auto ok = Gtk::CssProvider::create();
+	ok->load_from_data(blu);
+	auto blublu = wrapper->get_style_context();
+	blublu->add_class("gameover");
+	blublu->add_provider(ok, GTK_STYLE_PROVIDER_PRIORITY_USER);
 
 	// Ajouter les widget au wrapper
 	wrapper->pack_start(*gameOverLabel, Gtk::PACK_SHRINK, 0);

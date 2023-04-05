@@ -26,6 +26,7 @@ class Terrain
 	// Retire la ligne contenant le bloc en terrainCoord
 	void RemoveLine(const int teerainCoord);
 
+
 	int score=0;
 	int cleared_lines=0;
 
@@ -45,6 +46,9 @@ class Terrain
 	int get_cleared_lines();
 	int get_score();
 	void updatescore(int numberline);
+	
+	int get_info(int type);
+	
 };
 
 #endif

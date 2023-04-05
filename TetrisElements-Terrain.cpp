@@ -105,8 +105,8 @@ void Terrain::updatescore(int cplt_lines)
         break;
     }
 	
-	std::string temp_str=std::to_string(score); //converting number to a string
-	std::cout << temp_str << "\n";
+	// std::string temp_str=std::to_string(score); //converting number to a string
+	// std::cout << temp_str << "\n";
 	cleared_lines+=cplt_lines;
     
 }
@@ -122,8 +122,11 @@ int Terrain::get_score()
 	return score;
 }
 
+
+
 void Terrain::ResetScore()
 {
 	score=0;
 	cleared_lines=0;
 }
+

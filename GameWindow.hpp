@@ -1,9 +1,9 @@
 #ifndef GAME_WINDOW_HPP
 #define GAME_WINDOW_HPP
 
-#include "PiecesManager.hpp"
 #include "TetrisElements_Graphic-Piece.hpp"
 #include "TetrisElements_Graphic-Terrain.hpp"
+#include "TimeManager.hpp"
 
 #include <deque>
 #include <glibmm.h>
@@ -16,6 +16,7 @@
 #define BACKGROUND_COLOR "rgba(100, 100, 100, 1.0)"
 #define GAMEOVER_COLOR "rgba(255, 0, 0, 1.0)"
 #define MAINMENU_COLOR "rgba(255, 0, 0, 1.0)"
+#define GAMEOVER_BKG_COLOR "rgba(127, 127, 127, 0.75)"
 
 struct TerrainPiece
 {
@@ -41,7 +42,7 @@ class GameWindow : public Gtk::Window
 	// For the game
 	sigc::connection keyboardControls, mainGameLoop;
 	TerrainPiece terrainPiece;
-	PiecesManager piecesManager;
+	TimeManager timeManager;
 
 	Gtk::Box *gameOverMenu, *mainMenu, *gameBoard;
 

@@ -32,8 +32,8 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 	terrainPiece.previousPreviewGraph = new PreviewGraphic();
 
 	// Génération des pièces futures et assignation d'une zone mémoire pour la piece actuelle
-	piecesManager.GeneratePieces();
-	terrainPiece.pieceGraph = new (PieceGraphic *)(piecesManager.GetNextPiece());
+	timeManager.GeneratePieces();
+	terrainPiece.pieceGraph = new (PieceGraphic *)(timeManager.GetNextPiece());
 
 	// Initialisation de la grille de jeu
 	Gtk::Grid *m_terrainGrid = Gtk::make_managed<Gtk::Grid>(); // Laisse Gtk delete la grille quand la fenetre se ferme
@@ -99,9 +99,15 @@ void GameWindow::RestartGame()
 
 	ReconnectGameControls();
 
+	// On réinitialise le gestionnaire de temps
+	timeManager.Reset();
+
 	// On réinitialise le terrain pour une nouvelle partie
-	terrainPiece.terrainGraph->ResetTerrain(terrainPiece.pieceGraph, piecesManager);
-	terrainPiece.previewGraph->RenderGrid(piecesManager.SeeNextPiece());
+	terrainPiece.terrainGraph->ResetTerrain(terrainPiece.pieceGraph, timeManager);
+
+	// On reinitialise les préview
+	terrainPiece.previewGraph->RenderGrid(timeManager.SeeNextPiece());
+	terrainPiece.previousPreviewGraph->RenderGrid(NULL);
 }
 
 void GameWindow::MainMenuButton()
@@ -237,8 +243,9 @@ Gtk::Box *GameWindow::MakeGameOverMenu()
 
 	// Style : A faire avec CSS
 	wrapper->set_homogeneous(true);
-	wrapper->set_hexpand(false);
-	wrapper->set_margin_bottom(100);
+	wrapper->set_hexpand(true);
+	wrapper->set_vexpand(true);
+	// wrapper->set_margin_bottom(100);
 
 	scoreBox->set_homogeneous(true);
 	scoreBox->set_hexpand(false);
@@ -258,6 +265,8 @@ Gtk::Box *GameWindow::MakeGameOverMenu()
 	wrapper->pack_start(*retryBtn, Gtk::PACK_SHRINK, 0);
 	wrapper->pack_start(*mainMenuBtn, Gtk::PACK_SHRINK, 0);
 	wrapper->pack_start(*exitBtn, Gtk::PACK_SHRINK, 0);
+
+	wrapper->override_background_color(Gdk::RGBA(GAMEOVER_BKG_COLOR), Gtk::STATE_FLAG_NORMAL);
 
 	return wrapper;
 }
@@ -313,6 +322,7 @@ void GameWindow::GameOver()
 
 	// On affiche le menu game over
 	gameOverMenu->show();
+	gameBoard->show();
 }
 
 bool TryMovePieceDown(const TerrainPiece &data)
@@ -337,8 +347,11 @@ bool GameWindow::MainGameLoop()
 	// Si la piece n'a pas pu etre descendu, alors il y a un obstacle l'empechant -> La piece doit etre placée
 	if (!TryMovePieceDown(terrainPiece))
 	{
-		terrainPiece.terrainGraph->ImprintPiece(terrainPiece.pieceGraph, piecesManager);
-		terrainPiece.previewGraph->RenderGrid(piecesManager.SeeNextPiece());
+		// S'il y a eu une collision quand on a placé la pièce
+		if (!terrainPiece.terrainGraph->ImprintPiece(terrainPiece.pieceGraph, timeManager))
+			GameOver();
+
+		terrainPiece.previewGraph->RenderGrid(timeManager.SeeNextPiece());
 
 		Piece *piece = (Piece *)(*terrainPiece.pieceGraph);
 		Terrain *terrain = (Terrain *)(terrainPiece.terrainGraph);
@@ -427,8 +440,10 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 
 			return true;
 			break;
-		case GDK_KEY_e:
-			piecesManager.MoveInTime(terrainPiece.pieceGraph);
+		case GDK_KEY_s:
+			// S'il y a eu une collsion lors du changement de temporalité
+			if (!timeManager.MoveInTime(terrainPiece.pieceGraph, terrainPiece.terrainGraph))
+				GameOver();
 
 			// Si la piece nouvellement spawn touche un bloc -> Game over
 			if (terrain->CheckCollision((Piece *)(*terrainPiece.pieceGraph)))
@@ -436,13 +451,13 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 
 			// On affiche la pièce et actualise les preview
 			terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
-			terrainPiece.previewGraph->RenderGrid(piecesManager.SeeNextPiece());
-			terrainPiece.previousPreviewGraph->RenderGrid(piecesManager.SeePreviousPiece());
+			terrainPiece.previewGraph->RenderGrid(timeManager.SeeNextPiece());
+			terrainPiece.previousPreviewGraph->RenderGrid(timeManager.SeePreviousPiece());
 
 			return true;
 			break;
-		case GDK_KEY_d:
-			piecesManager.BackInTime(terrainPiece.pieceGraph);
+		case GDK_KEY_q:
+			timeManager.BackInTime(terrainPiece.pieceGraph, terrainPiece.terrainGraph);
 
 			// Si la piece nouvellement spawn touche un bloc -> Game over
 			if (terrain->CheckCollision((Piece *)(*terrainPiece.pieceGraph)))
@@ -450,8 +465,8 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 
 			// On affiche la pièce et actualise les preview
 			terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
-			terrainPiece.previewGraph->RenderGrid(piecesManager.SeeNextPiece());
-			terrainPiece.previousPreviewGraph->RenderGrid(piecesManager.SeePreviousPiece());
+			terrainPiece.previewGraph->RenderGrid(timeManager.SeeNextPiece());
+			terrainPiece.previousPreviewGraph->RenderGrid(timeManager.SeePreviousPiece());
 
 			return true;
 			break;

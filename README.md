@@ -15,13 +15,13 @@ Pour compiler, utiliser C++20 et link gtk :
 
 Pour pouvoir debug avec gdb apres :
 
-    - cmake -DCMAKE_BUILD_TYPE=Debug . && cmake --build . && ./Tetris
+    - cmake -DCMAKE_BUILD_TYPE=Debug . && cmake --build . && sudo gdb ./Tetris
 
 Controles :
 
     - Fleches droite et gauche pour deplacer la piece
     - a/z pour rotation a droite/gauche
-    - e/d pour se déplacer dans le temps
+    - q/s pour se déplacer dans le temps
     - Fleche bas pour descendre la piece plus vite
 
 Crédit :

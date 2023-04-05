@@ -50,7 +50,7 @@ class GameWindow : public Gtk::Window
 
 	Glib::ustring data;
 
-	Glib::RefPtr<Gtk::CssProvider> provider;
+	Glib::RefPtr<Gtk::CssProvider> cssProvider;
 
 	int bestScore;
 
@@ -72,7 +72,6 @@ class GameWindow : public Gtk::Window
 	void ReconnectGameControls();
 	void RenderScore(int specs);
 	void GameOver();
-	void UpdateSpeed(int cplt_lines);
 
   public:
 	GameWindow(const Glib::ustring &name, const int width, const int height, const guint borderSize, const guint gridSpacing);

@@ -1,0 +1,30 @@
+.button {
+    background-image: url('GObackground.png'); 
+    color: red; 
+    border:solid 2px #ffffff; 
+    border-radius: 7px; 
+    border: 7px; 
+    padding: 15px 32px; }
+
+.mainMenuBackgroud {
+    background-image: url('Lizard-PNG-HD-Image.png'); 
+    color: red; 
+    border:solid 2px #ffffff; 
+    border-radius: 7px; 
+    border: 7px; 
+    padding: 15px 32px;
+
+}
+
+.gameOverMenuBackgroud {
+    background-image: url('Lizard-PNG-HD-Image.png'); 
+    color: red; 
+    border:solid 2px #ffffff; 
+    border-radius: 7px; 
+    border: 7px; 
+    padding: 15px 32px;
+
+}
+
+
+

@@ -12,7 +12,7 @@
 #include <gtkmm-3.0/gtkmm/overlay.h>
 #include <gtkmm-3.0/gtkmm/window.h>
 
-#define MAIN_LOOP_TIMEOUT 1000 // Game loop called every 1000ms = 1s
+#define MAIN_LOOP_TIMEOUT 40 // Game loop called every 1000ms = 1s
 #define BACKGROUND_COLOR "rgba(100, 100, 100, 1.0)"
 #define GAMEOVER_COLOR "rgba(255, 0, 0, 1.0)"
 #define MAINMENU_COLOR "rgba(255, 0, 0, 1.0)"
@@ -46,6 +46,7 @@ class GameWindow : public Gtk::Window
 	Gtk::Box *gameOverMenu, *mainMenu, *gameBoard;
 	Gtk::Label *scoreLabelOverMenu, *bestScoreLabelOverMenu, *levelLabel, *scoreLabel, *bestScoreLabel, *bestScoreLabelMainMenu;
 	int bestScore=0;
+	int timeStep=0;
 
 	bool OnKeyPress(GdkEventKey *const event);
 

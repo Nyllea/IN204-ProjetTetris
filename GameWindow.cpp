@@ -73,7 +73,6 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 	//initialisation de l'affichage des scores
 	RenderScore(0);
 	RenderScore(1);
-	RenderScore(2);
 	
 	levelLabel->set_text("<span size='34000'>level : </span>");
 	levelLabel->set_use_markup(true);
@@ -382,42 +381,44 @@ bool TryMovePieceDown(const TerrainPiece &data)
 // Fonction appelée toute les MAIN_LOOP_TIMEOUT ms tant qu'elle retourne true
 
 
+
 bool GameWindow::MainGameLoop()
 {
 	// Si la piece n'a pas pu etre descendu, alors il y a un obstacle l'empechant -> La piece doit etre placée
-	if (!TryMovePieceDown(terrainPiece))
+	if (!timeStep)
 	{
-		terrainPiece.terrainGraph->ImprintPiece(terrainPiece.pieceGraph, piecesManager);
-		terrainPiece.previewGraph->RenderGrid(piecesManager.SeeNextPiece());
+		if (!TryMovePieceDown(terrainPiece))
+		{
+			terrainPiece.terrainGraph->ImprintPiece(terrainPiece.pieceGraph, piecesManager);
+			terrainPiece.previewGraph->RenderGrid(piecesManager.SeeNextPiece());
 
-		Piece *piece = (Piece *)(*terrainPiece.pieceGraph);
-		Terrain *terrain = (Terrain *)(terrainPiece.terrainGraph);
+			Piece *piece = (Piece *)(*terrainPiece.pieceGraph);
+			Terrain *terrain = (Terrain *)(terrainPiece.terrainGraph);
 
-		// Si la piece nouvellement spawn touche un bloc -> Game over
-		if (terrain->CheckCollision(piece))
-		{	
-			if (bestScore<terrainPiece.terrainGraph->GetScore())
-				{	
-					bestScore=terrainPiece.terrainGraph->GetScore();
+			// Si la piece nouvellement spawn touche un bloc -> Game over
+			if (terrain->CheckCollision(piece))
+			{	
+				if (bestScore<terrainPiece.terrainGraph->GetScore())
+					{	
+						bestScore=terrainPiece.terrainGraph->GetScore();
 
-				}
-			RenderScore(1);
-			// gameBoard->remove(*bestScoreLabel);
-			// bestScoreLabel->set_parent(*gameOverMenu);
-			GameOver();
+					}
+				RenderScore(1);
+				// gameBoard->remove(*bestScoreLabel);
+				// bestScoreLabel->set_parent(*gameOverMenu);
+				GameOver();
+			}
+				
 		}
-			
 	}
-	
-	terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
-	// int score=terrainPiece.terrainGraph->getinfo("score");
-	// std::string scorestr=std::to_string(score); //converting number to a string
-	// scoreLabel->set_text("<span size='34000'>Score:"+scorestr+" </span>");
-	
-	// scoreLabel->set_use_markup(true);
-	// scoreLabel->override_color(Gdk::RGBA(GAMEOVER_COLOR), Gtk::STATE_FLAG_NORMAL);
-	RenderScore(0);
-	GameWindow::UpdateSpeed(terrainPiece.terrainGraph->GetClearedLines());
+	timeStep++;
+	int resettime=std::max(1,20-(terrainPiece.terrainGraph->GetClearedLines()/10));
+	if (timeStep==resettime)
+	{
+		timeStep=0;
+		RenderScore(0);
+		terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
+	}
 	return true;
 }
 
@@ -427,7 +428,7 @@ void GameWindow::RenderScore(int spec )
 	// int lines=terrainPiece.terrainGraph->GetClearedLines();
 	// int bscore=bestScore;
 	std::string scorestr=std::to_string(terrainPiece.terrainGraph->GetScore());
-	std::string levelstr=std::to_string(terrainPiece.terrainGraph->GetClearedLines()/10);
+	std::string levelstr=std::to_string(1+terrainPiece.terrainGraph->GetClearedLines()/10);
 	std::string bscorestr=std::to_string(bestScore);
 
 	switch(spec)

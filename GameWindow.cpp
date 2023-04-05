@@ -17,19 +17,16 @@ void SetupGrid(Gtk::Grid *grid, const guint spacing)
 	grid->set_valign(Gtk::Align::ALIGN_CENTER);
 }
 
-GameWindow::GameWindow(const Glib::ustring &name, const int width, const int height, const guint borderSize, const guint gridSpacing) : gameOverMenu(NULL)
-{	
-
-	
-	
-	
+GameWindow::GameWindow(const Glib::ustring &name, const int width, const int height, const guint borderSize, const guint gridSpacing) : gameOverMenu(NULL), bestScore(0)
+{
 	// Paramétrage de la fenetre
 	set_title(name);
 	set_default_size(width, height);
-	set_resizable(true);
+	set_resizable(false);
 	set_border_width(borderSize);
 	set_position(Gtk::WIN_POS_CENTER);
 	override_background_color(Gdk::RGBA(BACKGROUND_COLOR), Gtk::StateFlags::STATE_FLAG_NORMAL);
+
 
 	// Initialisation du provider
 	// datas= ".startBtn {background-image: url('GObackground.png'); color: red; border:solid 2px #ffffff; border-radius: 7px; border: 7px; padding: 15px 32px; }";
@@ -66,21 +63,18 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 	terrainPiece.previousPreviewGraph->SetGrid(m_previousPreviewGrid);
 	terrainPiece.previousPreviewGraph->FillGrid(width, height);
 
-	//Initialisation des visualisation des score, meilleur score et niveau
+	// Initialisation des visualisation des score, meilleur score et niveau
 	scoreLabel = Gtk::make_managed<Gtk::Label>();
 	bestScoreLabel = Gtk::make_managed<Gtk::Label>();
 	levelLabel = Gtk::make_managed<Gtk::Label>();
 	scoreLabelOverMenu = Gtk::make_managed<Gtk::Label>();
 	bestScoreLabelOverMenu = Gtk::make_managed<Gtk::Label>();
-	bestScoreLabelMainMenu =  Gtk::make_managed<Gtk::Label>();
-	
+	bestScoreLabelMainMenu = Gtk::make_managed<Gtk::Label>();
 
-	
-
-	//initialisation de l'affichage des scores
+	// initialisation de l'affichage des scores
 	RenderScore(0);
 	RenderScore(1);
-	
+
 	levelLabel->set_text("<span size='34000'>level : </span>");
 	levelLabel->set_use_markup(true);
 	levelLabel->override_color(Gdk::RGBA(MAINMENU_COLOR), Gtk::STATE_FLAG_NORMAL);
@@ -187,7 +181,7 @@ Gtk::Box *GameWindow::MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGr
 	// Style : A faire avec CSS
 	wrapper->set_homogeneous(true);
 	wrapper->set_hexpand(false);
-	// wrapper->set_margin_bottom(100); 
+	// wrapper->set_margin_bottom(100);
 
 	// Ajouter les widget au wrapper
 	wrapper->pack_start(*leftWrapper, Gtk::PACK_SHRINK, 0);
@@ -198,8 +192,7 @@ Gtk::Box *GameWindow::MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGr
 }
 
 Gtk::Box *GameWindow::MakeMainMenu()
-{	
-	
+{
 	Gtk::Box *wrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_VERTICAL);
 	Gtk::Label *mainMenuLabel = Gtk::make_managed<Gtk::Label>();
 	Gtk::Label *bestScoreLabel2 = Gtk::make_managed<Gtk::Label>();
@@ -212,13 +205,12 @@ Gtk::Box *GameWindow::MakeMainMenu()
 	mainMenuLabel->set_use_markup(true);
 	mainMenuLabel->override_color(Gdk::RGBA(MAINMENU_COLOR), Gtk::STATE_FLAG_NORMAL);
 
-	std::string scorestr=std::to_string(bestScore);
-	bestScoreLabel2->set_text("<span size='34000'>Best Score : "+scorestr+"</span>");
+	std::string scorestr = std::to_string(bestScore);
+	bestScoreLabel2->set_text("<span size='34000'>Best Score : " + scorestr + "</span>");
 	bestScoreLabel2->set_use_markup(true);
 	bestScoreLabel2->override_color(Gdk::RGBA(MAINMENU_COLOR), Gtk::STATE_FLAG_NORMAL);
 
 	//CSS style
-
 	auto wrapperStyleContext = wrapper->get_style_context();
 	styleContext->add_class("mainMenuBackgroud");
 	styleContext->add_provider(provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
@@ -237,7 +229,7 @@ Gtk::Box *GameWindow::MakeMainMenu()
 	wrapper->pack_start(*mainMenuLabel, Gtk::PACK_SHRINK, 0);
 	wrapper->pack_start(*bestScoreLabelMainMenu, Gtk::PACK_SHRINK, 0);
 	wrapper->pack_start(*startBtn, Gtk::PACK_SHRINK, 0);
-	
+
 	// wrapper->pack_start(*optionBtn, Gtk::PACK_SHRINK, 0);
 	wrapper->pack_start(*exitBtn, Gtk::PACK_SHRINK, 0);
 
@@ -245,8 +237,8 @@ Gtk::Box *GameWindow::MakeMainMenu()
 }
 
 Gtk::Box *GameWindow::MakeGameOverMenu()
-{	
-	
+{
+
 	Gtk::Box *wrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_VERTICAL);
 	Gtk::Label *gameOverLabel = Gtk::make_managed<Gtk::Label>();
 
@@ -331,19 +323,14 @@ void GameWindow::DisconnectGameControls()
 }
 
 void GameWindow::UpdateSpeed(int cplt_lines)
-{	
+{
+	int TIME = 1000 / (terrainPiece.terrainGraph->GetClearedLines() + 1);
 
-	int TIME=1000/(terrainPiece.terrainGraph->GetClearedLines()+1);
-	std::string scorestr=std::to_string(TIME);
-	std::cout<<scorestr<<"\n";
-	if (cplt_lines%10==0)
+	if (cplt_lines % 10 == 0)
 	{
-		
-		// keyboardControls.block();
 		mainGameLoop.disconnect();
-		mainGameLoop = Glib::signal_timeout().connect(sigc::mem_fun(*this, &GameWindow::MainGameLoop), 	TIME);
+		mainGameLoop = Glib::signal_timeout().connect(sigc::mem_fun(*this, &GameWindow::MainGameLoop), TIME);
 	}
-
 }
 
 void GameWindow::ReconnectGameControls()
@@ -356,9 +343,8 @@ void GameWindow::ReconnectGameControls()
 }
 
 void GameWindow::GameOver()
-{	
-	
-	if (gameOverMenu==NULL)
+{
+	if (gameOverMenu == NULL)
 	{
 		// Ajout du menu Game Over à l'overlay
 		gameOverMenu = MakeGameOverMenu();
@@ -369,7 +355,7 @@ void GameWindow::GameOver()
 		// C'est pour cela que l'on utilise show_all(), puis que l'on cache les widgets inutiles
 		overlay->show_all();
 	}
-	
+
 	HideAll();
 
 	DisconnectGameControls();
@@ -395,96 +381,84 @@ bool TryMovePieceDown(const TerrainPiece &data)
 }
 
 // Fonction appelée toute les MAIN_LOOP_TIMEOUT ms tant qu'elle retourne true
-
-
-
 bool GameWindow::MainGameLoop()
 {
 	// Si la piece n'a pas pu etre descendu, alors il y a un obstacle l'empechant -> La piece doit etre placée
-	if (!timeStep)
+	if (!TryMovePieceDown(terrainPiece))
 	{
-		if (!TryMovePieceDown(terrainPiece))
+		terrainPiece.terrainGraph->ImprintPiece(terrainPiece.pieceGraph, piecesManager);
+		terrainPiece.previewGraph->RenderGrid(piecesManager.SeeNextPiece());
+
+		Piece *piece = (Piece *)(*terrainPiece.pieceGraph);
+		Terrain *terrain = (Terrain *)(terrainPiece.terrainGraph);
+
+		// Si la piece nouvellement spawn touche un bloc -> Game over
+		if (terrain->CheckCollision(piece))
 		{
-			terrainPiece.terrainGraph->ImprintPiece(terrainPiece.pieceGraph, piecesManager);
-			terrainPiece.previewGraph->RenderGrid(piecesManager.SeeNextPiece());
-
-			Piece *piece = (Piece *)(*terrainPiece.pieceGraph);
-			Terrain *terrain = (Terrain *)(terrainPiece.terrainGraph);
-
-			// Si la piece nouvellement spawn touche un bloc -> Game over
-			if (terrain->CheckCollision(piece))
-			{	
-				if (bestScore<terrainPiece.terrainGraph->GetScore())
-					{	
-						bestScore=terrainPiece.terrainGraph->GetScore();
-
-					}
-				RenderScore(1);
-				// gameBoard->remove(*bestScoreLabel);
-				// bestScoreLabel->set_parent(*gameOverMenu);
-				GameOver();
+			if (bestScore < terrainPiece.terrainGraph->GetScore())
+			{
+				bestScore = terrainPiece.terrainGraph->GetScore();
 			}
-				
+			RenderScore(1);
+			// gameBoard->remove(*bestScoreLabel);
+			// bestScoreLabel->set_parent(*gameOverMenu);
+			GameOver();
+
+			// On arrête le signal timeout
+			return false;
 		}
 	}
-	timeStep++;
-	int resettime=std::max(1,20-(terrainPiece.terrainGraph->GetClearedLines()/10));
-	if (timeStep==resettime)
-	{
-		timeStep=0;
-		RenderScore(0);
-		terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
-	}
+
+	RenderScore(0);
+	UpdateSpeed(terrainPiece.terrainGraph->GetClearedLines());
+
+	terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
+
 	return true;
 }
 
-void GameWindow::RenderScore(int spec )
-{	
+void GameWindow::RenderScore(int spec)
+{
 	// int score=terrainPiece.terrainGraph->GetScore();
 	// int lines=terrainPiece.terrainGraph->GetClearedLines();
 	// int bscore=bestScore;
-	std::string scorestr=std::to_string(terrainPiece.terrainGraph->GetScore());
-	std::string levelstr=std::to_string(1+terrainPiece.terrainGraph->GetClearedLines()/10);
-	std::string bscorestr=std::to_string(bestScore);
+	std::string scorestr = std::to_string(terrainPiece.terrainGraph->GetScore());
+	std::string levelstr = std::to_string(1 + terrainPiece.terrainGraph->GetClearedLines() / 10);
+	std::string bscorestr = std::to_string(bestScore);
 
-	switch(spec)
+	switch (spec)
 	{
 		case 0:
-			scoreLabel->set_text("<span size='34000'>Score: "+scorestr+" </span>");
+			scoreLabel->set_text("<span size='34000'>Score: " + scorestr + " </span>");
 			scoreLabel->set_use_markup(true);
 			scoreLabel->override_color(Gdk::RGBA(GAMEOVER_COLOR), Gtk::STATE_FLAG_NORMAL);
 
-			
-
-			levelLabel->set_text("<span size='34000'>Level: "+levelstr+" </span>");
+			levelLabel->set_text("<span size='34000'>Level: " + levelstr + " </span>");
 			levelLabel->set_use_markup(true);
 			scoreLabel->override_color(Gdk::RGBA(GAMEOVER_COLOR), Gtk::STATE_FLAG_NORMAL);
 
 			break;
 
 		case 1:
-			scoreLabelOverMenu->set_text("<span size='34000'>Score: "+scorestr+" </span>");
+			scoreLabelOverMenu->set_text("<span size='34000'>Score: " + scorestr + " </span>");
 			scoreLabelOverMenu->set_use_markup(true);
 			scoreLabelOverMenu->override_color(Gdk::RGBA(GAMEOVER_COLOR), Gtk::STATE_FLAG_NORMAL);
 
-			bestScoreLabelOverMenu->set_text("<span size='34000'>Best Score: "+bscorestr+" </span>");
+			bestScoreLabelOverMenu->set_text("<span size='34000'>Best Score: " + bscorestr + " </span>");
 			bestScoreLabelOverMenu->set_use_markup(true);
 			bestScoreLabelOverMenu->override_color(Gdk::RGBA(GAMEOVER_COLOR), Gtk::STATE_FLAG_NORMAL);
 
-			bestScoreLabelMainMenu->set_text("<span size='34000'>Best Score: "+bscorestr+" </span>");
+			bestScoreLabelMainMenu->set_text("<span size='34000'>Best Score: " + bscorestr + " </span>");
 			bestScoreLabelMainMenu->set_use_markup(true);
 			bestScoreLabelMainMenu->override_color(Gdk::RGBA(GAMEOVER_COLOR), Gtk::STATE_FLAG_NORMAL);
 
-			bestScoreLabel->set_text("<span size='34000'>Best Score: "+bscorestr+" </span>");
+			bestScoreLabel->set_text("<span size='34000'>Best Score: " + bscorestr + " </span>");
 			bestScoreLabel->set_use_markup(true);
 			bestScoreLabel->override_color(Gdk::RGBA(GAMEOVER_COLOR), Gtk::STATE_FLAG_NORMAL);
 
 			break;
-
-
 	}
 }
-
 
 bool GameWindow::OnKeyPress(GdkEventKey *const event)
 {
@@ -515,14 +489,13 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 			terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
 			return true;
 			break;
-		
+
 		case GDK_KEY_x:
 			// Implémentation du "hard drop" la pièce tombe instantanément
 
 			while (!terrain->CheckCollision(piece))
 			{
 				piece->Move(0, 1);
-				
 			}
 			piece->Move(0, -1);
 			terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
@@ -585,7 +558,6 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 			terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
 			terrainPiece.previewGraph->RenderGrid(piecesManager.SeeNextPiece());
 			terrainPiece.previousPreviewGraph->RenderGrid(piecesManager.SeePreviousPiece());
-
 
 			return true;
 			break;

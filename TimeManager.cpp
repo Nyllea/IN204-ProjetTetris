@@ -111,7 +111,7 @@ bool TimeManager::MoveInTime(PieceGraphic **currentPiece, TerrainGraphic *terrai
 		piecesQueue.pop_front();
 
 		// S'il y a eu une collision
-		return terrainGraph->ImprintFuturePieces(placedPieces(previousPiecesQueue.size()));
+		return terrainGraph->ImprintFuturePieces(placedPieces(previousPiecesQueue.size()), false);
 	}
 	else
 		return true;
@@ -157,7 +157,7 @@ bool TimeManager::MoveOneTimeUnit(TerrainGraphic *terrainGraph)
 	placedPieces.MoveOneUnit();
 
 	// On ajoute toutes les pièces qui avait été placées 1 pas dans le future au terrain
-	bool noCollision = terrainGraph->ImprintFuturePieces(placedPieces(0));
+	bool noCollision = terrainGraph->ImprintFuturePieces(placedPieces(0), true);
 
 	// On supprime toutes ces pièces
 	placedPieces.ClearAt(0);

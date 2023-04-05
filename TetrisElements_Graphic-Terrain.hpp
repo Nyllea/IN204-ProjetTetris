@@ -58,7 +58,8 @@ class TerrainGraphic : public Terrain, public GridGraphic
 	bool ImprintPiece(PieceGraphic **const piece, TimeManager &timeManager);
 
 	// Ajoute la piece à la matrice du terrain et retourne false s'il y a une collision
-	bool ImprintFuturePieces(const std::list<PieceGraphic *> &piece);
+	// Si removeLine, supprime les lignes complétées par les pièces
+	bool ImprintFuturePieces(const std::list<PieceGraphic *> &piece, const bool removeLines);
 
 	// Enlève la piece de la matrice du terrain et affiche le terrain
 	void DeprintFuturePieces(const std::list<PieceGraphic *> &piece);

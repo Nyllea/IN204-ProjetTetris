@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/will/Desktop/Cours/IN204/ProjetTetris/IN204-ProjetTetris
+CMAKE_SOURCE_DIR = /home/ppoirmeur/tetris/IN204-ProjetTetris
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/will/Desktop/Cours/IN204/ProjetTetris/IN204-ProjetTetris
+CMAKE_BINARY_DIR = /home/ppoirmeur/tetris/IN204-ProjetTetris
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/will/Desktop/Cours/IN204/ProjetTetris/IN204-ProjetTetris/CMakeFiles /home/will/Desktop/Cours/IN204/ProjetTetris/IN204-ProjetTetris//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ppoirmeur/tetris/IN204-ProjetTetris/CMakeFiles /home/ppoirmeur/tetris/IN204-ProjetTetris//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/will/Desktop/Cours/IN204/ProjetTetris/IN204-ProjetTetris/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ppoirmeur/tetris/IN204-ProjetTetris/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -129,30 +129,6 @@ Tetris/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/build
 .PHONY : Tetris/fast
 
-GameOverMenu.o: GameOverMenu.cpp.o
-.PHONY : GameOverMenu.o
-
-# target to build an object file
-GameOverMenu.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/GameOverMenu.cpp.o
-.PHONY : GameOverMenu.cpp.o
-
-GameOverMenu.i: GameOverMenu.cpp.i
-.PHONY : GameOverMenu.i
-
-# target to preprocess a source file
-GameOverMenu.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/GameOverMenu.cpp.i
-.PHONY : GameOverMenu.cpp.i
-
-GameOverMenu.s: GameOverMenu.cpp.s
-.PHONY : GameOverMenu.s
-
-# target to generate assembly for a file
-GameOverMenu.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/GameOverMenu.cpp.s
-.PHONY : GameOverMenu.cpp.s
-
 GameWindow.o: GameWindow.cpp.o
 .PHONY : GameWindow.o
 
@@ -176,6 +152,30 @@ GameWindow.s: GameWindow.cpp.s
 GameWindow.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/GameWindow.cpp.s
 .PHONY : GameWindow.cpp.s
+
+PiecesManager.o: PiecesManager.cpp.o
+.PHONY : PiecesManager.o
+
+# target to build an object file
+PiecesManager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/PiecesManager.cpp.o
+.PHONY : PiecesManager.cpp.o
+
+PiecesManager.i: PiecesManager.cpp.i
+.PHONY : PiecesManager.i
+
+# target to preprocess a source file
+PiecesManager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/PiecesManager.cpp.i
+.PHONY : PiecesManager.cpp.i
+
+PiecesManager.s: PiecesManager.cpp.s
+.PHONY : PiecesManager.s
+
+# target to generate assembly for a file
+PiecesManager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/PiecesManager.cpp.s
+.PHONY : PiecesManager.cpp.s
 
 Random.o: Random.cpp.o
 .PHONY : Random.o
@@ -201,53 +201,101 @@ Random.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/Random.cpp.s
 .PHONY : Random.cpp.s
 
-TetrisElements.o: TetrisElements.cpp.o
-.PHONY : TetrisElements.o
+TetrisElements-Piece.o: TetrisElements-Piece.cpp.o
+.PHONY : TetrisElements-Piece.o
 
 # target to build an object file
-TetrisElements.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/TetrisElements.cpp.o
-.PHONY : TetrisElements.cpp.o
+TetrisElements-Piece.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/TetrisElements-Piece.cpp.o
+.PHONY : TetrisElements-Piece.cpp.o
 
-TetrisElements.i: TetrisElements.cpp.i
-.PHONY : TetrisElements.i
+TetrisElements-Piece.i: TetrisElements-Piece.cpp.i
+.PHONY : TetrisElements-Piece.i
 
 # target to preprocess a source file
-TetrisElements.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/TetrisElements.cpp.i
-.PHONY : TetrisElements.cpp.i
+TetrisElements-Piece.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/TetrisElements-Piece.cpp.i
+.PHONY : TetrisElements-Piece.cpp.i
 
-TetrisElements.s: TetrisElements.cpp.s
-.PHONY : TetrisElements.s
+TetrisElements-Piece.s: TetrisElements-Piece.cpp.s
+.PHONY : TetrisElements-Piece.s
 
 # target to generate assembly for a file
-TetrisElements.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/TetrisElements.cpp.s
-.PHONY : TetrisElements.cpp.s
+TetrisElements-Piece.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/TetrisElements-Piece.cpp.s
+.PHONY : TetrisElements-Piece.cpp.s
 
-TetrisElements_Graphic.o: TetrisElements_Graphic.cpp.o
-.PHONY : TetrisElements_Graphic.o
+TetrisElements-Terrain.o: TetrisElements-Terrain.cpp.o
+.PHONY : TetrisElements-Terrain.o
 
 # target to build an object file
-TetrisElements_Graphic.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/TetrisElements_Graphic.cpp.o
-.PHONY : TetrisElements_Graphic.cpp.o
+TetrisElements-Terrain.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/TetrisElements-Terrain.cpp.o
+.PHONY : TetrisElements-Terrain.cpp.o
 
-TetrisElements_Graphic.i: TetrisElements_Graphic.cpp.i
-.PHONY : TetrisElements_Graphic.i
+TetrisElements-Terrain.i: TetrisElements-Terrain.cpp.i
+.PHONY : TetrisElements-Terrain.i
 
 # target to preprocess a source file
-TetrisElements_Graphic.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/TetrisElements_Graphic.cpp.i
-.PHONY : TetrisElements_Graphic.cpp.i
+TetrisElements-Terrain.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/TetrisElements-Terrain.cpp.i
+.PHONY : TetrisElements-Terrain.cpp.i
 
-TetrisElements_Graphic.s: TetrisElements_Graphic.cpp.s
-.PHONY : TetrisElements_Graphic.s
+TetrisElements-Terrain.s: TetrisElements-Terrain.cpp.s
+.PHONY : TetrisElements-Terrain.s
 
 # target to generate assembly for a file
-TetrisElements_Graphic.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/TetrisElements_Graphic.cpp.s
-.PHONY : TetrisElements_Graphic.cpp.s
+TetrisElements-Terrain.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/TetrisElements-Terrain.cpp.s
+.PHONY : TetrisElements-Terrain.cpp.s
+
+TetrisElements_Graphic-Piece.o: TetrisElements_Graphic-Piece.cpp.o
+.PHONY : TetrisElements_Graphic-Piece.o
+
+# target to build an object file
+TetrisElements_Graphic-Piece.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/TetrisElements_Graphic-Piece.cpp.o
+.PHONY : TetrisElements_Graphic-Piece.cpp.o
+
+TetrisElements_Graphic-Piece.i: TetrisElements_Graphic-Piece.cpp.i
+.PHONY : TetrisElements_Graphic-Piece.i
+
+# target to preprocess a source file
+TetrisElements_Graphic-Piece.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/TetrisElements_Graphic-Piece.cpp.i
+.PHONY : TetrisElements_Graphic-Piece.cpp.i
+
+TetrisElements_Graphic-Piece.s: TetrisElements_Graphic-Piece.cpp.s
+.PHONY : TetrisElements_Graphic-Piece.s
+
+# target to generate assembly for a file
+TetrisElements_Graphic-Piece.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/TetrisElements_Graphic-Piece.cpp.s
+.PHONY : TetrisElements_Graphic-Piece.cpp.s
+
+TetrisElements_Graphic-Terrain.o: TetrisElements_Graphic-Terrain.cpp.o
+.PHONY : TetrisElements_Graphic-Terrain.o
+
+# target to build an object file
+TetrisElements_Graphic-Terrain.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/TetrisElements_Graphic-Terrain.cpp.o
+.PHONY : TetrisElements_Graphic-Terrain.cpp.o
+
+TetrisElements_Graphic-Terrain.i: TetrisElements_Graphic-Terrain.cpp.i
+.PHONY : TetrisElements_Graphic-Terrain.i
+
+# target to preprocess a source file
+TetrisElements_Graphic-Terrain.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/TetrisElements_Graphic-Terrain.cpp.i
+.PHONY : TetrisElements_Graphic-Terrain.cpp.i
+
+TetrisElements_Graphic-Terrain.s: TetrisElements_Graphic-Terrain.cpp.s
+.PHONY : TetrisElements_Graphic-Terrain.s
+
+# target to generate assembly for a file
+TetrisElements_Graphic-Terrain.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/TetrisElements_Graphic-Terrain.cpp.s
+.PHONY : TetrisElements_Graphic-Terrain.cpp.s
 
 main.o: main.cpp.o
 .PHONY : main.o
@@ -282,21 +330,27 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... Tetris"
-	@echo "... GameOverMenu.o"
-	@echo "... GameOverMenu.i"
-	@echo "... GameOverMenu.s"
 	@echo "... GameWindow.o"
 	@echo "... GameWindow.i"
 	@echo "... GameWindow.s"
+	@echo "... PiecesManager.o"
+	@echo "... PiecesManager.i"
+	@echo "... PiecesManager.s"
 	@echo "... Random.o"
 	@echo "... Random.i"
 	@echo "... Random.s"
-	@echo "... TetrisElements.o"
-	@echo "... TetrisElements.i"
-	@echo "... TetrisElements.s"
-	@echo "... TetrisElements_Graphic.o"
-	@echo "... TetrisElements_Graphic.i"
-	@echo "... TetrisElements_Graphic.s"
+	@echo "... TetrisElements-Piece.o"
+	@echo "... TetrisElements-Piece.i"
+	@echo "... TetrisElements-Piece.s"
+	@echo "... TetrisElements-Terrain.o"
+	@echo "... TetrisElements-Terrain.i"
+	@echo "... TetrisElements-Terrain.s"
+	@echo "... TetrisElements_Graphic-Piece.o"
+	@echo "... TetrisElements_Graphic-Piece.i"
+	@echo "... TetrisElements_Graphic-Piece.s"
+	@echo "... TetrisElements_Graphic-Terrain.o"
+	@echo "... TetrisElements_Graphic-Terrain.i"
+	@echo "... TetrisElements_Graphic-Terrain.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

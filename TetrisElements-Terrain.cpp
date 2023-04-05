@@ -82,3 +82,51 @@ void Terrain::ResetMatrix()
 	for (int i = 0; i < TERR_NBR_LINES * TERR_NBR_COL; i++)
 		matrix[i] = 0;
 }
+
+
+void Terrain::UpdateScore(int cplt_lines)
+{   
+	
+	int level=1+clearedLines/10;
+	
+    switch (cplt_lines)
+    {
+	case 1:
+		score+=100*level;
+		break;
+    case 2:
+        score+=300*level;
+        break;
+    case 3:
+        score+=500*level;
+        break;
+    case 4:
+        score+=800*level;
+        break;
+    }
+	
+	// std::string temp_str=std::to_string(score); //converting number to a string
+	// std::cout << temp_str << "\n";
+	clearedLines+=cplt_lines;
+    
+}
+
+
+int Terrain::GetClearedLines()
+{
+	return clearedLines;
+}
+
+int Terrain::GetScore()
+{
+	return score;
+}
+
+
+
+void Terrain::ResetScore()
+{
+	score=0;
+	clearedLines=0;
+}
+

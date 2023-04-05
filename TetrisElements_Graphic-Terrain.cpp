@@ -29,6 +29,8 @@ void GridGraphic::RenderGrid(const PieceGraphic *const piece, const int lineNbr,
 	Gtk::Widget *block;
 	Gdk::RGBA color = Gdk::RGBA(emptyColor);
 
+	
+
 	for (unsigned char i = 0; i < lineNbr; i++)
 	{
 		for (unsigned char j = 0; j < colNbr; j++)
@@ -73,8 +75,9 @@ void GridGraphic::FillGrid(const int windowHeight, const int windowWidth, const 
 void TerrainGraphic::ResetTerrain(PieceGraphic **const piece, TimeManager &timeManager)
 {
 	ResetMatrix();
-	timeManager.GeneratePieces();
-	*piece = timeManager.GetNextPiece();
+	ResetScore();
+	piecesManager.GeneratePieces();
+	*piece = piecesManager.GetNextPiece();
 	RenderGrid(*piece);
 }
 
@@ -84,8 +87,9 @@ void TerrainGraphic::ResetTerrain(PieceGraphic **const piece, TimeManager &timeM
 // Retourne false s'il y a eu une collision
 bool TerrainGraphic::ImprintPiece(PieceGraphic **const piece, TimeManager &timeManager)
 {
+  int cplt_lines=0;
 	bool noCollision = true;
-
+  
 	for (int i = 0; i < PIECE_MAT_SIZE; i++)
 	{
 		short int terrainCoord = (*(Piece **)piece)->ToTerrainCoord(0, i);
@@ -104,7 +108,10 @@ bool TerrainGraphic::ImprintPiece(PieceGraphic **const piece, TimeManager &timeM
 
 		// Si la ligne est complète et que ce n'est pas le futur
 		if (!timeManager.IsInFuture() && CheckLine(terrainCoord))
+    {
 			RemoveLine(terrainCoord);
+			cplt_lines+=1;
+		}
 	}
 
 	// Si c'est une pièce dans le futur
@@ -120,6 +127,8 @@ bool TerrainGraphic::ImprintPiece(PieceGraphic **const piece, TimeManager &timeM
 
 		// On avance d'un pas de temps, étant donnée que l'on vient de placer la pièce au temps actuel
 		noCollision = timeManager.MoveOneTimeUnit(this);
+    
+    UpdateScore(cplt_lines);
 	}
 
 	// On récupère une nouvelle pièce

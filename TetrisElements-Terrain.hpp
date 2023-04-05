@@ -19,12 +19,17 @@ class Terrain
 
 	// Réinitialise le terrain
 	void ResetMatrix();
+	void ResetScore();
 
 	// Vérifie si la ligne contenant le bloc en terrainCoord est complète
 	bool CheckLine(const short int terrainCoord);
 
 	// Retire la ligne contenant le bloc en terrainCoord
 	void RemoveLine(const int teerainCoord);
+
+
+	int score=0;
+	int clearedLines=0;
 
   public:
 	Terrain();
@@ -37,6 +42,13 @@ class Terrain
 
 	// Retourne vrai si la pièce est hors du terrain ou touche un bloc, faux sinon
 	bool CheckCollision(const Piece *const piece) const;
+
+	//permet de récupérer la valeur du score ou le mettre a jour
+	int GetClearedLines();
+	int GetScore();
+	void UpdateScore(int numberline);
+	
+	
 };
 
 #endif

@@ -9,6 +9,7 @@
 #include <glibmm.h>
 #include <gtkmm-3.0/gtkmm/box.h>
 #include <gtkmm-3.0/gtkmm/button.h>
+#include <gtkmm-3.0/gtkmm/cssprovider.h>
 #include <gtkmm-3.0/gtkmm/overlay.h>
 #include <gtkmm-3.0/gtkmm/window.h>
 
@@ -45,6 +46,13 @@ class GameWindow : public Gtk::Window
 	TimeManager timeManager;
 
 	Gtk::Box *gameOverMenu, *mainMenu, *gameBoard;
+	Gtk::Label *scoreLabelOverMenu, *bestScoreLabelOverMenu, *levelLabel, *scoreLabel, *bestScoreLabel, *bestScoreLabelMainMenu;
+
+	Glib::ustring data;
+
+	Glib::RefPtr<Gtk::CssProvider> provider;
+
+	int bestScore;
 
 	bool OnKeyPress(GdkEventKey *const event);
 
@@ -62,8 +70,9 @@ class GameWindow : public Gtk::Window
 	void HideAll();
 	void DisconnectGameControls();
 	void ReconnectGameControls();
-
+	void RenderScore(int specs);
 	void GameOver();
+	void UpdateSpeed(int cplt_lines);
 
   public:
 	GameWindow(const Glib::ustring &name, const int width, const int height, const guint borderSize, const guint gridSpacing);

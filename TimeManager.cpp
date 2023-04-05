@@ -141,6 +141,8 @@ void TimeManager::Reset()
 	for (; !previousPiecesQueue.empty(); previousPiecesQueue.pop_front())
 		delete previousPiecesQueue.front();
 
+	placedPieces.Reset();
+
 	GeneratePieces();
 }
 

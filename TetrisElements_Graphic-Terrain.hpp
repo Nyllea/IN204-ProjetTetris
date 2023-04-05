@@ -1,12 +1,15 @@
 #ifndef TETRISELEMENTS_GRAPHIC_TERRAIN_HPP
 #define TETRISELEMENTS_GRAPHIC_TERRAIN_HPP
 
-#include "PiecesManager.hpp"
 #include "TetrisElements-Terrain.hpp"
+#include "TimeManager.hpp"
 
 #include <cassert>
 #include <gtkmm-3.0/gtkmm/grid.h>
 #include <gtkmm-3.0/gtkmm/label.h>
+
+// Forward declaration pour éviter les erreurs de linker
+class TimeManager;
 
 class GridGraphic
 {
@@ -35,10 +38,6 @@ class GridGraphic
 
 class TerrainGraphic : public Terrain, public GridGraphic
 {
-  private:
-	// Supprime l'ancienne pièce et en génère une nouvelle
-	void SpawnRandomPiece(PieceGraphic **const piece, PiecesManager &piecesManager);
-
   public:
 	TerrainGraphic() : Terrain(){};
 	TerrainGraphic(const Terrain terrain) : Terrain(terrain){};
@@ -50,10 +49,20 @@ class TerrainGraphic : public Terrain, public GridGraphic
 	void RenderGrid(const PieceGraphic *const piece) { GridGraphic::RenderGrid(piece, TERR_NBR_LINES, TERR_NBR_COL, matrix); };
 
 	// Réinitialise le terrain avec une nouvelle pièce
-	void ResetTerrain(PieceGraphic **const piece, PiecesManager &piecesManager);
+	void ResetTerrain(PieceGraphic **const piece, TimeManager &timeManager);
 
 	// Ajoute la piece à la matrice du terrain
-	void ImprintPiece(PieceGraphic **const piece, PiecesManager &piecesManager);
+	// Si c'est une pièce dans le présent, enlève les lignes complètes et génère une nouvelle piece
+	// Si c'est une pièce dans le futur, l'ajoute aux pièces placées et génère une nouvelle pièce
+	// Retourne false s'il y a eu une collision
+	bool ImprintPiece(PieceGraphic **const piece, TimeManager &timeManager);
+
+	// Ajoute la piece à la matrice du terrain et retourne false s'il y a une collision
+	// Si removeLine, supprime les lignes complétées par les pièces
+	bool ImprintFuturePieces(const std::list<PieceGraphic *> &piece, const bool removeLines);
+
+	// Enlève la piece de la matrice du terrain et affiche le terrain
+	void DeprintFuturePieces(const std::list<PieceGraphic *> &piece);
 };
 
 class PreviewGraphic : public GridGraphic

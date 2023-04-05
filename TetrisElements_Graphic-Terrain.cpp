@@ -71,17 +71,8 @@ void GridGraphic::FillGrid(const int windowHeight, const int windowWidth, const 
 	}
 }
 
-// Supprime l'ancienne pièce et en génère une nouvelle
-void TerrainGraphic::SpawnRandomPiece(PieceGraphic **const piece, PiecesManager &piecesManager)
-{
-	if (*piece != NULL)
-		delete *piece;
-
-	*piece = piecesManager.GetNextPiece();
-}
-
 // Réinitialise le terrain avec une nouvelle pièce
-void TerrainGraphic::ResetTerrain(PieceGraphic **const piece, PiecesManager &piecesManager)
+void TerrainGraphic::ResetTerrain(PieceGraphic **const piece, TimeManager &timeManager)
 {
 	ResetMatrix();
 	ResetScore();
@@ -90,10 +81,15 @@ void TerrainGraphic::ResetTerrain(PieceGraphic **const piece, PiecesManager &pie
 	RenderGrid(*piece);
 }
 
-// Ajoute la piece à la matrice du terrain, enlève les lignes complètes et génère une nouvelle piece
-void TerrainGraphic::ImprintPiece(PieceGraphic **const piece, PiecesManager &piecesManager)
-{	
-	int cplt_lines=0;
+// Ajoute la piece à la matrice du terrain
+// Si c'est une pièce dans le présent, enlève les lignes complètes et génère une nouvelle piece
+// Si c'est une pièce dans le futur, l'ajoute aux pièces placées et génère une nouvelle pièce
+// Retourne false s'il y a eu une collision
+bool TerrainGraphic::ImprintPiece(PieceGraphic **const piece, TimeManager &timeManager)
+{
+  int cplt_lines=0;
+	bool noCollision = true;
+  
 	for (int i = 0; i < PIECE_MAT_SIZE; i++)
 	{
 		short int terrainCoord = (*(Piece **)piece)->ToTerrainCoord(0, i);
@@ -110,16 +106,97 @@ void TerrainGraphic::ImprintPiece(PieceGraphic **const piece, PiecesManager &pie
 			}
 		}
 
-		// Si la ligne est complète
-		if (CheckLine(terrainCoord))
-		{
+		// Si la ligne est complète et que ce n'est pas le futur
+		if (!timeManager.IsInFuture() && CheckLine(terrainCoord))
+    {
 			RemoveLine(terrainCoord);
 			cplt_lines+=1;
 		}
 	}
-	UpdateScore(cplt_lines);
-	SpawnRandomPiece(piece, piecesManager);
+
+	// Si c'est une pièce dans le futur
+	if (timeManager.IsInFuture())
+	{
+		// On l'ajoute aux pièces placées dans le futures
+		timeManager.AddFuturPlaced(*piece);
+	}
+	else
+	{
+		// On supprime la pièce, vu qu'elle est maintenant placée de manière permanente
+		delete *piece;
+
+		// On avance d'un pas de temps, étant donnée que l'on vient de placer la pièce au temps actuel
+		noCollision = timeManager.MoveOneTimeUnit(this);
+    
+    UpdateScore(cplt_lines);
+	}
+
+	// On récupère une nouvelle pièce
+	*piece = timeManager.GetNextPiece();
+
 	RenderGrid(*piece);
 
+	return noCollision;
+}
 
+// Ajoute la piece à la matrice du terrain et retourne false s'il y a une collision
+// Si removeLine, supprime les lignes complétées par les pièces
+bool TerrainGraphic::ImprintFuturePieces(const std::list<PieceGraphic *> &pieces, const bool removeLines)
+{
+	bool noCollision = true;
+
+	// Pour chaque pièce
+	for (PieceGraphic *const &piece : pieces)
+	{
+		for (int i = 0; i < PIECE_MAT_SIZE; i++)
+		{
+			short int terrainCoord = ((Piece *)piece)->ToTerrainCoord(0, i);
+
+			for (int j = 0; j < PIECE_MAT_SIZE; j++)
+			{
+				if ((*(Piece *)piece)(i, j) == 1)
+				{
+					terrainCoord = ((Piece *)piece)->ToTerrainCoord(j, i);
+					if (terrainCoord < 0) // Si les coordonnées pointent en dehors du terrain
+						continue;
+
+					// Si la case était vide, on met la bonne couleur
+					if (matrix[terrainCoord] != 0)
+						noCollision = false;
+
+					matrix[terrainCoord] = piece->GetColorChar();
+				}
+			}
+
+			// Si la ligne est complète et que on supprime les lignes
+			if (removeLines && CheckLine(terrainCoord))
+				RemoveLine(terrainCoord);
+		}
+	}
+
+	return noCollision;
+}
+
+// Enlève la piece de la matrice du terrain
+void TerrainGraphic::DeprintFuturePieces(const std::list<PieceGraphic *> &pieces)
+{
+	// Pour chaque pièce
+	for (PieceGraphic *const &piece : pieces)
+	{
+		for (int i = 0; i < PIECE_MAT_SIZE; i++)
+		{
+			for (int j = 0; j < PIECE_MAT_SIZE; j++)
+			{
+				if ((*(Piece *)piece)(i, j) == 1)
+				{
+					short int terrainCoord = ((Piece *)piece)->ToTerrainCoord(j, i);
+					if (terrainCoord < 0) // Si les coordonnées pointent en dehors du terrain
+						continue;
+
+					// La case devient vide (grise)
+					matrix[terrainCoord] = 0;
+				}
+			}
+		}
+	}
 }

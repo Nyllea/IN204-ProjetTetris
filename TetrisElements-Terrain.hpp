@@ -9,6 +9,7 @@
 #define TERR_NBR_LINES 22
 #define TERR_NBR_COL 10
 
+// Forward declaration pour éviter les erreurs 'Piece has not been declared'
 class Piece;
 
 class Terrain

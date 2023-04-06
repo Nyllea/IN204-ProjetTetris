@@ -1,15 +1,67 @@
 .button {
-    background-image: url('GObackground.png'); 
-    color: red; 
+    background-color: #328735;
+    color: rgb(36, 9, 47); 
+    border: 10px solid #0a0707; 
+    border-radius: 20px; 
+    /* width: 250px; */
+    transition-duration: 0.4s;
+    font-size: 50px;
+    /* border: 7px;  */
+    padding: 5px 6px; }
+
+
+.button:hover {
+    background-color: #328735; /* Green */
+    color: rgb(9, 2, 2);
+    font-size: 60px;
+    }
+
+
+.titleLabel {
+    color: rgb(5, 4, 78); 
     border:solid 2px #ffffff; 
     border-radius: 7px; 
     border: 7px; 
+    font-size: 150px;
+    padding: 15px 32px; 
+    animation-name: example;
+    animation-duration: 10s;
+}
+
+@keyframes example {
+  0%   {color: red;}
+  12%   {color: orange;}
+  25%  {color: rgb(21, 255, 0);}
+  37%  {color: rgb(0, 255, 174);}
+  50%  {color: rgb(0, 64, 255);}
+  62%  {color: rgb(191, 0, 255);}
+  75%  {color: rgb(255, 0, 251);}
+  87%  {color: rgb(255, 0, 55);}
+  100% {color: rgb(128, 0, 0);}
+}
+    
+.subtitleLabel {
+
+    color: rgb(19, 18, 69); 
+    border:solid 2px #ffffff; 
+    border-radius: 7px; 
+    border: 7px; 
+    transition-duration: 1s;
+
+    font-size: 100px;
     padding: 15px 32px; }
 
+
+.subtitleLabel:hover {
+    background-color: #054907; /* Green */
+    color: rgb(126, 3, 3);
+    }
+    
+
 .mainMenuBackgroud {
-    background-image: url('Lizard-PNG-HD-Image.png'); 
+    background-image: url('mainmenu.jpg'); 
     color: red; 
-    border:solid 2px #ffffff; 
+    border:solid 2px #c09797; 
     border-radius: 7px; 
     border: 7px; 
     padding: 15px 32px;
@@ -17,14 +69,27 @@
 }
 
 .gameOverMenuBackgroud {
-    background-image: url('Lizard-PNG-HD-Image.png'); 
-    color: red; 
-    border:solid 2px #ffffff; 
+    background-image: url('gomenu.jpg'); 
+    color: rgb(85, 8, 27); 
+    border:solid 2px #8d0101; 
     border-radius: 7px; 
     border: 7px; 
     padding: 15px 32px;
 
 }
+
+.gameBoardBackgroud {
+    background-image: url('Lizard-PNG-HD-Image.png'); 
+    color: rgb(85, 8, 27); 
+    border:solid 2px #8d0101; 
+    border-radius: 7px; 
+    border: 7px; 
+    padding: 15px 32px;
+
+}
+
+
+
 
 
 

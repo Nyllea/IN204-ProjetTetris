@@ -153,30 +153,6 @@ GameWindow.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/GameWindow.cpp.s
 .PHONY : GameWindow.cpp.s
 
-PiecesManager.o: PiecesManager.cpp.o
-.PHONY : PiecesManager.o
-
-# target to build an object file
-PiecesManager.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/PiecesManager.cpp.o
-.PHONY : PiecesManager.cpp.o
-
-PiecesManager.i: PiecesManager.cpp.i
-.PHONY : PiecesManager.i
-
-# target to preprocess a source file
-PiecesManager.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/PiecesManager.cpp.i
-.PHONY : PiecesManager.cpp.i
-
-PiecesManager.s: PiecesManager.cpp.s
-.PHONY : PiecesManager.s
-
-# target to generate assembly for a file
-PiecesManager.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/PiecesManager.cpp.s
-.PHONY : PiecesManager.cpp.s
-
 Random.o: Random.cpp.o
 .PHONY : Random.o
 
@@ -297,6 +273,30 @@ TetrisElements_Graphic-Terrain.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/TetrisElements_Graphic-Terrain.cpp.s
 .PHONY : TetrisElements_Graphic-Terrain.cpp.s
 
+TimeManager.o: TimeManager.cpp.o
+.PHONY : TimeManager.o
+
+# target to build an object file
+TimeManager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/TimeManager.cpp.o
+.PHONY : TimeManager.cpp.o
+
+TimeManager.i: TimeManager.cpp.i
+.PHONY : TimeManager.i
+
+# target to preprocess a source file
+TimeManager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/TimeManager.cpp.i
+.PHONY : TimeManager.cpp.i
+
+TimeManager.s: TimeManager.cpp.s
+.PHONY : TimeManager.s
+
+# target to generate assembly for a file
+TimeManager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/TimeManager.cpp.s
+.PHONY : TimeManager.cpp.s
+
 main.o: main.cpp.o
 .PHONY : main.o
 
@@ -333,9 +333,6 @@ help:
 	@echo "... GameWindow.o"
 	@echo "... GameWindow.i"
 	@echo "... GameWindow.s"
-	@echo "... PiecesManager.o"
-	@echo "... PiecesManager.i"
-	@echo "... PiecesManager.s"
 	@echo "... Random.o"
 	@echo "... Random.i"
 	@echo "... Random.s"
@@ -351,6 +348,9 @@ help:
 	@echo "... TetrisElements_Graphic-Terrain.o"
 	@echo "... TetrisElements_Graphic-Terrain.i"
 	@echo "... TetrisElements_Graphic-Terrain.s"
+	@echo "... TimeManager.o"
+	@echo "... TimeManager.i"
+	@echo "... TimeManager.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

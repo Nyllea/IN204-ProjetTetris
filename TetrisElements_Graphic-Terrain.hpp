@@ -16,7 +16,7 @@ class GridGraphic
   protected:
 	Gtk::Grid *grid;
 
-	// Valeur des couleurs
+	// Valeurs des couleurs
 	static constexpr char emptyColor[] = "rgba(168, 168, 168, 1.0)";
 	static constexpr char red[] = "rgba(255, 0, 50, 1.0)";
 	static constexpr char green[] = "rgba(50, 255, 0, 1.0)";
@@ -28,7 +28,7 @@ class GridGraphic
 	// Remplissage de la grille graphique avec des blocs vides
 	void FillGrid(const int windowHeight, const int windowWidth, const int lineNbr, const int colNbr);
 
-	// Actualisation graphique de la grille
+	// Actualisation graphique de la grille (affiche une grille vide si piece=NULL, sinon affiche la matrice de la pièce si matrix=NULL)
 	void RenderGrid(const PieceGraphic *const piece, const int lineNbr, const int colNbr, const char *matrix = NULL);
 
   public:
@@ -39,8 +39,8 @@ class GridGraphic
 class TerrainGraphic : public Terrain, public GridGraphic
 {
   public:
-	TerrainGraphic() : Terrain(){};
-	TerrainGraphic(const Terrain terrain) : Terrain(terrain){};
+	TerrainGraphic() : Terrain(), GridGraphic(){};
+	TerrainGraphic(const Terrain &terrain) : Terrain(terrain){};
 
 	// Remplissage de le grille graphique représentant le terrain avec des blocs vides
 	void FillGrid(const int windowHeight, const int windowWidth) { GridGraphic::FillGrid(windowHeight, windowWidth, TERR_NBR_LINES, TERR_NBR_COL); };
@@ -48,7 +48,7 @@ class TerrainGraphic : public Terrain, public GridGraphic
 	// Actualisation graphique du terrain
 	void RenderGrid(const PieceGraphic *const piece) { GridGraphic::RenderGrid(piece, TERR_NBR_LINES, TERR_NBR_COL, matrix); };
 
-	// Réinitialise le terrain avec une nouvelle pièce
+	// Réinitialise le terrain et le score et génère une nouvelle pièce
 	void ResetTerrain(PieceGraphic **const piece, TimeManager &timeManager);
 
 	// Ajoute la piece à la matrice du terrain
@@ -61,14 +61,16 @@ class TerrainGraphic : public Terrain, public GridGraphic
 	// Si removeLine, supprime les lignes complétées par les pièces
 	bool ImprintFuturePieces(const std::list<PieceGraphic *> &piece, const bool removeLines);
 
-	// Enlève la piece de la matrice du terrain et affiche le terrain
+	// Enlève les pieces de la matrice du terrain et affiche le terrain
 	void DeprintFuturePieces(const std::list<PieceGraphic *> &piece);
 };
 
 class PreviewGraphic : public GridGraphic
 {
   public:
-	// Remplissage de la grille graphique représentant la prochaine pièce avec des blocs vides
+	PreviewGraphic() : GridGraphic(){};
+
+	// Remplissage de la grille graphique avec des blocs vides
 	void FillGrid(const int windowHeight, const int windowWidth) { GridGraphic::FillGrid(windowHeight, windowWidth, PIECE_MAT_SIZE, PIECE_MAT_SIZE); };
 
 	// Actualisation graphique de la preview

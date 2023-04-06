@@ -121,7 +121,6 @@ GameWindow::~GameWindow()
 	delete terrainPiece.terrainGraph;
 }
 
-
 Gtk::Box *GameWindow::MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGrid, Gtk::Grid *previousPreviewGrid)
 {	
 	// Création des widgets nécessaires
@@ -145,7 +144,7 @@ Gtk::Box *GameWindow::MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGr
 	leftWrapper->pack_start(*scoreLabel, Gtk::PACK_SHRINK, 0);
 	leftWrapper->pack_start(*pauseBtn, Gtk::PACK_SHRINK, 0);
 	leftWrapper->pack_start(*previousPreviewGrid, Gtk::PACK_SHRINK, 0);
-	
+
 	// Rassemblements des widgets à gauche du terrain
 	rightWrapper->set_homogeneous(true);
 	rightWrapper->set_hexpand(false);
@@ -164,8 +163,6 @@ Gtk::Box *GameWindow::MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGr
 
 	return wrapper;
 }
-
-
 
 Gtk::Box *GameWindow::MakeMainMenu() 
 {	
@@ -457,7 +454,6 @@ void GameWindow::RenderScore(const bool isGameBoard) const
 		bestScoreLabelMainMenu->set_text("Best Score: " + bscorestr);
 		bestScoreLabelPauseMenu->set_text("Best Score: " + bscorestr);
 	}
-
 }
 
 
@@ -537,7 +533,6 @@ void GameWindow::ResetMainGameLoop()
 	mainGameLoop.disconnect();
 	mainGameLoop = Glib::signal_timeout().connect(sigc::mem_fun(*this, &GameWindow::MainGameLoop), currentMainLoopTimeout);
 }
-
 
 void GameWindow::GameOver() 
 {
@@ -698,7 +693,6 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 			terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
 			terrainPiece.previewGraph->RenderGrid(timeManager.SeeNextPiece());
 			terrainPiece.previousPreviewGraph->RenderGrid(timeManager.SeePreviousPiece());
-
 
 			ActualiseTimeStickers();
 			signalHandled = true;

@@ -1,16 +1,5 @@
 #include "TetrisElements-Piece.hpp"
 
-Piece &Piece::operator=(const Piece &source)
-{
-	m_type = source.m_type;
-	matrix = source.matrix;
-
-	posX = source.posX;
-	posY = source.posY;
-
-	return *this;
-}
-
 Piece::Piece(const Type type) : m_type(type), posX(0), posY(0)
 {
 	switch (type)
@@ -55,7 +44,7 @@ bool Piece::operator()(const unsigned char x, const unsigned char y) const
 	}
 }
 
-// Drop bits outside the range [R, L) == [R, L - 1]
+// Retire les bits en dehors de [R, L) == [R, L - 1]
 template <std::size_t N>
 std::bitset<N> project_range(std::bitset<N> b, size_t R, size_t L)
 {
@@ -64,24 +53,23 @@ std::bitset<N> project_range(std::bitset<N> b, size_t R, size_t L)
 		printf("Invalid bitrange\n");
 		exit(EXIT_FAILURE);
 	}
-	b >>= R;		   // drop R rightmost bits
-	b <<= (N - L + R); // drop L-1 leftmost bits
-	b >>= (N - L);	   // shift back into place
+	b >>= R;		   // Retire les R bits de droite
+	b <<= (N - L + R); // Retire les L-1 bits de gauche
+	b >>= (N - L);	   // Shift pour les remettre en place
 	return b;
 }
 
-// Set the Y position for the piece to touch the upper limit of the terrain
+// Modifie la position Y de la pièce pour la placer en haut du terrain
 void Piece::SetMaxHeight()
 {
 	while (project_range<PIECE_MAT_SIZE * PIECE_MAT_SIZE>(matrix, -posY * PIECE_MAT_SIZE, (-posY + 1) * PIECE_MAT_SIZE).none())
 		posY--;
 }
 
-void Piece::SetXPos(const signed char xPos)
-{
-	posX = xPos;
-}
+// Assigne la position X de la pièce
+void Piece::SetXPos(const signed char xPos) { posX = xPos; }
 
+// Tourne la pièce de 90 degrés vers la gauche (sens anti-horaire)
 void Piece::RotateLeft()
 {
 	if (m_type == Square)
@@ -98,6 +86,7 @@ void Piece::RotateLeft()
 	}
 }
 
+// Tourne la pièce de 90 degrés vers la droite (sens horaire)
 void Piece::RotateRight()
 {
 	if (m_type == Square)
@@ -114,7 +103,8 @@ void Piece::RotateRight()
 	}
 }
 
-// Vérifie si la pièce occupe la case (x,y) du terrain (en fonction de sa position et de sa matrice)
+// Si useTerrainPosition, vérifie si la pièce occupe la case (x,y) du terrain (en fonction de sa position et de sa matrice)
+// Sinon vérifie si la case (x,y) de la matrice est occupée
 bool Piece::IsAt(const unsigned char x, const unsigned char y, const bool useTerrainPosition) const
 {
 	int globalPosX = useTerrainPosition ? posX : 0;

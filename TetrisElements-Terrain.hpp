@@ -15,21 +15,24 @@ class Piece;
 class Terrain
 {
   protected:
+	// Matrice représentant le terrain (0 si la case est vide, une valeur représentant la couleur sinon)
 	char matrix[TERR_NBR_LINES * TERR_NBR_COL];
+
+	// Pour le calcul du score
+	int score = 0;
+	int clearedLines = 0;
 
 	// Réinitialise le terrain
 	void ResetMatrix();
+
+	// Réinitialise le score
 	void ResetScore();
 
 	// Vérifie si la ligne contenant le bloc en terrainCoord est complète
-	bool CheckLine(const short int terrainCoord);
+	bool CheckLine(const short int terrainCoord) const;
 
 	// Retire la ligne contenant le bloc en terrainCoord
 	void RemoveLine(const int teerainCoord);
-
-
-	int score=0;
-	int clearedLines=0;
 
   public:
 	Terrain();
@@ -37,18 +40,17 @@ class Terrain
 	static inline int GetNbrLines() { return TERR_NBR_LINES; };
 	static inline int GetNbrCol() { return TERR_NBR_COL; };
 
-	// Permet d'accéder à la valeur(char) du bloc en position (x,y) du terrain
-	char operator()(const unsigned char x, const unsigned char y) const;
-
 	// Retourne vrai si la pièce est hors du terrain ou touche un bloc, faux sinon
 	bool CheckCollision(const Piece *const piece) const;
 
-	//permet de récupérer la valeur du score ou le mettre a jour
-	int GetClearedLines();
-	int GetScore();
+	// Retourne le nombre de lignes complétées
+	int GetClearedLines() const;
+
+	// Retourne le score
+	int GetScore() const;
+
+	// Mets à jour le score et le nombre de lignes complétées
 	void UpdateScore(int numberline);
-	
-	
 };
 
 #endif

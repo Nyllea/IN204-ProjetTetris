@@ -20,38 +20,6 @@ Gdk::RGBA GridGraphic::CharToColor(const char colorVal) const
 	}
 }
 
-// Setter pour la grille graphique
-void GridGraphic::SetGrid(Gtk::Grid *const _grid) { grid = _grid; }
-
-// Actualisation graphique de la grille
-void GridGraphic::RenderGrid(const PieceGraphic *const piece, const int lineNbr, const int colNbr, const char *matrix)
-{
-	Gtk::Widget *block;
-	Gdk::RGBA color = Gdk::RGBA(emptyColor);
-
-	for (unsigned char i = 0; i < lineNbr; i++)
-	{
-		for (unsigned char j = 0; j < colNbr; j++)
-		{
-			block = grid->get_child_at(j, i);
-
-			// Si pas de pièce fournie, on affiche tout de la couleur emptyColor
-			if (piece != NULL)
-			{
-				// Si la position (i,j) est occupée par la pièce
-				if (((Piece *)piece)->IsAt(j, i, matrix != NULL))
-					color = CharToColor(piece->GetColorChar());
-				else if (matrix != NULL)
-					color = CharToColor(matrix[TERR_NBR_COL * i + j]);
-				else
-					color = Gdk::RGBA(emptyColor);
-			}
-
-			block->override_background_color(color, Gtk::STATE_FLAG_NORMAL);
-		}
-	}
-}
-
 // Remplissage de la grille graphique avec des blocs vides
 void GridGraphic::FillGrid(const int windowHeight, const int windowWidth, const int lineNbr, const int colNbr)
 {
@@ -62,14 +30,49 @@ void GridGraphic::FillGrid(const int windowHeight, const int windowWidth, const 
 		for (int j = 0; j < colNbr; j++)
 		{
 			Gtk::Label *temp = Gtk::make_managed<Gtk::Label>();
+
 			temp->override_background_color(Gdk::RGBA(emptyColor), Gtk::STATE_FLAG_NORMAL);
 			temp->set_size_request(blockSize, blockSize);
+
 			grid->attach(*temp, j, i, 1, 1);
 		}
 	}
 }
 
-// Réinitialise le terrain avec une nouvelle pièce
+// Actualisation graphique de la grille (affiche une grille vide si piece=NULL, sinon affiche la matrice de la pièce si matrix=NULL)
+void GridGraphic::RenderGrid(const PieceGraphic *const piece, const int lineNbr, const int colNbr, const char *matrix)
+{
+	Gtk::Widget *block;
+	Gdk::RGBA color = Gdk::RGBA(emptyColor);
+
+	for (unsigned char i = 0; i < lineNbr; i++)
+	{
+		for (unsigned char j = 0; j < colNbr; j++)
+		{
+			// On récupère le bloc en position (j, i)
+			block = grid->get_child_at(j, i);
+
+			// Si pas de pièce fournie, on affiche tout de la couleur emptyColor
+			if (piece != NULL)
+			{
+				// Si la position (i,j) est occupée par la pièce, on prend la couleur de la pièce
+				if (((Piece *)piece)->IsAt(j, i, matrix != NULL))
+					color = CharToColor(piece->GetColorChar());
+				else if (matrix != NULL)
+					color = CharToColor(matrix[TERR_NBR_COL * i + j]);
+				else // Si matrix=NULL et que la pièce n'occupe pas la position (j, i)
+					color = Gdk::RGBA(emptyColor);
+			}
+
+			block->override_background_color(color, Gtk::STATE_FLAG_NORMAL);
+		}
+	}
+}
+
+// Setter pour la grille graphique
+void GridGraphic::SetGrid(Gtk::Grid *const _grid) { grid = _grid; }
+
+// Réinitialise le terrain et le score et génère une nouvelle pièce
 void TerrainGraphic::ResetTerrain(PieceGraphic **const piece, TimeManager &timeManager)
 {
 	ResetMatrix();
@@ -175,7 +178,7 @@ bool TerrainGraphic::ImprintFuturePieces(const std::list<PieceGraphic *> &pieces
 	return noCollision;
 }
 
-// Enlève la piece de la matrice du terrain
+// Enlève les pieces de la matrice du terrain et affiche le terrain
 void TerrainGraphic::DeprintFuturePieces(const std::list<PieceGraphic *> &pieces)
 {
 	// Pour chaque pièce

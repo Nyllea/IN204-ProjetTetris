@@ -70,6 +70,30 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 	bestScoreLabelOverMenu = Gtk::make_managed<Gtk::Label>();
 	bestScoreLabelMainMenu = Gtk::make_managed<Gtk::Label>();
 
+	auto bestScoreLabelMainMenuStyleContext = bestScoreLabelMainMenu->get_style_context();
+	bestScoreLabelMainMenuStyleContext->add_class("subtitleLabel");
+	bestScoreLabelMainMenuStyleContext->add_provider(provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
+
+	auto scoreLabelOverMenuStyleContext = scoreLabelOverMenu->get_style_context();
+	scoreLabelOverMenuStyleContext->add_class("subtitleLabel");
+	scoreLabelOverMenuStyleContext->add_provider(provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
+
+	auto bestScoreLabelOverMenuStyleContext = bestScoreLabelOverMenu->get_style_context();
+	bestScoreLabelOverMenuStyleContext->add_class("subtitleLabel");
+	bestScoreLabelOverMenuStyleContext->add_provider(provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
+
+	// auto startBtnStyleContext = startBtn->get_style_context();
+	// startBtnStyleContext->add_class("button");
+	// startBtnStyleContext->add_provider(provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
+
+	// auto startBtnStyleContext = startBtn->get_style_context();
+	// startBtnStyleContext->add_class("button");
+	// startBtnStyleContext->add_provider(provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
+
+	// auto startBtnStyleContext = startBtn->get_style_context();
+	// startBtnStyleContext->add_class("button");
+	// startBtnStyleContext->add_provider(provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
+
 	// initialisation de l'affichage des scores
 	RenderScore(0);
 	RenderScore(1);
@@ -200,25 +224,33 @@ Gtk::Box *GameWindow::MakeMainMenu()
 {
 	Gtk::Box *wrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_VERTICAL);
 	Gtk::Label *mainMenuLabel = Gtk::make_managed<Gtk::Label>();
-	Gtk::Label *bestScoreLabel2 = Gtk::make_managed<Gtk::Label>();
 	Gtk::Button *startBtn = Gtk::make_managed<Gtk::Button>("Start Game");
 	// Gtk::Button *optionBtn = Gtk::make_managed<Gtk::Button>("Options");
 	Gtk::Button *exitBtn = Gtk::make_managed<Gtk::Button>("Exit");
 
 	// Utiliser CSS pour éviter de hardcoder la taille
-	mainMenuLabel->set_text("<span size='34000'>Main Menu</span>");
-	mainMenuLabel->set_use_markup(true);
-	mainMenuLabel->override_color(Gdk::RGBA(MAINMENU_COLOR), Gtk::STATE_FLAG_NORMAL);
+	mainMenuLabel->set_text("TETRIS");
+	// mainMenuLabel->set_use_markup(false);
+	// mainMenuLabel->override_color(Gdk::RGBA(MAINMENU_COLOR), Gtk::STATE_FLAG_NORMAL);
 
-	std::string scorestr = std::to_string(bestScore);
-	bestScoreLabel2->set_text("<span size='34000'>Best Score : " + scorestr + "</span>");
-	bestScoreLabel2->set_use_markup(true);
-	bestScoreLabel2->override_color(Gdk::RGBA(MAINMENU_COLOR), Gtk::STATE_FLAG_NORMAL);
 
 	//CSS style
+	auto mainMenuLabelStyleContext = mainMenuLabel->get_style_context();
+	mainMenuLabelStyleContext->add_class("titleLabel");
+	mainMenuLabelStyleContext->add_provider(provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
+
 	auto wrapperStyleContext = wrapper->get_style_context();
 	wrapperStyleContext->add_class("mainMenuBackgroud");
 	wrapperStyleContext->add_provider(provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
+
+	auto startBtnStyleContext = startBtn->get_style_context();
+	startBtnStyleContext->add_class("button");
+	startBtnStyleContext->add_provider(provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
+
+	auto exitBtnStyleContext = exitBtn->get_style_context();
+	exitBtnStyleContext->add_class("button");
+	exitBtnStyleContext->add_provider(provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
+
 
 	// Style : A faire avec CSS
 	wrapper->set_homogeneous(true);

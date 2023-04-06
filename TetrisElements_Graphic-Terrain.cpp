@@ -76,8 +76,8 @@ void TerrainGraphic::ResetTerrain(PieceGraphic **const piece, TimeManager &timeM
 {
 	ResetMatrix();
 	ResetScore();
-	piecesManager.GeneratePieces();
-	*piece = piecesManager.GetNextPiece();
+	timeManager.GeneratePieces();
+	*piece = timeManager.GetNextPiece();
 	RenderGrid(*piece);
 }
 

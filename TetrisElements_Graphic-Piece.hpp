@@ -22,12 +22,13 @@ class PieceGraphic : Piece
 	Color m_color;
 
   public:
-	PieceGraphic(const PieceGraphic &source) : Piece((Piece)source), m_color(source.m_color) {}
+	// Constructeurs
+	PieceGraphic(const Piece *const piece, const Color color) : Piece(*piece), m_color(color){};
+	PieceGraphic(const Type type, const Color color) : Piece(type), m_color(color){};
 
-	PieceGraphic(const Piece *const piece, const Color color) : Piece(*piece), m_color(color) {}
-	PieceGraphic(const Type type, const Color color) : Piece(type), m_color(color) {}
+	PieceGraphic(const PieceGraphic &source) : Piece((Piece)source), m_color(source.m_color){};
 
-	// Permet d'acceder à la couleur (getter pour m_color)
+	// Permet d'acceder à la couleur de la pièce (getter pour m_color)
 	char GetColorChar() const;
 };
 

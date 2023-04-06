@@ -1,11 +1,5 @@
 # IN204-ProjetTetris
 
-A faire :
-
-    - Utiliser du CSS pour les menus
-    - Améliorer le choix aléatoire des couleurs pour éviter d'avoir 3 fois la même
-    - Resize le terrain de jeu quand on resize la fenêtre
-
 Pour compiler, utiliser C++20 et link gtk :
 
     - (deprecated) clang++ -std=c++20 TetrisElements.cpp main.cpp `pkg-config --cflags --libs gtk+-3.0` && ./a.out
@@ -19,10 +13,10 @@ Pour pouvoir debug avec gdb apres :
 Controles :
 
     - Fleches droite et gauche pour deplacer la piece
+    - Fleche du bas pour descendre la pièce plus rapidement
     - a/z pour rotation a droite/gauche
-    - q/s pour se déplacer dans le temps
-    - Fleche bas pour descendre la piece plus vite
-    - x pour drop instantanément
+    - x pour poser instantanément la pièce
+    - q/s pour se déplacer dans le passé/présent
 
 Crédit :
 

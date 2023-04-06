@@ -6,6 +6,7 @@ FuturPiecesManager::FuturPiecesManager() : idBeginning(0)
 		placedPieces[i].clear();
 }
 
+// Efface toutes les pièces de la liste en position futureOffset
 void FuturPiecesManager::ClearAt(int futureOffset)
 {
 	int id = (idBeginning + futureOffset) % MAX_PREDICTION;
@@ -14,7 +15,7 @@ void FuturPiecesManager::ClearAt(int futureOffset)
 		delete placedPieces[id].front();
 }
 
-// Reset les listes
+// Réinitialise les listes
 void FuturPiecesManager::Reset()
 {
 	for (int i = 0; i < MAX_PREDICTION; i++)
@@ -66,7 +67,7 @@ PieceGraphic *TimeManager::GenerateOnePiece()
 	return piece;
 }
 
-// Rempli la queue avec le nombre maximal de pièces
+// Rempli la queue future avec le nombre maximal de pièces
 void TimeManager::GeneratePieces()
 {
 	while (piecesQueue.size() < MAX_PREDICTION)
@@ -132,7 +133,7 @@ void TimeManager::BackInTime(PieceGraphic **currentPiece, TerrainGraphic *terrai
 	}
 }
 
-// Reset the queues and lists
+// Réinitialise les queues et les listes
 void TimeManager::Reset()
 {
 	for (; !piecesQueue.empty(); piecesQueue.pop_front())
@@ -146,7 +147,7 @@ void TimeManager::Reset()
 	GeneratePieces();
 }
 
-// Is the current piece in the future
+// Retourne vrai si la pièce actuelle est dans le futur
 bool TimeManager::IsInFuture() { return !previousPiecesQueue.empty(); }
 
 // Ajoute la pièce à la liste des pièces placées au temps actuelle

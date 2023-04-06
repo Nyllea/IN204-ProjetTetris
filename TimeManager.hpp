@@ -27,10 +27,10 @@ class FuturPiecesManager
   public:
 	FuturPiecesManager();
 
-	// Clear all the pieces in the list at futureOffset
+	// Efface toutes les pièces de la liste en position futureOffset
 	void ClearAt(int futureOffset);
 
-	// Reset les listes
+	// Réinitialise les listes
 	void Reset();
 
 	// Retourne la liste des PieceGraphic qui ont été placée entre futureOffset et futurOffset + 1 pas dans le futur par rapport au temps actuel
@@ -59,7 +59,7 @@ class TimeManager
   public:
 	~TimeManager();
 
-	// Rempli la queue avec le nombre maximal de pièces
+	// Rempli la queue future avec le nombre maximal de pièces
 	void GeneratePieces();
 
 	// Retourne la prochaine pièce et en génère une autre dans la queue
@@ -77,10 +77,10 @@ class TimeManager
 	// Change la pièce actuelle par la pièce précédente et retient la pèce actuelle
 	void BackInTime(PieceGraphic **currentPiece, TerrainGraphic *terrainGraph);
 
-	// Reset the queues and lists
+	// Réinitialise les queues et les listes
 	void Reset();
 
-	// Is the current piece in the future
+	// Retourne vrai si la pièce actuelle est dans le futur
 	bool IsInFuture();
 
 	// Ajoute la pièce à la liste des pièces placées au temps actuelle

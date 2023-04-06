@@ -1,6 +1,7 @@
 #ifndef TETRIS_ELEMENTS_PIECE_HPP
 #define TETRIS_ELEMENTS_PIECE_HPP
 
+// Taille de la matrice représentant la pièce
 #define PIECE_MAT_SIZE 5
 
 #include <bitset>
@@ -22,12 +23,20 @@ class Piece
 		T
 	};
 
-  private:
-	Type m_type;
-	std::bitset<PIECE_MAT_SIZE * PIECE_MAT_SIZE> matrix;
-	signed char posX, posY; // Coordonnées du bloc en haut à gauche de la matrice de la pièce
+	Piece(const Type type);
+	Piece(const Piece &source) : m_type(source.m_type), matrix(source.matrix), posX(source.posX), posY(source.posY){};
 
-	// Storing the matrices for the different shapes
+  private:
+	// Type de la pièce
+	Type m_type;
+
+	// Matrice représentant la pièce (1 si la pièce occupe cette position, 0 sinon)
+	std::bitset<PIECE_MAT_SIZE * PIECE_MAT_SIZE> matrix;
+
+	// Coordonnées sur le terrain du bloc en haut à gauche de la matrice de la pièce
+	signed char posX, posY;
+
+	// Stockage des matrices des différentes pièces
 	/*
 	00000
 	00000
@@ -82,18 +91,19 @@ class Piece
 	static inline int GetPieceMatSize() { return PIECE_MAT_SIZE; };
 
   public:
-	Piece(const Piece &source) : m_type(source.m_type), matrix(source.matrix), posX(source.posX), posY(source.posY) {}
-	Piece(const Type type);
-
-	Piece &operator=(const Piece &source);
-
 	// Permet d'accéder à la case (x,y) de la matrice de la pièce
 	bool operator()(const unsigned char x, const unsigned char y) const;
 
+	// Modifie la position Y de la pièce pour la placer en haut du terrain
 	void SetMaxHeight();
+
+	// Assigne la position X de la pièce
 	void SetXPos(const signed char xPos);
 
+	// Tourne la pièce de 90 degrés vers la gauche (sens anti-horaire)
 	void RotateLeft();
+
+	// Tourne la pièce de 90 degrés vers la droite (sens horaire)
 	void RotateRight();
 
 	// Si useTerrainPosition, vérifie si la pièce occupe la case (x,y) du terrain (en fonction de sa position et de sa matrice)

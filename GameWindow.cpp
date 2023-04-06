@@ -80,15 +80,14 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 	scoreLabel->get_style_context()->add_class("subtitleLabelMenu");
 	// Initialise l'affichage des pastilles de temps
 	RenderTime();
-	for(int i=0;i<MAX_PREDICTION;i++){
+	for (int i = 0; i < MAX_PREDICTION; i++)
+	{
 		timeLabels[i].set_text("oo");
-		}
+	}
 
 	// initialisation de l'affichage des scores
 	RenderScore(0);
 	RenderScore(1);
-
-	
 
 	// Création du terrain de jeu
 	gameBoard = MakeGameBoard(m_terrainGrid, m_previewGrid, m_previousPreviewGrid);
@@ -184,7 +183,6 @@ void GameWindow::ResumeButton()
 // 	ReconnectGameControls();
 // }
 
-
 void GameWindow::StartButton()
 {
 	// On ajoute le terrain à l'overlay s'il n'y est pas déjà
@@ -219,7 +217,6 @@ void GameWindow::PauseButton()
 	gameBoard->show();
 }
 
-
 Gtk::Box *GameWindow::MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGrid, Gtk::Grid *previousPreviewGrid)
 {
 	Gtk::Box *wrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_HORIZONTAL);
@@ -229,27 +226,26 @@ Gtk::Box *GameWindow::MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGr
 	Gtk::Box *smallWrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_HORIZONTAL);
 
 	pauseBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::PauseButton));
-	//CSS Style
+	// CSS Style
 	wrapper->get_style_context()->add_class("mainMenuBackgroud");
 	pauseBtn->get_style_context()->add_class("button");
 
-	for(int i=0;i<MAX_PREDICTION;i++){smallWrapper->pack_start(timeLabels[i], Gtk::PACK_SHRINK, 0);}
-
-
+	for (int i = 0; i < MAX_PREDICTION; i++)
+	{
+		smallWrapper->pack_start(timeLabels[i], Gtk::PACK_SHRINK, 0);
+	}
 
 	leftWrapper->set_homogeneous(true);
 	leftWrapper->set_hexpand(false);
 	leftWrapper->pack_start(*scoreLabel, Gtk::PACK_SHRINK, 0);
 	leftWrapper->pack_start(*pauseBtn, Gtk::PACK_SHRINK, 0);
 	leftWrapper->pack_start(*previousPreviewGrid, Gtk::PACK_SHRINK, 0);
-	
 
 	rightWrapper->set_homogeneous(true);
 	rightWrapper->set_hexpand(false);
 	rightWrapper->pack_start(*smallWrapper, Gtk::PACK_SHRINK, 0);
 	rightWrapper->pack_start(*levelLabel, Gtk::PACK_SHRINK, 0);
 	rightWrapper->pack_start(*previewGrid, Gtk::PACK_SHRINK, 0);
-
 
 	wrapper->set_homogeneous(true);
 	wrapper->set_hexpand(false);
@@ -262,8 +258,6 @@ Gtk::Box *GameWindow::MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGr
 
 	return wrapper;
 }
-
-
 
 Gtk::Box *GameWindow::MakeMainMenu()
 {
@@ -290,7 +284,7 @@ Gtk::Box *GameWindow::MakeMainMenu()
 	exitBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::ExitGame));
 
 	// Ajouter les widget au wrapper
-	
+
 	wrapper->pack_start(*mainMenuLabel, Gtk::PACK_SHRINK, 0);
 	// wrapper->pack_start(*mainMenuLabel, Gtk::PACK_SHRINK, 0);
 	wrapper->pack_start(*bestScoreLabelMainMenu, Gtk::PACK_SHRINK, 0);
@@ -315,7 +309,6 @@ Gtk::Box *GameWindow::MakeGameOverMenu()
 	retryBtn->get_style_context()->add_class("button");
 	mainMenuBtn->get_style_context()->add_class("button");
 
-
 	// Style : A faire avec CSS
 	wrapper->set_homogeneous(true);
 	wrapper->set_hexpand(false);
@@ -328,7 +321,6 @@ Gtk::Box *GameWindow::MakeGameOverMenu()
 	// Connecte les boutons aux actions à réaliser
 	retryBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::RestartGame));
 	mainMenuBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::MainMenuButton));
-
 
 	// wrapper->get_style_context()->add_class("gameOverMenuBackgroud");
 	gameOverLabel->set_text("GAME OVER");
@@ -363,7 +355,6 @@ Gtk::Box *GameWindow::MakePauseMenu()
 	resumeBtn->get_style_context()->add_class("button");
 	exitBtn->get_style_context()->add_class("button");
 	restartBtn->get_style_context()->add_class("button");
-
 
 	// Style : A faire avec CSS
 	wrapper->set_homogeneous(true);
@@ -447,7 +438,7 @@ void GameWindow::GameOver()
 		// C'est pour cela que l'on utilise show_all(), puis que l'on cache les widgets inutiles
 		overlay->show_all();
 	}
-	
+
 	DisconnectGameControls();
 
 	// On affiche le menu game over au dessus du menu de jeu
@@ -525,19 +516,23 @@ bool GameWindow::MainGameLoop()
 }
 void GameWindow::RenderTime()
 {
-	int time=timeManager.GetTimePosition();
-	for(int i=0; i<=time;i++){
+	int time = timeManager.GetTimePosition();
+	for (int i = 0; i <= time; i++)
+	{
 		timeLabels[i].get_style_context()->remove_class("timeStickersempty");
-		timeLabels[i].get_style_context()->add_class("timeStickers");}
-	for(int i=time+1; i <MAX_PREDICTION;i++){
+		timeLabels[i].get_style_context()->add_class("timeStickers");
+	}
+	for (int i = time + 1; i < MAX_PREDICTION; i++)
+	{
 		timeLabels[i].get_style_context()->remove_class("timeStickersempty");
-		timeLabels[i].get_style_context()->add_class("timeStickersempty");}
+		timeLabels[i].get_style_context()->add_class("timeStickersempty");
+	}
 }
 void GameWindow::RenderScore(int spec)
 {
 	// Réupération des données
 	std::string scorestr = std::to_string(terrainPiece.terrainGraph->GetScore());
-	
+
 	// Switch selon le label a actualiser: ceux de MainMenu et GameOver ou ceux du GameBoard
 	switch (spec)
 	{
@@ -545,7 +540,7 @@ void GameWindow::RenderScore(int spec)
 		{
 			// Réupération des données
 			std::string levelstr = std::to_string(1 + terrainPiece.terrainGraph->GetClearedLines() / 10);
-			
+
 			// Assignation des textes aux label
 			scoreLabel->set_text("Score: " + scorestr);
 			// timeLabel->set_text("Time: " + timestr);
@@ -688,7 +683,7 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 			signalHandled = true;
 			break;
 
-		//avancer dans le temps
+		// avancer dans le temps
 		case GDK_KEY_s:
 			// S'il y a eu une collsion lors du changement de temporalité
 			if (!timeManager.MoveInTime(terrainPiece.pieceGraph, terrainPiece.terrainGraph))
@@ -703,12 +698,11 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 			terrainPiece.previewGraph->RenderGrid(timeManager.SeeNextPiece());
 			terrainPiece.previousPreviewGraph->RenderGrid(timeManager.SeePreviousPiece());
 
-
 			RenderTime();
 			signalHandled = true;
 			break;
-		
-		//reculer dans le temps
+
+		// reculer dans le temps
 		case GDK_KEY_q:
 			timeManager.BackInTime(terrainPiece.pieceGraph, terrainPiece.terrainGraph);
 

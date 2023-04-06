@@ -540,8 +540,12 @@ void GameWindow::RenderScore(int spec)
 		{
 			// Réupération des données
 			std::string levelstr = std::to_string(1 + terrainPiece.terrainGraph->GetClearedLines() / 10);
-			for(int i=0; i<=time;i++){timeLabels[i].get_style_context()->add_class("timeStickers");}
-			for(int i=time+1; i <MAX_PREDICTION;i++){timeLabels[i].get_style_context()->add_class("timeStickersempty");}
+			for(int i=0; i<=time;i++){
+				timeLabels[i].get_style_context()->remove_class("timeStickersempty");
+				timeLabels[i].get_style_context()->add_class("timeStickers");}
+			for(int i=time+1; i <MAX_PREDICTION;i++){
+				timeLabels[i].get_style_context()->remove_class("timeStickersempty");
+				timeLabels[i].get_style_context()->add_class("timeStickersempty");}
 			// Assignation des textes aux label
 			scoreLabel->set_text("Score: " + scorestr);
 			// timeLabel->set_text("Time: " + timestr);

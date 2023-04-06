@@ -17,7 +17,7 @@ void SetupGrid(Gtk::Grid *grid, const guint spacing)
 }
 
 GameWindow::GameWindow(const Glib::ustring &name, const int width, const int height, const guint borderSize, const guint gridSpacing)
-	: gameOverMenu(NULL), bestScore(0), currentMainLoopTimeout(MAIN_LOOP_TIMEOUT)
+	: gameOverMenu(NULL), bestScore(0), currentMainLoopTimeout(MAIN_LOOP_TIMEOUT), pauseMenu(NULL)
 {
 	// Paramétrage de la fenetre
 	set_title(name);
@@ -65,35 +65,30 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 
 	// Initialisation des visualisation des score, meilleur score et niveau
 	scoreLabel = Gtk::make_managed<Gtk::Label>();
-	bestScoreLabel = Gtk::make_managed<Gtk::Label>();
+	bestScoreLabelPauseMenu = Gtk::make_managed<Gtk::Label>();
 	levelLabel = Gtk::make_managed<Gtk::Label>();
 	scoreLabelOverMenu = Gtk::make_managed<Gtk::Label>();
 	bestScoreLabelOverMenu = Gtk::make_managed<Gtk::Label>();
 	bestScoreLabelMainMenu = Gtk::make_managed<Gtk::Label>();
+	// timeLabel= Gtk::make_managed<Gtk::Label>();
 
 	bestScoreLabelMainMenu->get_style_context()->add_class("subtitleLabel");
-	scoreLabelOverMenu->get_style_context()->add_class("subtitleLabel");
-	bestScoreLabelOverMenu->get_style_context()->add_class("subtitleLabel");
-
-	// auto startBtnStyleContext = startBtn->get_style_context();
-	// startBtnStyleContext->add_class("button");
-	// startBtnStyleContext->add_provider(provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
-
-	// auto startBtnStyleContext = startBtn->get_style_context();
-	// startBtnStyleContext->add_class("button");
-	// startBtnStyleContext->add_provider(provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
-
-	// auto startBtnStyleContext = startBtn->get_style_context();
-	// startBtnStyleContext->add_class("button");
-	// startBtnStyleContext->add_provider(provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
+	scoreLabelOverMenu->get_style_context()->add_class("subtitleLabelMenu");
+	bestScoreLabelOverMenu->get_style_context()->add_class("subtitleLabelMenu");
+	levelLabel->get_style_context()->add_class("subtitleLabelMenu");
+	bestScoreLabelPauseMenu->get_style_context()->add_class("subtitleLabelMenu");
+	scoreLabel->get_style_context()->add_class("subtitleLabelMenu");
+	// Initialise l'affichage des pastilles de temps
+	RenderTime();
+	for(int i=0;i<MAX_PREDICTION;i++){
+		timeLabels[i].set_text("oo");
+		}
 
 	// initialisation de l'affichage des scores
 	RenderScore(0);
 	RenderScore(1);
 
-	levelLabel->set_text("<span size='34000'>level : </span>");
-	levelLabel->set_use_markup(true);
-	levelLabel->override_color(Gdk::RGBA(MAINMENU_COLOR), Gtk::STATE_FLAG_NORMAL);
+	
 
 	// Création du terrain de jeu
 	gameBoard = MakeGameBoard(m_terrainGrid, m_previewGrid, m_previousPreviewGrid);
@@ -163,6 +158,33 @@ void GameWindow::MainMenuButton()
 	mainMenu->show();
 }
 
+void GameWindow::ResumeButton()
+{
+	// // On ajoute le terrain à l'overlay s'il n'y est pas déjà
+	// if (gameBoard->get_parent() == 0)
+	// {
+	// 	overlay->add(*gameBoard);
+	// 	overlay->show_all();
+	// }
+
+	// ResumeGame();
+	HideAll();
+	// On affiche le terrain
+	gameBoard->show();
+
+	ReconnectGameControls();
+}
+
+// void GameWindow::ResumeGame()
+// {
+// 	HideAll();
+// 	// On affiche le terrain
+// 	gameBoard->show();
+
+// 	ReconnectGameControls();
+// }
+
+
 void GameWindow::StartButton()
 {
 	// On ajoute le terrain à l'overlay s'il n'y est pas déjà
@@ -175,38 +197,60 @@ void GameWindow::StartButton()
 	RestartGame();
 }
 
+void GameWindow::PauseButton()
+{
+	if (pauseMenu == NULL)
+	{
+		// Ajout du menu Pause à l'overlay
+		pauseMenu = MakePauseMenu();
+		overlay->add_overlay(*pauseMenu);
+
+		// Quand on ajoute un widget à l'overlay, GTK ajoute un composant intermédiaire enfant de l'overlay et dont le widget est enfant
+		// Ainsi, il est nécessaire d'afficher cet enfant intermédiare dont on n'a aucune information
+		// C'est pour cela que l'on utilise show_all(), puis que l'on cache les widgets inutiles
+		overlay->show_all();
+	}
+
+	DisconnectGameControls();
+
+	// On affiche le menu pause au dessus du menu de jeu
+	HideAll();
+	pauseMenu->show();
+	gameBoard->show();
+}
+
+
 Gtk::Box *GameWindow::MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGrid, Gtk::Grid *previousPreviewGrid)
 {
 	Gtk::Box *wrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_HORIZONTAL);
-
 	Gtk::Box *leftWrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_VERTICAL);
 	Gtk::Box *rightWrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_VERTICAL);
+	Gtk::Button *pauseBtn = Gtk::make_managed<Gtk::Button>("Pause");
+	Gtk::Box *smallWrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_HORIZONTAL);
 
-	// Gtk::Label *scoreLabel = Gtk::make_managed<Gtk::Label>();
-	// Gtk::Label *bestScoreLabel = Gtk::make_managed<Gtk::Label>();
+	pauseBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::PauseButton));
+	//CSS Style
+	wrapper->get_style_context()->add_class("mainMenuBackgroud");
+	pauseBtn->get_style_context()->add_class("button");
 
-	// Utiliser CSS pour éviter de hardcoder la taille
-	// scoreLabel->set_text("<span size='34000'>Score : </span>");
-	// scoreLabel->set_use_markup(true);
-	// scoreLabel->override_color(Gdk::RGBA(MAINMENU_COLOR), Gtk::STATE_FLAG_NORMAL);
+	for(int i=0;i<MAX_PREDICTION;i++){smallWrapper->pack_start(timeLabels[i], Gtk::PACK_SHRINK, 0);}
 
-	// bestScoreLabel->set_text("<span size='34000'>Best Score : </span>");
-	// bestScoreLabel->set_use_markup(true);
-	// bestScoreLabel->override_color(Gdk::RGBA(MAINMENU_COLOR), Gtk::STATE_FLAG_NORMAL);
+
 
 	leftWrapper->set_homogeneous(true);
 	leftWrapper->set_hexpand(false);
 	leftWrapper->pack_start(*scoreLabel, Gtk::PACK_SHRINK, 0);
-	// leftWrapper->pack_start(*scoreValue);
+	leftWrapper->pack_start(*pauseBtn, Gtk::PACK_SHRINK, 0);
 	leftWrapper->pack_start(*previousPreviewGrid, Gtk::PACK_SHRINK, 0);
+	
 
 	rightWrapper->set_homogeneous(true);
 	rightWrapper->set_hexpand(false);
-	rightWrapper->pack_start(*bestScoreLabel, Gtk::PACK_SHRINK, 0);
+	rightWrapper->pack_start(*smallWrapper, Gtk::PACK_SHRINK, 0);
 	rightWrapper->pack_start(*levelLabel, Gtk::PACK_SHRINK, 0);
 	rightWrapper->pack_start(*previewGrid, Gtk::PACK_SHRINK, 0);
 
-	// Style : A faire avec CSS
+
 	wrapper->set_homogeneous(true);
 	wrapper->set_hexpand(false);
 	// wrapper->set_margin_bottom(100);
@@ -218,6 +262,8 @@ Gtk::Box *GameWindow::MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGr
 
 	return wrapper;
 }
+
+
 
 Gtk::Box *GameWindow::MakeMainMenu()
 {
@@ -244,7 +290,9 @@ Gtk::Box *GameWindow::MakeMainMenu()
 	exitBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::ExitGame));
 
 	// Ajouter les widget au wrapper
+	
 	wrapper->pack_start(*mainMenuLabel, Gtk::PACK_SHRINK, 0);
+	// wrapper->pack_start(*mainMenuLabel, Gtk::PACK_SHRINK, 0);
 	wrapper->pack_start(*bestScoreLabelMainMenu, Gtk::PACK_SHRINK, 0);
 	wrapper->pack_start(*startBtn, Gtk::PACK_SHRINK, 0);
 	wrapper->pack_start(*exitBtn, Gtk::PACK_SHRINK, 0);
@@ -263,31 +311,15 @@ Gtk::Box *GameWindow::MakeGameOverMenu()
 
 	Gtk::Button *retryBtn = Gtk::make_managed<Gtk::Button>("Retry");
 	Gtk::Button *mainMenuBtn = Gtk::make_managed<Gtk::Button>("Main menu");
-	Gtk::Button *exitBtn = Gtk::make_managed<Gtk::Button>("Exit");
 
-	// Utiliser CSS pour éviter de hardcoder la taille
-	gameOverLabel->set_text("<span size='34000'>Game Over !</span>");
-	gameOverLabel->set_use_markup(true);
-	gameOverLabel->override_color(Gdk::RGBA(GAMEOVER_COLOR), Gtk::STATE_FLAG_NORMAL);
+	retryBtn->get_style_context()->add_class("button");
+	mainMenuBtn->get_style_context()->add_class("button");
 
-	// std::string scorestr=std::to_string(score); //converting number to a string
-	// locScoreLabel->set_text("<span size='34000'>Score :"+scorestr+" 0</span>");
-	// locScoreLabel->set_use_markup(true);
-	// locScoreLabel->override_color(Gdk::RGBA(GAMEOVER_COLOR), Gtk::STATE_FLAG_NORMAL);
-
-	// bestScoreLabel->set_text("<span size='34000'>Best Score : 0</span>");
-	// bestScoreLabel->set_use_markup(true);
-	// bestScoreLabel->override_color(Gdk::RGBA(GAMEOVER_COLOR), Gtk::STATE_FLAG_NORMAL);
-
-	// gameOverLabel->set_hexpand(true);
-	// gameOverLabel->set_halign(Gtk::Align::ALIGN_CENTER);
-	// gameOverLabel->set_vexpand(true);
-	// gameOverLabel->set_valign(Gtk::Align::ALIGN_CENTER);
 
 	// Style : A faire avec CSS
 	wrapper->set_homogeneous(true);
-	wrapper->set_hexpand(true);
-	wrapper->set_vexpand(true);
+	wrapper->set_hexpand(false);
+	wrapper->set_vexpand(false);
 	// wrapper->set_margin_bottom(100);
 
 	scoreBox->set_homogeneous(true);
@@ -296,11 +328,11 @@ Gtk::Box *GameWindow::MakeGameOverMenu()
 	// Connecte les boutons aux actions à réaliser
 	retryBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::RestartGame));
 	mainMenuBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::MainMenuButton));
-	exitBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::ExitGame));
 
-	auto blublu = wrapper->get_style_context();
-	blublu->add_class("gameOverMenuBackgroud");
 
+	// wrapper->get_style_context()->add_class("gameOverMenuBackgroud");
+	gameOverLabel->set_text("GAME OVER");
+	gameOverLabel->get_style_context()->add_class("GOtitleLabel");
 	// Ajouter les widget au wrapper
 	wrapper->pack_start(*gameOverLabel, Gtk::PACK_SHRINK, 0);
 
@@ -310,10 +342,52 @@ Gtk::Box *GameWindow::MakeGameOverMenu()
 
 	wrapper->pack_start(*retryBtn, Gtk::PACK_SHRINK, 0);
 	wrapper->pack_start(*mainMenuBtn, Gtk::PACK_SHRINK, 0);
-	wrapper->pack_start(*exitBtn, Gtk::PACK_SHRINK, 0);
 
 	wrapper->override_background_color(Gdk::RGBA(GAMEOVER_BKG_COLOR), Gtk::STATE_FLAG_NORMAL);
 
+	return wrapper;
+}
+
+Gtk::Box *GameWindow::MakePauseMenu()
+{
+	Gtk::Box *wrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_VERTICAL);
+
+	Gtk::Box *scoreBox = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_HORIZONTAL);
+	Gtk::Label *locScoreLabel = Gtk::make_managed<Gtk::Label>();
+	// Gtk::Label *bestScoreLabel = Gtk::make_managed<Gtk::Label>();
+
+	Gtk::Button *resumeBtn = Gtk::make_managed<Gtk::Button>("Resume");
+	Gtk::Button *restartBtn = Gtk::make_managed<Gtk::Button>("Restart");
+	Gtk::Button *exitBtn = Gtk::make_managed<Gtk::Button>("Exit");
+
+	resumeBtn->get_style_context()->add_class("button");
+	exitBtn->get_style_context()->add_class("button");
+	restartBtn->get_style_context()->add_class("button");
+
+
+	// Style : A faire avec CSS
+	wrapper->set_homogeneous(true);
+	wrapper->set_hexpand(true);
+	wrapper->set_vexpand(true);
+
+	scoreBox->set_homogeneous(true);
+	scoreBox->set_hexpand(false);
+
+	// Connecte les boutons aux actions à réaliser
+	resumeBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::ResumeButton));
+	restartBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::RestartGame));
+	exitBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::ExitGame));
+
+	// Ajouter les widget au wrapper
+
+	scoreBox->pack_start(*scoreLabelOverMenu, Gtk::PACK_SHRINK, 0);
+	scoreBox->pack_start(*bestScoreLabelPauseMenu, Gtk::PACK_SHRINK, 0);
+	wrapper->pack_start(*scoreBox, Gtk::PACK_SHRINK, 0);
+
+	wrapper->pack_start(*resumeBtn, Gtk::PACK_SHRINK, 0);
+	wrapper->pack_start(*restartBtn, Gtk::PACK_SHRINK, 0);
+	wrapper->pack_start(*exitBtn, Gtk::PACK_SHRINK, 0);
+	wrapper->override_background_color(Gdk::RGBA(GAMEOVER_BKG_COLOR), Gtk::STATE_FLAG_NORMAL);
 	return wrapper;
 }
 
@@ -327,6 +401,9 @@ void GameWindow::HideAll()
 
 	if (gameBoard != NULL)
 		gameBoard->hide();
+
+	if (pauseMenu != NULL)
+		pauseMenu->hide();
 }
 
 void GameWindow::DisconnectGameControls()
@@ -370,7 +447,7 @@ void GameWindow::GameOver()
 		// C'est pour cela que l'on utilise show_all(), puis que l'on cache les widgets inutiles
 		overlay->show_all();
 	}
-
+	
 	DisconnectGameControls();
 
 	// On affiche le menu game over au dessus du menu de jeu
@@ -446,12 +523,21 @@ bool GameWindow::MainGameLoop()
 
 	return true;
 }
-
+void GameWindow::RenderTime()
+{
+	int time=timeManager.GetTimePosition();
+	for(int i=0; i<=time;i++){
+		timeLabels[i].get_style_context()->remove_class("timeStickersempty");
+		timeLabels[i].get_style_context()->add_class("timeStickers");}
+	for(int i=time+1; i <MAX_PREDICTION;i++){
+		timeLabels[i].get_style_context()->remove_class("timeStickersempty");
+		timeLabels[i].get_style_context()->add_class("timeStickersempty");}
+}
 void GameWindow::RenderScore(int spec)
 {
 	// Réupération des données
 	std::string scorestr = std::to_string(terrainPiece.terrainGraph->GetScore());
-
+	
 	// Switch selon le label a actualiser: ceux de MainMenu et GameOver ou ceux du GameBoard
 	switch (spec)
 	{
@@ -459,15 +545,11 @@ void GameWindow::RenderScore(int spec)
 		{
 			// Réupération des données
 			std::string levelstr = std::to_string(1 + terrainPiece.terrainGraph->GetClearedLines() / 10);
-
+			
 			// Assignation des textes aux label
-			scoreLabel->set_text("<span size='34000'>Score: " + scorestr + " </span>");
-			scoreLabel->set_use_markup(true);
-			scoreLabel->override_color(Gdk::RGBA(GAMEOVER_COLOR), Gtk::STATE_FLAG_NORMAL);
-
-			levelLabel->set_text("<span size='34000'>Level: " + levelstr + " </span>");
-			levelLabel->set_use_markup(true);
-			scoreLabel->override_color(Gdk::RGBA(GAMEOVER_COLOR), Gtk::STATE_FLAG_NORMAL);
+			scoreLabel->set_text("Score: " + scorestr);
+			// timeLabel->set_text("Time: " + timestr);
+			levelLabel->set_text("Level: " + levelstr);
 
 			break;
 		}
@@ -477,21 +559,13 @@ void GameWindow::RenderScore(int spec)
 			std::string bscorestr = std::to_string(bestScore);
 
 			// Assignation des textes aux label
-			scoreLabelOverMenu->set_text("<span size='34000'>Score: " + scorestr + " </span>");
-			scoreLabelOverMenu->set_use_markup(true);
-			scoreLabelOverMenu->override_color(Gdk::RGBA(GAMEOVER_COLOR), Gtk::STATE_FLAG_NORMAL);
+			scoreLabelOverMenu->set_text("Score: " + scorestr);
 
-			bestScoreLabelOverMenu->set_text("<span size='34000'>Best Score: " + bscorestr + " </span>");
-			bestScoreLabelOverMenu->set_use_markup(true);
-			bestScoreLabelOverMenu->override_color(Gdk::RGBA(GAMEOVER_COLOR), Gtk::STATE_FLAG_NORMAL);
+			bestScoreLabelOverMenu->set_text("Best Score: " + bscorestr);
 
-			bestScoreLabelMainMenu->set_text("<span size='34000'>Best Score: " + bscorestr + " </span>");
-			bestScoreLabelMainMenu->set_use_markup(true);
-			bestScoreLabelMainMenu->override_color(Gdk::RGBA(GAMEOVER_COLOR), Gtk::STATE_FLAG_NORMAL);
+			bestScoreLabelMainMenu->set_text("Best Score: " + bscorestr);
 
-			bestScoreLabel->set_text("<span size='34000'>Best Score: " + bscorestr + " </span>");
-			bestScoreLabel->set_use_markup(true);
-			bestScoreLabel->override_color(Gdk::RGBA(GAMEOVER_COLOR), Gtk::STATE_FLAG_NORMAL);
+			bestScoreLabelPauseMenu->set_text("Best Score: " + bscorestr);
 
 			break;
 		}
@@ -609,6 +683,12 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 			signalHandled = true;
 			break;
 
+		case GDK_KEY_p:
+			PauseButton();
+			signalHandled = true;
+			break;
+
+		//avancer dans le temps
 		case GDK_KEY_s:
 			// S'il y a eu une collsion lors du changement de temporalité
 			if (!timeManager.MoveInTime(terrainPiece.pieceGraph, terrainPiece.terrainGraph))
@@ -623,9 +703,12 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 			terrainPiece.previewGraph->RenderGrid(timeManager.SeeNextPiece());
 			terrainPiece.previousPreviewGraph->RenderGrid(timeManager.SeePreviousPiece());
 
+
+			RenderTime();
 			signalHandled = true;
 			break;
-
+		
+		//reculer dans le temps
 		case GDK_KEY_q:
 			timeManager.BackInTime(terrainPiece.pieceGraph, terrainPiece.terrainGraph);
 
@@ -638,6 +721,7 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 			terrainPiece.previewGraph->RenderGrid(timeManager.SeeNextPiece());
 			terrainPiece.previousPreviewGraph->RenderGrid(timeManager.SeePreviousPiece());
 
+			RenderTime();
 			signalHandled = true;
 			break;
 	}

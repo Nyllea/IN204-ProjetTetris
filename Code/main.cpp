@@ -2,7 +2,7 @@
 
 #include <gtkmm-3.0/gtkmm/main.h>
 
-#define WINDOW_NAME "Tetris"
+#define WINDOW_NAME "Time Tetris"
 #define WINDOW_WIDTH 1422
 #define WINDOW_HEIGHT 800
 #define WINDOW_BORDER 0

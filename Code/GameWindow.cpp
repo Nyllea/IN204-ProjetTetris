@@ -175,7 +175,7 @@ Gtk::Box *GameWindow::MakeMainMenu()
 	Gtk::Button *exitBtn = Gtk::make_managed<Gtk::Button>("Exit");
 
 	// Initialisation des textes
-	mainMenuLabel->set_text("TETRIS");
+	mainMenuLabel->set_text("TIME TETRIS");
 
 	// Connecte les boutons aux actions à réaliser
 	startBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::StartButton));

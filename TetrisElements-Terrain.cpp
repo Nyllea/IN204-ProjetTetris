@@ -104,6 +104,9 @@ void Terrain::UpdateScore(int cplt_lines)
 		case 4:
 			score += 800 * level;
 			break;
+		default:
+			score += 300 * cplt_lines * level;
+			break;
 	}
 
 	clearedLines += cplt_lines;

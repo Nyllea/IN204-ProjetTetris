@@ -111,7 +111,7 @@ bool TerrainGraphic::ImprintPiece(PieceGraphic **const piece, TimeManager &timeM
 		if (!timeManager.IsInFuture() && CheckLine(terrainCoord))
 		{
 			RemoveLine(terrainCoord);
-			completedLines += 1;
+			completedLines++;
 		}
 	}
 
@@ -141,9 +141,10 @@ bool TerrainGraphic::ImprintPiece(PieceGraphic **const piece, TimeManager &timeM
 }
 
 // Ajoute la piece à la matrice du terrain et retourne false s'il y a une collision
-// Si removeLine, supprime les lignes complétées par les pièces
+// Si removeLine, supprime les lignes complétées par les pièces et actualise le score
 bool TerrainGraphic::ImprintFuturePieces(const std::list<PieceGraphic *> &pieces, const bool removeLines)
 {
+	int completedLines = 0;
 	bool noCollision = true;
 
 	// Pour chaque pièce
@@ -171,9 +172,14 @@ bool TerrainGraphic::ImprintFuturePieces(const std::list<PieceGraphic *> &pieces
 
 			// Si la ligne est complète et que on supprime les lignes
 			if (removeLines && CheckLine(terrainCoord))
+			{
 				RemoveLine(terrainCoord);
+				completedLines++;
+			}
 		}
 	}
+
+	UpdateScore(completedLines);
 
 	return noCollision;
 }

@@ -52,7 +52,7 @@ class GameWindow : public Gtk::Window
 	// Définitions des objets Gtk
 	Gtk::Box *gameOverMenu, *mainMenu, *gameBoard, *pauseMenu;
 	Gtk::Label *scoreLabelOverMenu, *bestScoreLabelOverMenu, *levelLabel, *scoreLabel, *bestScoreLabelPauseMenu, *bestScoreLabelMainMenu;
-	Gtk::Label timeLabels[MAX_PREDICTION] ;
+	Gtk::Label timeLabels[MAX_PREDICTION];
 
 	Glib::RefPtr<Gtk::CssProvider> cssProvider;
 
@@ -67,23 +67,20 @@ class GameWindow : public Gtk::Window
 	Gtk::Box *MakeGameOverMenu();
 	Gtk::Box *MakePauseMenu();
 
-
-
 	// Fonctions des boutons de menu correpondants
 	void ExitGame();
 	void RestartGame();
-	void MainMenuButton() ;
+	void MainMenuButton();
 	void StartButton();
-	void ResumeButton() ;
+	void ResumeButton();
 	void PauseButton();
 
-	
 	// Fonctions utiles pour la gestion de l'affichage des menus Gtk
 	void HideAllGtkWidgets() const;
-	void DisconnectGameControls() ;
+	void DisconnectGameControls();
 	void ReconnectGameControls();
 	void RenderScore(const bool isGameBoard) const;
-	void ActualiseTimeStickers() ;
+	void ActualiseTimeStickers();
 
 	// Boucle de jeu principale appellée une fois toute les CURRENT_MAIN_TIME_LOOP ms
 	bool MainGameLoop();
@@ -92,11 +89,10 @@ class GameWindow : public Gtk::Window
 	void ResetMainGameLoop();
 
 	// GameOver
-	void GameOver() ;
+	void GameOver();
 
 	// Fonction de gestion des entrées clavier
 	bool OnKeyPress(GdkEventKey *const event);
-	
 };
 
 #endif

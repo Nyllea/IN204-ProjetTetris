@@ -1,7 +1,7 @@
 #include "GameWindow.hpp"
 
 void SetupGrid(Gtk::Grid *grid, const guint spacing)
-{	
+{
 	// Initialisation de la grille
 
 	grid->set_row_homogeneous(false);
@@ -16,12 +16,11 @@ void SetupGrid(Gtk::Grid *grid, const guint spacing)
 	grid->set_valign(Gtk::Align::ALIGN_CENTER);
 }
 
-
 GameWindow::GameWindow(const Glib::ustring &name, const int width, const int height, const guint borderSize, const guint gridSpacing)
 	: gameOverMenu(NULL), bestScore(0), currentMainLoopTimeout(MAIN_LOOP_TIMEOUT), pauseMenu(NULL)
-{	
+{
 	// On est pas encore dans le jeu
-	isInGame=false;
+	isInGame = false;
 
 	// Paramétrage de la fenetre
 	set_title(name);
@@ -83,10 +82,11 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 
 	// Initialise l'affichage des pastilles de temps
 	ActualiseTimeStickers();
-	for(int i=0;i<MAX_PREDICTION;i++){
+	for (int i = 0; i < MAX_PREDICTION; i++)
+	{
 		timeLabels[i].set_text("oo");
-		}
-	
+	}
+
 	// Initialisation de l'affichage des scores
 	RenderScore(0);
 	RenderScore(1);
@@ -108,7 +108,6 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 	keyboardControls.block();
 }
 
-
 GameWindow::~GameWindow()
 {
 	keyboardControls.disconnect();
@@ -122,7 +121,7 @@ GameWindow::~GameWindow()
 }
 
 Gtk::Box *GameWindow::MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGrid, Gtk::Grid *previousPreviewGrid)
-{	
+{
 	// Création des widgets nécessaires
 	Gtk::Box *wrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_HORIZONTAL);
 	Gtk::Box *leftWrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_VERTICAL);
@@ -136,7 +135,10 @@ Gtk::Box *GameWindow::MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGr
 	// Style avec CSS
 	wrapper->get_style_context()->add_class("mainMenuBackgroud");
 	pauseBtn->get_style_context()->add_class("button");
-	for(int i=0;i<MAX_PREDICTION;i++){smallWrapper->pack_start(timeLabels[i], Gtk::PACK_SHRINK, 0);}
+	for (int i = 0; i < MAX_PREDICTION; i++)
+	{
+		smallWrapper->pack_start(timeLabels[i], Gtk::PACK_SHRINK, 0);
+	}
 
 	// Rassemblements des widgets à gauche du terrain
 	leftWrapper->set_homogeneous(true);
@@ -164,8 +166,8 @@ Gtk::Box *GameWindow::MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGr
 	return wrapper;
 }
 
-Gtk::Box *GameWindow::MakeMainMenu() 
-{	
+Gtk::Box *GameWindow::MakeMainMenu()
+{
 	// Création des widgets nécessaires
 	Gtk::Box *wrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_VERTICAL);
 	Gtk::Label *mainMenuLabel = Gtk::make_managed<Gtk::Label>();
@@ -189,7 +191,6 @@ Gtk::Box *GameWindow::MakeMainMenu()
 	wrapper->set_homogeneous(true);
 	wrapper->set_hexpand(false);
 	wrapper->set_margin_bottom(100);
-
 
 	// Ajouter les widget au wrapper
 	wrapper->pack_start(*mainMenuLabel, Gtk::PACK_SHRINK, 0);
@@ -284,14 +285,13 @@ Gtk::Box *GameWindow::MakePauseMenu()
 	return wrapper;
 }
 
-
 void GameWindow::ExitGame()
-{	
+{
 	this->close();
 }
 
 void GameWindow::RestartGame()
-{	
+{
 
 	// On cache les widget déjà présent
 	HideAllGtkWidgets();
@@ -318,7 +318,7 @@ void GameWindow::RestartGame()
 	RenderScore(1);
 }
 
-void GameWindow::MainMenuButton() 
+void GameWindow::MainMenuButton()
 {
 	HideAllGtkWidgets();
 
@@ -338,13 +338,12 @@ void GameWindow::StartButton()
 	RestartGame();
 }
 
-void GameWindow::ResumeButton() 
+void GameWindow::ResumeButton()
 {
 	HideAllGtkWidgets();
 	gameBoard->show();
 	ReconnectGameControls();
 }
-
 
 void GameWindow::PauseButton()
 {
@@ -386,10 +385,10 @@ void GameWindow::HideAllGtkWidgets() const
 		pauseMenu->hide();
 }
 
-void GameWindow::DisconnectGameControls() 
-{	
+void GameWindow::DisconnectGameControls()
+{
 	// On est plus dans le jeu
-	isInGame=false;
+	isInGame = false;
 
 	// On bloque les entrées clavier
 	keyboardControls.block();
@@ -400,10 +399,10 @@ void GameWindow::DisconnectGameControls()
 	mainGameLoop.disconnect();
 }
 
-void GameWindow::ReconnectGameControls() 
-{	
+void GameWindow::ReconnectGameControls()
+{
 	// On est a nouveau dans le jeu
-	isInGame=true;
+	isInGame = true;
 
 	// On recrée la connection lancant la boucle principale
 	mainGameLoop = Glib::signal_timeout().connect(sigc::mem_fun(*this, &GameWindow::MainGameLoop), MAIN_LOOP_TIMEOUT);
@@ -412,33 +411,36 @@ void GameWindow::ReconnectGameControls()
 	keyboardControls.unblock();
 }
 
+void GameWindow::ActualiseTimeStickers()
+{
+	// On modifie les vignettes pour correspondre à la variable de temps
+	int time = timeManager.GetTimePosition();
 
-
-void GameWindow::ActualiseTimeStickers() 
-{	
-	// On modifie les vignettes pour correspondre à la variable de temps 
-	int time=timeManager.GetTimePosition();
-
-	for(int i=0; i<=time;i++){
+	for (int i = 0; i <= time; i++)
+	{
 		// Les premières vignettes sont pleines
 		timeLabels[i].get_style_context()->remove_class("timeStickersempty");
-		timeLabels[i].get_style_context()->add_class("timeStickers");}
-	
-	for(int i=time+1; i <MAX_PREDICTION;i++){
+		timeLabels[i].get_style_context()->add_class("timeStickers");
+	}
+
+	for (int i = time + 1; i < MAX_PREDICTION; i++)
+	{
 		// Les autres sont vides
 		timeLabels[i].get_style_context()->remove_class("timeStickersempty");
-		timeLabels[i].get_style_context()->add_class("timeStickersempty");}
+		timeLabels[i].get_style_context()->add_class("timeStickersempty");
+	}
 }
 
 void GameWindow::RenderScore(const bool isGameBoard) const
 {
 	// Réupération des données
 	std::string scorestr = std::to_string(terrainPiece.terrainGraph->GetScore());
-	
-	if (isGameBoard){
+
+	if (isGameBoard)
+	{
 		// Réupération des données
 		std::string levelstr = std::to_string(1 + terrainPiece.terrainGraph->GetClearedLines() / 10);
-		
+
 		// Assignation des textes aux label
 		scoreLabel->set_text("Score: " + scorestr);
 		levelLabel->set_text("Level: " + levelstr);
@@ -456,8 +458,6 @@ void GameWindow::RenderScore(const bool isGameBoard) const
 	}
 }
 
-
-
 bool TryMovePieceDown(const TerrainPiece &data)
 {
 	Piece *piece = (Piece *)(*data.pieceGraph);
@@ -474,9 +474,8 @@ bool TryMovePieceDown(const TerrainPiece &data)
 	return true;
 }
 
-
 // Fonction appelée toute les MAIN_LOOP_TIMEOUT ms tant qu'elle retourne true
-bool GameWindow::MainGameLoop() 
+bool GameWindow::MainGameLoop()
 {
 	// Si la piece n'a pas pu etre descendu, alors il y a un obstacle l'empechant -> La piece doit etre placée
 	if (!TryMovePieceDown(terrainPiece))
@@ -528,13 +527,13 @@ bool GameWindow::MainGameLoop()
 }
 
 // Réinitialise le temps à la prochaine itération de MainGameLoop
-void GameWindow::ResetMainGameLoop() 
+void GameWindow::ResetMainGameLoop()
 {
 	mainGameLoop.disconnect();
 	mainGameLoop = Glib::signal_timeout().connect(sigc::mem_fun(*this, &GameWindow::MainGameLoop), currentMainLoopTimeout);
 }
 
-void GameWindow::GameOver() 
+void GameWindow::GameOver()
 {
 	// Actualisation du bestScore
 	if (bestScore < terrainPiece.terrainGraph->GetScore())
@@ -555,7 +554,7 @@ void GameWindow::GameOver()
 		// C'est pour cela que l'on utilise show_all(), puis que l'on cache les widgets inutiles
 		overlay->show_all();
 	}
-	
+
 	DisconnectGameControls();
 
 	// On affiche le menu game over au dessus du menu de jeu
@@ -572,7 +571,7 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 	Terrain *terrain = (Terrain *)(terrainPiece.terrainGraph);
 
 	switch (event->keyval)
-	{	
+	{
 		// Fais tourner la pièce vers la gauche
 		case GDK_KEY_a:
 			piece->RotateLeft();
@@ -600,7 +599,7 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 
 		// Implémentation du "hard drop" la pièce tombe instantanément
 		case GDK_KEY_x:
-			
+
 			while (!terrain->CheckCollision(piece))
 				piece->Move(0, 1);
 
@@ -636,7 +635,7 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 
 			signalHandled = true;
 			break;
-		
+
 		// Déplace la pièce a gauche
 		case GDK_KEY_Left:
 			piece->Move(-1, 0);
@@ -697,7 +696,7 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 			ActualiseTimeStickers();
 			signalHandled = true;
 			break;
-		
+
 		// Reculer dans le temps
 		case GDK_KEY_q:
 			timeManager.BackInTime(terrainPiece.pieceGraph, terrainPiece.terrainGraph);
@@ -722,4 +721,3 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 	else
 		return true;
 }
-

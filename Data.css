@@ -1,133 +1,134 @@
-
 /* fichier CSS contenant differents types d'affichages pour les objets GTK */
-
-
-
 
 /*Un affichage pour le titre*/
 .titleLabel {
-    color: rgb(192, 26, 20); 
-    font-size: 150px;
-    padding: 15px 32px; 
-    animation-name: arcenciel;
-    animation-iteration-count: infinite;
+  color: rgb(192, 26, 20);
+  font-size: 150px;
+  padding: 15px 32px;
+  animation-name: arcenciel;
+  animation-iteration-count: infinite;
 
-    animation-duration: 10s;
+  animation-duration: 10s;
 }
 /*Un affichage pour le titre du Game Over*/
 
 .GOtitleLabel {
-    color: rgba(128, 0, 0, 0.748); 
-    font-size: 150px;
-    animation-name: GOtitleAnimation;
-    animation-iteration-count: infinite;
+  color: rgba(128, 0, 0, 0.748);
+  font-size: 150px;
+  animation-name: GOtitleAnimation;
+  animation-iteration-count: infinite;
 
-    animation-duration: 10s;
+  animation-duration: 10s;
 }
 
 /*Un affichage pour les sous-titres*/
 .subtitleLabel {
+  color: rgb(0, 0, 0);
+  animation-name: arcenciel;
+  animation-iteration-count: infinite;
 
-    color: rgb(0, 0, 0); 
-    animation-name: arcenciel;
-    animation-iteration-count: infinite;
+  animation-duration: 10s;
+  transition-duration: 1s;
 
-    animation-duration: 10s;
-    transition-duration: 1s;
-
-    font-size: 50px;
-    padding: 15px 32px; }
-
+  font-size: 50px;
+  padding: 15px 32px;
+}
 
 /*Un affichage pour un deuxième type de sous-titres*/
 .subtitleLabelMenu {
+  color: rgb(0, 0, 0);
+  border: 10px solid #0a0707;
+  border-radius: 20px;
+  transition-duration: 1s;
+  background-color: aliceblue;
 
-    color: rgb(0, 0, 0); 
-    border: 10px solid #0a0707; 
-    border-radius: 20px; 
-    transition-duration: 1s;
-    background-color: aliceblue;
-
-    font-size: 50px;
-    padding: 15px 32px; }
-
-
+  font-size: 50px;
+  padding: 15px 32px;
+}
 
 /*Le background du jeu*/
 .mainMenuBackgroud {
-    background-image: url('background.jpg'); 
+  background-image: url("background.jpg");
 }
 
 /*Un affichage pour les boutons*/
 .button {
-
-    color: rgb(36, 9, 47); 
-    border: 10px solid #0a0707; 
-    border-radius: 20px; 
-    transition-duration: 0.4s;
-    font-size: 40px;
-    padding: 0px 0px; }
+  color: rgb(36, 9, 47);
+  border: 10px solid #0a0707;
+  border-radius: 20px;
+  transition-duration: 0.4s;
+  font-size: 40px;
+  padding: 0px 0px;
+}
 .button:hover {
-
-    color: rgb(9, 2, 2);
-    font-size: 60px;
-    }
-
-
+  color: rgb(9, 2, 2);
+  font-size: 60px;
+}
 
 /*Un affichage pour les vignettes de temps remplies*/
 .timeStickers {
-    color: rgb(5, 4, 78); 
-    background-color: rgb(5, 4, 78); 
-    border: 12px solid #0a0707; 
-    font-size: 50px;
+  color: rgb(5, 4, 78);
+  background-color: rgb(5, 4, 78);
+  border: 12px solid #0a0707;
+  font-size: 50px;
 
-    border-radius: 3px; 
-    border-radius: 50%;
-
+  border-radius: 3px;
+  border-radius: 50%;
 }
 
 /*Un affichage pour les vignettes de temps vides*/
 .timeStickersempty {
-    color: rgb(255, 255, 255); 
-    background-color: rgb(255, 255, 255); 
-    border: 10px solid #0a0707; 
-    font-size: 50px;
-    border-radius: 3px; 
-    border-radius: 50%;
-
+  color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  border: 10px solid #0a0707;
+  font-size: 50px;
+  border-radius: 3px;
+  border-radius: 50%;
 }
-
 
 /*Les frames pour une animation*/
 @keyframes arcenciel {
-  0%   {color: red;}
-  12%   {color: orange;}
-  25%  {color: rgb(21, 255, 0);}
-  37%  {color: rgb(0, 255, 174);}
-  50%  {color: rgb(0, 64, 255);}
-  62%  {color: rgb(191, 0, 255);}
-  75%  {color: rgb(255, 0, 251);}
-  87%  {color: rgb(255, 0, 55);}
-  100% {color: red;}
+  0% {
+    color: red;
+  }
+  12% {
+    color: orange;
+  }
+  25% {
+    color: rgb(21, 255, 0);
+  }
+  37% {
+    color: rgb(0, 255, 174);
+  }
+  50% {
+    color: rgb(0, 64, 255);
+  }
+  62% {
+    color: rgb(191, 0, 255);
+  }
+  75% {
+    color: rgb(255, 0, 251);
+  }
+  87% {
+    color: rgb(255, 0, 55);
+  }
+  100% {
+    color: red;
+  }
 }
-
 
 /*Une autre animation poir le GAME OVER*/
 @keyframes GOtitleAnimation {
-  0%  {color: rgba(0, 0, 0, 0);}
-  50% {color: rgba(128, 0, 0, 0.748);}
-  75% {color: rgba(128, 0, 0, 0.748);}
-  100% {color: rgba(0, 0, 0, 0);}
+  0% {
+    color: rgba(0, 0, 0, 0);
+  }
+  50% {
+    color: rgba(128, 0, 0, 0.748);
+  }
+  75% {
+    color: rgba(128, 0, 0, 0.748);
+  }
+  100% {
+    color: rgba(0, 0, 0, 0);
+  }
 }
-
-
-
-
-
-
-
-
-
-
-

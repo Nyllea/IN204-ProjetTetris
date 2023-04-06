@@ -166,3 +166,6 @@ bool TimeManager::MoveOneTimeUnit(TerrainGraphic *terrainGraph)
 
 	return noCollision;
 }
+
+// Retourne la position actuelle dans le temps (0 est le présent)
+int TimeManager::GetTimePosition() { return previousPiecesQueue.size(); }

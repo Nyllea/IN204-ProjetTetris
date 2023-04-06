@@ -88,6 +88,9 @@ class TimeManager
 
 	// Avance d'un pas dans le temps
 	bool MoveOneTimeUnit(TerrainGraphic *terrainGraph);
+
+	// Retourne la position actuelle dans le temps (0 est le présent)
+	int GetTimePosition();
 };
 
 #endif

@@ -31,3 +31,5 @@ Crédit :
     - Ajout du support du clavier (PintoDoido): https://stackoverflow.com/questions/44098084/how-do-i-handle-keyboard-events-in-gtk3
 
     - Passage a Gtkmm : http://sdz.tdct.org/sdz/creer-des-interfaces-graphiques-en-c-avec-gtkmm.html
+
+    - Créer des boutons en CSS : https://www.w3schools.com/css/css3_buttons.asp

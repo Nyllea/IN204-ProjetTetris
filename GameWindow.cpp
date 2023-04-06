@@ -16,7 +16,8 @@ void SetupGrid(Gtk::Grid *grid, const guint spacing)
 	grid->set_valign(Gtk::Align::ALIGN_CENTER);
 }
 
-GameWindow::GameWindow(const Glib::ustring &name, const int width, const int height, const guint borderSize, const guint gridSpacing) : gameOverMenu(NULL), bestScore(0)
+GameWindow::GameWindow(const Glib::ustring &name, const int width, const int height, const guint borderSize, const guint gridSpacing)
+	: gameOverMenu(NULL), bestScore(0), currentMainLoopTimeout(MAIN_LOOP_TIMEOUT)
 {
 	// Paramétrage de la fenetre
 	set_title(name);
@@ -130,6 +131,9 @@ void GameWindow::RestartGame()
 	// On reinitialise les préview
 	terrainPiece.previewGraph->RenderGrid(timeManager.SeeNextPiece());
 	terrainPiece.previousPreviewGraph->RenderGrid(NULL);
+
+	// On réinitialise le timeout de la mainGameLoop
+	currentMainLoopTimeout = MAIN_LOOP_TIMEOUT;
 
 	// On actualise l'affichege du score
 	RenderScore(0);
@@ -328,7 +332,8 @@ void GameWindow::DisconnectGameControls()
 	keyboardControls.block();
 
 	// On déconnecte la boucle de jeu
-	// Un block sur une connection de type signal_timeout revient à un disconnect: on perd la connection
+	// Un block sur une connection de type signal_timeout fait perdre la connection et est donc impossible à reprendre
+	// On utilise donc directement disconnect
 	mainGameLoop.disconnect();
 }
 
@@ -427,10 +432,10 @@ bool GameWindow::MainGameLoop()
 
 	if (clearedLines % 10 == 0)
 	{
-		int TIME = std::max(MAIN_LOOP_TIMEOUT / 20, MAIN_LOOP_TIMEOUT - 50 * (clearedLines / 10));
+		currentMainLoopTimeout = std::max(MAIN_LOOP_TIMEOUT / 20, MAIN_LOOP_TIMEOUT - 50 * (clearedLines / 10));
 
 		mainGameLoop.disconnect();
-		mainGameLoop = Glib::signal_timeout().connect(sigc::mem_fun(*this, &GameWindow::MainGameLoop), TIME);
+		mainGameLoop = Glib::signal_timeout().connect(sigc::mem_fun(*this, &GameWindow::MainGameLoop), currentMainLoopTimeout);
 
 		// On arrète le signal timeout
 		return false;
@@ -490,8 +495,18 @@ void GameWindow::RenderScore(int spec)
 	}
 }
 
+// Réinitialise le temps à la prochaine itération de MainGameLoop
+void GameWindow::ResetMainGameLoop()
+{
+	mainGameLoop.disconnect();
+
+	mainGameLoop = Glib::signal_timeout().connect(sigc::mem_fun(*this, &GameWindow::MainGameLoop), currentMainLoopTimeout);
+}
+
 bool GameWindow::OnKeyPress(GdkEventKey *const event)
 {
+	bool signalHandled = false;
+
 	Piece *piece = (Piece *)(*terrainPiece.pieceGraph);
 	Terrain *terrain = (Terrain *)(terrainPiece.terrainGraph);
 
@@ -517,7 +532,8 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 			}
 
 			terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
-			return true;
+
+			signalHandled = true;
 			break;
 
 		case GDK_KEY_x:
@@ -526,8 +542,11 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 				piece->Move(0, 1);
 
 			piece->Move(0, -1);
-			terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
-			return true;
+
+			ResetMainGameLoop();
+			MainGameLoop();
+
+			signalHandled = true;
 			break;
 
 		case GDK_KEY_z:
@@ -544,37 +563,49 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 						piece->Move(1, 0);
 						piece->RotateLeft();
 
-						return true;
+						signalHandled = true;
 					}
 				}
 			}
 
 			terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
-			return true;
+
+			signalHandled = true;
 			break;
+
 		case GDK_KEY_Left:
 			piece->Move(-1, 0);
 			if (terrain->CheckCollision(piece))
 				piece->Move(1, 0);
 
 			terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
-			return true;
+
+			signalHandled = true;
 			break;
+
 		case GDK_KEY_Right:
 			piece->Move(1, 0);
 			if (terrain->CheckCollision(piece))
 				piece->Move(-1, 0);
 
 			terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
-			return true;
+
+			signalHandled = true;
 			break;
+
 		case GDK_KEY_Down:
 			// Actualise le terrain seulement si la piece a été déplacée
 			if (TryMovePieceDown(terrainPiece))
 				terrainPiece.terrainGraph->RenderGrid(*terrainPiece.pieceGraph);
+			else
+			{
+				ResetMainGameLoop();
+				MainGameLoop();
+			}
 
-			return true;
+			signalHandled = true;
 			break;
+
 		case GDK_KEY_s:
 			// S'il y a eu une collsion lors du changement de temporalité
 			if (!timeManager.MoveInTime(terrainPiece.pieceGraph, terrainPiece.terrainGraph))
@@ -589,8 +620,9 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 			terrainPiece.previewGraph->RenderGrid(timeManager.SeeNextPiece());
 			terrainPiece.previousPreviewGraph->RenderGrid(timeManager.SeePreviousPiece());
 
-			return true;
+			signalHandled = true;
 			break;
+
 		case GDK_KEY_q:
 			timeManager.BackInTime(terrainPiece.pieceGraph, terrainPiece.terrainGraph);
 
@@ -603,9 +635,13 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 			terrainPiece.previewGraph->RenderGrid(timeManager.SeeNextPiece());
 			terrainPiece.previousPreviewGraph->RenderGrid(timeManager.SeePreviousPiece());
 
-			return true;
+			signalHandled = true;
 			break;
 	}
+
 	// Si l'évènement n'a pas été gérer, appeler la classe de base
-	return Gtk::Window::on_key_press_event(event);
+	if (!signalHandled)
+		return Gtk::Window::on_key_press_event(event);
+	else
+		return true;
 }

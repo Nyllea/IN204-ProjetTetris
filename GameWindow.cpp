@@ -65,7 +65,7 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 
 	// Initialisation des visualisation des score, meilleur score et niveau
 	scoreLabel = Gtk::make_managed<Gtk::Label>();
-	bestScoreLabel = Gtk::make_managed<Gtk::Label>();
+	bestScoreLabelPauseMenu = Gtk::make_managed<Gtk::Label>();
 	levelLabel = Gtk::make_managed<Gtk::Label>();
 	scoreLabelOverMenu = Gtk::make_managed<Gtk::Label>();
 	bestScoreLabelOverMenu = Gtk::make_managed<Gtk::Label>();
@@ -76,7 +76,7 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 	scoreLabelOverMenu->get_style_context()->add_class("subtitleLabelMenu");
 	bestScoreLabelOverMenu->get_style_context()->add_class("subtitleLabelMenu");
 	levelLabel->get_style_context()->add_class("subtitleLabelMenu");
-	bestScoreLabel->get_style_context()->add_class("subtitleLabelMenu");
+	bestScoreLabelPauseMenu->get_style_context()->add_class("subtitleLabelMenu");
 	scoreLabel->get_style_context()->add_class("subtitleLabelMenu");
 	// timeLabel->get_style_context()->add_class("subtitleLabelMenu");
 	for(int i=0;i<MAX_PREDICTION;i++){
@@ -385,7 +385,7 @@ Gtk::Box *GameWindow::MakePauseMenu()
 	// Ajouter les widget au wrapper
 
 	scoreBox->pack_start(*scoreLabelOverMenu, Gtk::PACK_SHRINK, 0);
-	scoreBox->pack_start(*bestScoreLabelOverMenu, Gtk::PACK_SHRINK, 0);
+	scoreBox->pack_start(*bestScoreLabelPauseMenu, Gtk::PACK_SHRINK, 0);
 	wrapper->pack_start(*scoreBox, Gtk::PACK_SHRINK, 0);
 
 	wrapper->pack_start(*resumeBtn, Gtk::PACK_SHRINK, 0);
@@ -565,7 +565,7 @@ void GameWindow::RenderScore(int spec)
 
 			bestScoreLabelMainMenu->set_text("Best Score: " + bscorestr);
 
-			bestScoreLabel->set_text("Best Score: " + bscorestr);
+			bestScoreLabelPauseMenu->set_text("Best Score: " + bscorestr);
 
 			break;
 		}

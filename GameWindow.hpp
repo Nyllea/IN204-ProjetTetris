@@ -45,7 +45,7 @@ class GameWindow : public Gtk::Window
 	TimeManager timeManager;
 
 	Gtk::Box *gameOverMenu, *mainMenu, *gameBoard, *pauseMenu;
-	Gtk::Label *scoreLabelOverMenu, *bestScoreLabelOverMenu, *levelLabel, *scoreLabel, *bestScoreLabel, *bestScoreLabelMainMenu;
+	Gtk::Label *scoreLabelOverMenu, *bestScoreLabelOverMenu, *levelLabel, *scoreLabel, *bestScoreLabelPauseMenu, *bestScoreLabelMainMenu;
 	Gtk::Label timeLabels[MAX_PREDICTION] ;
 	Glib::ustring data;
 

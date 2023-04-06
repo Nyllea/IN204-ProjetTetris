@@ -68,6 +68,7 @@
     color: rgba(128, 0, 0, 0.748); 
     font-size: 150px;
     animation-name: GOtitleAnimation;
+    
     animation-duration: 10s;
 }
 

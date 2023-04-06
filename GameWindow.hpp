@@ -50,29 +50,35 @@ class GameWindow : public Gtk::Window
 
 	Glib::ustring data;
 
-	Glib::RefPtr<Gtk::CssProvider> provider;
+	Glib::RefPtr<Gtk::CssProvider> cssProvider;
 
 	int bestScore;
 
+	int currentMainLoopTimeout;
+
 	bool OnKeyPress(GdkEventKey *const event);
 
-	bool MainGameLoop();
-
+	// Fonctions des boutons de menu correpondants
 	void ExitGame();
 	void RestartGame();
 	void MainMenuButton();
 	void StartButton();
 
+	// Fonctions de création des différents menus et fenêtre de jeu Gtk
 	Gtk::Box *MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGrid, Gtk::Grid *previousPreviewGrid);
 	Gtk::Box *MakeMainMenu();
 	Gtk::Box *MakeGameOverMenu();
 
+	// Fonctions utiles pour la gestion de l'affichage des menus Gtk
 	void HideAll();
 	void DisconnectGameControls();
 	void ReconnectGameControls();
 	void RenderScore(int specs);
+
+	// Fonctions de gestion du jeu
+	bool MainGameLoop();
+	void ResetMainGameLoop();
 	void GameOver();
-	void UpdateSpeed(int cplt_lines);
 
   public:
 	GameWindow(const Glib::ustring &name, const int width, const int height, const guint borderSize, const guint gridSpacing);

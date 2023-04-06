@@ -76,6 +76,7 @@ class GameWindow : public Gtk::Window
 	void DisconnectGameControls();
 	void ReconnectGameControls();
 	void RenderScore(int specs);
+	void RenderTime();
 
 	// Fonctions de gestion du jeu
 	bool MainGameLoop();

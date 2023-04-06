@@ -78,9 +78,9 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 	levelLabel->get_style_context()->add_class("subtitleLabelMenu");
 	bestScoreLabelPauseMenu->get_style_context()->add_class("subtitleLabelMenu");
 	scoreLabel->get_style_context()->add_class("subtitleLabelMenu");
-	// timeLabel->get_style_context()->add_class("subtitleLabelMenu");
+	// Initialise l'affichage des pastilles de temps
+	RenderTime();
 	for(int i=0;i<MAX_PREDICTION;i++){
-		timeLabels[i].get_style_context()->add_class("timeStickers");
 		timeLabels[i].set_text("oo");
 		}
 
@@ -523,12 +523,21 @@ bool GameWindow::MainGameLoop()
 
 	return true;
 }
-
+void GameWindow::RenderTime()
+{
+	int time=timeManager.GetTimePosition();
+	for(int i=0; i<=time;i++){
+		timeLabels[i].get_style_context()->remove_class("timeStickersempty");
+		timeLabels[i].get_style_context()->add_class("timeStickers");}
+	for(int i=time+1; i <MAX_PREDICTION;i++){
+		timeLabels[i].get_style_context()->remove_class("timeStickersempty");
+		timeLabels[i].get_style_context()->add_class("timeStickersempty");}
+}
 void GameWindow::RenderScore(int spec)
 {
 	// Réupération des données
 	std::string scorestr = std::to_string(terrainPiece.terrainGraph->GetScore());
-	int time=timeManager.GetTimePosition();
+	
 	// Switch selon le label a actualiser: ceux de MainMenu et GameOver ou ceux du GameBoard
 	switch (spec)
 	{
@@ -536,12 +545,7 @@ void GameWindow::RenderScore(int spec)
 		{
 			// Réupération des données
 			std::string levelstr = std::to_string(1 + terrainPiece.terrainGraph->GetClearedLines() / 10);
-			for(int i=0; i<=time;i++){
-				timeLabels[i].get_style_context()->remove_class("timeStickersempty");
-				timeLabels[i].get_style_context()->add_class("timeStickers");}
-			for(int i=time+1; i <MAX_PREDICTION;i++){
-				timeLabels[i].get_style_context()->remove_class("timeStickersempty");
-				timeLabels[i].get_style_context()->add_class("timeStickersempty");}
+			
 			// Assignation des textes aux label
 			scoreLabel->set_text("Score: " + scorestr);
 			// timeLabel->set_text("Time: " + timestr);
@@ -684,6 +688,7 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 			signalHandled = true;
 			break;
 
+		//avancer dans le temps
 		case GDK_KEY_s:
 			// S'il y a eu une collsion lors du changement de temporalité
 			if (!timeManager.MoveInTime(terrainPiece.pieceGraph, terrainPiece.terrainGraph))
@@ -698,9 +703,12 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 			terrainPiece.previewGraph->RenderGrid(timeManager.SeeNextPiece());
 			terrainPiece.previousPreviewGraph->RenderGrid(timeManager.SeePreviousPiece());
 
+
+			RenderTime();
 			signalHandled = true;
 			break;
 		
+		//reculer dans le temps
 		case GDK_KEY_q:
 			timeManager.BackInTime(terrainPiece.pieceGraph, terrainPiece.terrainGraph);
 
@@ -713,6 +721,7 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 			terrainPiece.previewGraph->RenderGrid(timeManager.SeeNextPiece());
 			terrainPiece.previousPreviewGraph->RenderGrid(timeManager.SeePreviousPiece());
 
+			RenderTime();
 			signalHandled = true;
 			break;
 	}

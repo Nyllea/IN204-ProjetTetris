@@ -26,7 +26,7 @@
 .timeStickers {
     color: rgb(5, 4, 78); 
     background-color: rgb(5, 4, 78); 
-    border: 10px solid #0a0707; 
+    border: 12px solid #0a0707; 
     font-size: 50px;
 
     border-radius: 3px; 
@@ -83,7 +83,6 @@
 .subtitleLabel {
 
     color: rgb(0, 0, 0); 
-    background-color: rgb(61, 6, 85); 
     animation-name: arcenciel;
     animation-iteration-count: infinite;
 

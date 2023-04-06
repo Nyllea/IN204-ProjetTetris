@@ -321,7 +321,7 @@ Gtk::Box *GameWindow::MakeGameOverMenu()
 	exitBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::ExitGame));
 
 	auto blublu = wrapper->get_style_context();
-	blublu->add_class("startBtn");
+	blublu->add_class("gameOverMenuBackgroud");
 	blublu->add_provider(provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
 
 	// Ajouter les widget au wrapper

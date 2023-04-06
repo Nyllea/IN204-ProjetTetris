@@ -36,34 +36,30 @@ struct TerrainPiece
 
 class GameWindow : public Gtk::Window
 {
+
+  public:
+	GameWindow(const Glib::ustring &name, const int width, const int height, const guint borderSize, const guint gridSpacing);
+	~GameWindow();
+
   private:
 	Gtk::Overlay *overlay;
 
-	// For the game
+	// Pour le jeu
 	sigc::connection keyboardControls, mainGameLoop;
 	TerrainPiece terrainPiece;
 	TimeManager timeManager;
 
+	// Définitions des objets Gtk
 	Gtk::Box *gameOverMenu, *mainMenu, *gameBoard, *pauseMenu;
 	Gtk::Label *scoreLabelOverMenu, *bestScoreLabelOverMenu, *levelLabel, *scoreLabel, *bestScoreLabelPauseMenu, *bestScoreLabelMainMenu;
 	Gtk::Label timeLabels[MAX_PREDICTION] ;
-	Glib::ustring data;
 
 	Glib::RefPtr<Gtk::CssProvider> cssProvider;
 
+	// Paramètres de jeu
 	int bestScore;
-
 	int currentMainLoopTimeout;
-
-	bool OnKeyPress(GdkEventKey *const event);
-
-	// Fonctions des boutons de menu correpondants
-	void ExitGame();
-	void RestartGame();
-	void MainMenuButton();
-	void StartButton();
-	void ResumeButton();
-	void PauseButton();
+	bool isInGame;
 
 	// Fonctions de création des différents menus et fenêtre de jeu Gtk
 	Gtk::Box *MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGrid, Gtk::Grid *previousPreviewGrid);
@@ -71,22 +67,36 @@ class GameWindow : public Gtk::Window
 	Gtk::Box *MakeGameOverMenu();
 	Gtk::Box *MakePauseMenu();
 
+
+
+	// Fonctions des boutons de menu correpondants
+	void ExitGame();
+	void RestartGame();
+	void MainMenuButton() ;
+	void StartButton();
+	void ResumeButton() ;
+	void PauseButton();
+
+	
 	// Fonctions utiles pour la gestion de l'affichage des menus Gtk
-	void HideAll();
-	void DisconnectGameControls();
+	void HideAllGtkWidgets() const;
+	void DisconnectGameControls() ;
 	void ReconnectGameControls();
-	void RenderScore(int specs);
-	void RenderTime();
+	void RenderScore(const bool isGameBoard) const;
+	void ActualiseTimeStickers() ;
 
-	// Fonctions de gestion du jeu
+	// Boucle de jeu principale appellée une fois toute les CURRENT_MAIN_TIME_LOOP ms
 	bool MainGameLoop();
+
+	// Réinitialise le timeout de MainGameLoop
 	void ResetMainGameLoop();
-	void GameOver();
 
-  public:
-	GameWindow(const Glib::ustring &name, const int width, const int height, const guint borderSize, const guint gridSpacing);
+	// GameOver
+	void GameOver() ;
 
-	~GameWindow();
+	// Fonction de gestion des entrées clavier
+	bool OnKeyPress(GdkEventKey *const event);
+	
 };
 
 #endif

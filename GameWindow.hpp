@@ -5,7 +5,6 @@
 #include "TetrisElements_Graphic-Terrain.hpp"
 #include "TimeManager.hpp"
 
-#include <deque>
 #include <glibmm.h>
 #include <gtkmm-3.0/gtkmm/box.h>
 #include <gtkmm-3.0/gtkmm/button.h>
@@ -46,8 +45,8 @@ class GameWindow : public Gtk::Window
 	TimeManager timeManager;
 
 	Gtk::Box *gameOverMenu, *mainMenu, *gameBoard, *pauseMenu;
-	Gtk::Label *scoreLabelOverMenu, *bestScoreLabelOverMenu, *levelLabel, *scoreLabel, *bestScoreLabel, *bestScoreLabelMainMenu, *timeLabel;
-
+	Gtk::Label *scoreLabelOverMenu, *bestScoreLabelOverMenu, *levelLabel, *scoreLabel, *bestScoreLabel, *bestScoreLabelMainMenu;
+	Gtk::Label timeLabels[MAX_PREDICTION] ;
 	Glib::ustring data;
 
 	Glib::RefPtr<Gtk::CssProvider> cssProvider;

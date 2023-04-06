@@ -70,7 +70,7 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 	scoreLabelOverMenu = Gtk::make_managed<Gtk::Label>();
 	bestScoreLabelOverMenu = Gtk::make_managed<Gtk::Label>();
 	bestScoreLabelMainMenu = Gtk::make_managed<Gtk::Label>();
-	timeLabel= Gtk::make_managed<Gtk::Label>();
+	// timeLabel= Gtk::make_managed<Gtk::Label>();
 
 	bestScoreLabelMainMenu->get_style_context()->add_class("subtitleLabel");
 	scoreLabelOverMenu->get_style_context()->add_class("subtitleLabelMenu");
@@ -78,7 +78,11 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 	levelLabel->get_style_context()->add_class("subtitleLabelMenu");
 	bestScoreLabel->get_style_context()->add_class("subtitleLabelMenu");
 	scoreLabel->get_style_context()->add_class("subtitleLabelMenu");
-	timeLabel->get_style_context()->add_class("subtitleLabelMenu");
+	// timeLabel->get_style_context()->add_class("subtitleLabelMenu");
+	for(int i=0; i++;i<MAX_PREDICTION){
+		timeLabels[i].get_style_context()->add_class("timeStickers");
+		timeLabels[i].set_text("o");
+		}
 
 	// initialisation de l'affichage des scores
 	RenderScore(0);
@@ -222,10 +226,15 @@ Gtk::Box *GameWindow::MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGr
 	Gtk::Box *leftWrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_VERTICAL);
 	Gtk::Box *rightWrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_VERTICAL);
 	Gtk::Button *pauseBtn = Gtk::make_managed<Gtk::Button>("Pause");
+	Gtk::Box *smallWrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_VERTICAL);
+
 	pauseBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::PauseButton));
 	//CSS Style
 	wrapper->get_style_context()->add_class("mainMenuBackgroud");
 	pauseBtn->get_style_context()->add_class("button");
+
+	for(int i=0;i++;i<MAX_PREDICTION){smallWrapper->pack_start(timeLabels[i], Gtk::PACK_SHRINK, 0);};
+
 
 
 	leftWrapper->set_homogeneous(true);
@@ -237,7 +246,7 @@ Gtk::Box *GameWindow::MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGr
 
 	rightWrapper->set_homogeneous(true);
 	rightWrapper->set_hexpand(false);
-	rightWrapper->pack_start(*timeLabel, Gtk::PACK_SHRINK, 0);
+	rightWrapper->pack_start(*smallWrapper, Gtk::PACK_SHRINK, 0);
 	rightWrapper->pack_start(*levelLabel, Gtk::PACK_SHRINK, 0);
 	rightWrapper->pack_start(*previewGrid, Gtk::PACK_SHRINK, 0);
 
@@ -281,6 +290,8 @@ Gtk::Box *GameWindow::MakeMainMenu()
 	exitBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::ExitGame));
 
 	// Ajouter les widget au wrapper
+	
+	wrapper->pack_start(*mainMenuLabel, Gtk::PACK_SHRINK, 0);
 	wrapper->pack_start(*mainMenuLabel, Gtk::PACK_SHRINK, 0);
 	wrapper->pack_start(*bestScoreLabelMainMenu, Gtk::PACK_SHRINK, 0);
 	wrapper->pack_start(*startBtn, Gtk::PACK_SHRINK, 0);
@@ -440,7 +451,7 @@ void GameWindow::GameOver()
 		// C'est pour cela que l'on utilise show_all(), puis que l'on cache les widgets inutiles
 		overlay->show_all();
 	}
-
+	
 	DisconnectGameControls();
 
 	// On affiche le menu game over au dessus du menu de jeu
@@ -521,7 +532,7 @@ void GameWindow::RenderScore(int spec)
 {
 	// Réupération des données
 	std::string scorestr = std::to_string(terrainPiece.terrainGraph->GetScore());
-	std::string timestr = std::to_string(timeManager.GetTimePosition());
+	int time=timeManager.GetTimePosition();
 	// Switch selon le label a actualiser: ceux de MainMenu et GameOver ou ceux du GameBoard
 	switch (spec)
 	{
@@ -529,10 +540,11 @@ void GameWindow::RenderScore(int spec)
 		{
 			// Réupération des données
 			std::string levelstr = std::to_string(1 + terrainPiece.terrainGraph->GetClearedLines() / 10);
-
+			for(int i=0; i++;i<time){timeLabels[i].get_style_context()->add_class("timeStickers");}
+			for(int i=time; i++;i <MAX_PREDICTION){timeLabels[i].get_style_context()->add_class("timeStickers");}
 			// Assignation des textes aux label
 			scoreLabel->set_text("Score: " + scorestr);
-			timeLabel->set_text("Time: " + timestr);
+			// timeLabel->set_text("Time: " + timestr);
 			levelLabel->set_text("Level: " + levelstr);
 
 			break;

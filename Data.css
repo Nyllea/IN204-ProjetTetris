@@ -22,7 +22,13 @@
     animation-name: example;
     animation-duration: 10s;
 }
+.timeStickers {
+    color: rgb(5, 4, 78); 
+    background-color: rgb(5, 4, 78); 
+    border-radius: 3px; 
+    border-radius: 50%;
 
+}
 .titleLabel {
     color: rgb(120, 20, 192); 
     font-size: 150px;

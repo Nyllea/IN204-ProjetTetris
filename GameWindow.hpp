@@ -1,11 +1,11 @@
 #ifndef GAME_WINDOW_HPP
 #define GAME_WINDOW_HPP
 
+#include "AudioManager.hpp"
 #include "TetrisElements_Graphic-Piece.hpp"
 #include "TetrisElements_Graphic-Terrain.hpp"
 #include "TimeManager.hpp"
 
-#include <deque>
 #include <glibmm.h>
 #include <gtkmm-3.0/gtkmm/box.h>
 #include <gtkmm-3.0/gtkmm/button.h>

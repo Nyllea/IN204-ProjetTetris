@@ -16,6 +16,12 @@ Pour pouvoir debug avec gdb apres :
 
     - cmake -DCMAKE_BUILD_TYPE=Debug . && cmake --build . && sudo gdb ./Tetris
 
+Pour la librairie audio:
+
+    - Installer API audio ASA : sudo apt-get install libasound-dev
+    - Installer Boost : sudo apt-get install libboost-all-dev
+    - Installer libsndfile : apt-get install libsndfile-dev
+
 Controles :
 
     - Fleches droite et gauche pour deplacer la piece

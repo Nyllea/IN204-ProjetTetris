@@ -110,6 +110,8 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 	add_events(Gdk::KEY_PRESS_MASK);
 	keyboardControls = signal_key_press_event().connect(sigc::mem_fun(*this, &GameWindow::OnKeyPress), false);
 	keyboardControls.block();
+
+	PlaySoundFile("Original Tetris theme (Tetris Soundtrack).wav", 1);
 }
 
 GameWindow::~GameWindow()

@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/ppoirmeur/tetris/IN204-ProjetTetris
+CMAKE_SOURCE_DIR = /home/will/Desktop/Cours/IN204/ProjetTetris/IN204-ProjetTetris
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/ppoirmeur/tetris/IN204-ProjetTetris
+CMAKE_BINARY_DIR = /home/will/Desktop/Cours/IN204/ProjetTetris/IN204-ProjetTetris
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ppoirmeur/tetris/IN204-ProjetTetris/CMakeFiles /home/ppoirmeur/tetris/IN204-ProjetTetris//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/will/Desktop/Cours/IN204/ProjetTetris/IN204-ProjetTetris/CMakeFiles /home/will/Desktop/Cours/IN204/ProjetTetris/IN204-ProjetTetris//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ppoirmeur/tetris/IN204-ProjetTetris/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/will/Desktop/Cours/IN204/ProjetTetris/IN204-ProjetTetris/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -128,6 +128,30 @@ Tetris: cmake_check_build_system
 Tetris/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/build
 .PHONY : Tetris/fast
+
+AudioManager.o: AudioManager.cpp.o
+.PHONY : AudioManager.o
+
+# target to build an object file
+AudioManager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/AudioManager.cpp.o
+.PHONY : AudioManager.cpp.o
+
+AudioManager.i: AudioManager.cpp.i
+.PHONY : AudioManager.i
+
+# target to preprocess a source file
+AudioManager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/AudioManager.cpp.i
+.PHONY : AudioManager.cpp.i
+
+AudioManager.s: AudioManager.cpp.s
+.PHONY : AudioManager.s
+
+# target to generate assembly for a file
+AudioManager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tetris.dir/build.make CMakeFiles/Tetris.dir/AudioManager.cpp.s
+.PHONY : AudioManager.cpp.s
 
 GameWindow.o: GameWindow.cpp.o
 .PHONY : GameWindow.o
@@ -330,6 +354,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... Tetris"
+	@echo "... AudioManager.o"
+	@echo "... AudioManager.i"
+	@echo "... AudioManager.s"
 	@echo "... GameWindow.o"
 	@echo "... GameWindow.i"
 	@echo "... GameWindow.s"

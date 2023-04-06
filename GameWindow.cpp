@@ -292,7 +292,7 @@ Gtk::Box *GameWindow::MakeMainMenu()
 	// Ajouter les widget au wrapper
 	
 	wrapper->pack_start(*mainMenuLabel, Gtk::PACK_SHRINK, 0);
-	wrapper->pack_start(*mainMenuLabel, Gtk::PACK_SHRINK, 0);
+	// wrapper->pack_start(*mainMenuLabel, Gtk::PACK_SHRINK, 0);
 	wrapper->pack_start(*bestScoreLabelMainMenu, Gtk::PACK_SHRINK, 0);
 	wrapper->pack_start(*startBtn, Gtk::PACK_SHRINK, 0);
 	wrapper->pack_start(*exitBtn, Gtk::PACK_SHRINK, 0);
@@ -311,11 +311,9 @@ Gtk::Box *GameWindow::MakeGameOverMenu()
 
 	Gtk::Button *retryBtn = Gtk::make_managed<Gtk::Button>("Retry");
 	Gtk::Button *mainMenuBtn = Gtk::make_managed<Gtk::Button>("Main menu");
-	Gtk::Button *exitBtn = Gtk::make_managed<Gtk::Button>("Exit");
 
 	retryBtn->get_style_context()->add_class("button");
 	mainMenuBtn->get_style_context()->add_class("button");
-	exitBtn->get_style_context()->add_class("button");
 
 
 	// Style : A faire avec CSS
@@ -330,7 +328,6 @@ Gtk::Box *GameWindow::MakeGameOverMenu()
 	// Connecte les boutons aux actions à réaliser
 	retryBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::RestartGame));
 	mainMenuBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::MainMenuButton));
-	exitBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::ExitGame));
 
 
 	// wrapper->get_style_context()->add_class("gameOverMenuBackgroud");
@@ -345,7 +342,6 @@ Gtk::Box *GameWindow::MakeGameOverMenu()
 
 	wrapper->pack_start(*retryBtn, Gtk::PACK_SHRINK, 0);
 	wrapper->pack_start(*mainMenuBtn, Gtk::PACK_SHRINK, 0);
-	wrapper->pack_start(*exitBtn, Gtk::PACK_SHRINK, 0);
 
 	wrapper->override_background_color(Gdk::RGBA(GAMEOVER_BKG_COLOR), Gtk::STATE_FLAG_NORMAL);
 
@@ -683,6 +679,11 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 			signalHandled = true;
 			break;
 
+		case GDK_KEY_p:
+			PauseButton();
+			signalHandled = true;
+			break;
+
 		case GDK_KEY_s:
 			// S'il y a eu une collsion lors du changement de temporalité
 			if (!timeManager.MoveInTime(terrainPiece.pieceGraph, terrainPiece.terrainGraph))
@@ -699,7 +700,7 @@ bool GameWindow::OnKeyPress(GdkEventKey *const event)
 
 			signalHandled = true;
 			break;
-
+		
 		case GDK_KEY_q:
 			timeManager.BackInTime(terrainPiece.pieceGraph, terrainPiece.terrainGraph);
 

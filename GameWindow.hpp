@@ -45,8 +45,8 @@ class GameWindow : public Gtk::Window
 	TerrainPiece terrainPiece;
 	TimeManager timeManager;
 
-	Gtk::Box *gameOverMenu, *mainMenu, *gameBoard;
-	Gtk::Label *scoreLabelOverMenu, *bestScoreLabelOverMenu, *levelLabel, *scoreLabel, *bestScoreLabel, *bestScoreLabelMainMenu;
+	Gtk::Box *gameOverMenu, *mainMenu, *gameBoard, *pauseMenu;
+	Gtk::Label *scoreLabelOverMenu, *bestScoreLabelOverMenu, *levelLabel, *scoreLabel, *bestScoreLabel, *bestScoreLabelMainMenu, *timeLabel;
 
 	Glib::ustring data;
 
@@ -63,11 +63,14 @@ class GameWindow : public Gtk::Window
 	void RestartGame();
 	void MainMenuButton();
 	void StartButton();
+	void ResumeButton();
+	void PauseButton();
 
 	// Fonctions de création des différents menus et fenêtre de jeu Gtk
 	Gtk::Box *MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGrid, Gtk::Grid *previousPreviewGrid);
 	Gtk::Box *MakeMainMenu();
 	Gtk::Box *MakeGameOverMenu();
+	Gtk::Box *MakePauseMenu();
 
 	// Fonctions utiles pour la gestion de l'affichage des menus Gtk
 	void HideAll();

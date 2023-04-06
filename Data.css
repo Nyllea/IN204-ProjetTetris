@@ -20,20 +20,35 @@
     font-size: 150px;
     padding: 15px 32px; 
     animation-name: example;
+    animation-iteration-count: infinite;
     animation-duration: 10s;
 }
 .timeStickers {
     color: rgb(5, 4, 78); 
     background-color: rgb(5, 4, 78); 
+    border: 10px solid #0a0707; 
+    font-size: 50px;
+
+    border-radius: 3px; 
+    border-radius: 50%;
+
+}
+.timeStickersempty {
+    color: rgb(255, 255, 255); 
+    background-color: rgb(255, 255, 255); 
+    border: 10px solid #0a0707; 
+    font-size: 50px;
     border-radius: 3px; 
     border-radius: 50%;
 
 }
 .titleLabel {
-    color: rgb(120, 20, 192); 
+    color: rgb(192, 26, 20); 
     font-size: 150px;
     padding: 15px 32px; 
     animation-name: titleAnimation;
+    animation-iteration-count: infinite;
+
     animation-duration: 10s;
 }
 
@@ -46,7 +61,7 @@
   62%  {color: rgb(191, 0, 255);}
   75%  {color: rgb(255, 0, 251);}
   87%  {color: rgb(255, 0, 55);}
-  100% {color: rgb(134, 27, 211);}
+  100% {color: red;}
 }
 
 .GOtitleLabel {
@@ -57,8 +72,10 @@
 }
 
 @keyframes GOtitleAnimation {
-  from  {color: rgba(0, 0, 0, 0);}
-  to {color: rgba(128, 0, 0, 0.748);}
+  0%  {color: rgba(0, 0, 0, 0);}
+  50% {color: rgba(128, 0, 0, 0.748);}
+  75% {color: rgba(128, 0, 0, 0.748);}
+  100% {color: rgba(0, 0, 0, 0);}
 }
 
 .subtitleLabel {

@@ -79,9 +79,9 @@ GameWindow::GameWindow(const Glib::ustring &name, const int width, const int hei
 	bestScoreLabel->get_style_context()->add_class("subtitleLabelMenu");
 	scoreLabel->get_style_context()->add_class("subtitleLabelMenu");
 	// timeLabel->get_style_context()->add_class("subtitleLabelMenu");
-	for(int i=0; i++;i<MAX_PREDICTION){
+	for(int i=0;i<MAX_PREDICTION;i++){
 		timeLabels[i].get_style_context()->add_class("timeStickers");
-		timeLabels[i].set_text("o");
+		timeLabels[i].set_text("oo");
 		}
 
 	// initialisation de l'affichage des scores
@@ -226,14 +226,14 @@ Gtk::Box *GameWindow::MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGr
 	Gtk::Box *leftWrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_VERTICAL);
 	Gtk::Box *rightWrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_VERTICAL);
 	Gtk::Button *pauseBtn = Gtk::make_managed<Gtk::Button>("Pause");
-	Gtk::Box *smallWrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_VERTICAL);
+	Gtk::Box *smallWrapper = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_HORIZONTAL);
 
 	pauseBtn->signal_clicked().connect(sigc::mem_fun(*this, &GameWindow::PauseButton));
 	//CSS Style
 	wrapper->get_style_context()->add_class("mainMenuBackgroud");
 	pauseBtn->get_style_context()->add_class("button");
 
-	for(int i=0;i++;i<MAX_PREDICTION){smallWrapper->pack_start(timeLabels[i], Gtk::PACK_SHRINK, 0);};
+	for(int i=0;i<MAX_PREDICTION;i++){smallWrapper->pack_start(timeLabels[i], Gtk::PACK_SHRINK, 0);}
 
 
 
@@ -250,7 +250,7 @@ Gtk::Box *GameWindow::MakeGameBoard(Gtk::Grid *terrainGrid, Gtk::Grid *previewGr
 	rightWrapper->pack_start(*levelLabel, Gtk::PACK_SHRINK, 0);
 	rightWrapper->pack_start(*previewGrid, Gtk::PACK_SHRINK, 0);
 
-	// Style : A faire avec CSS
+
 	wrapper->set_homogeneous(true);
 	wrapper->set_hexpand(false);
 	// wrapper->set_margin_bottom(100);
@@ -540,8 +540,8 @@ void GameWindow::RenderScore(int spec)
 		{
 			// Réupération des données
 			std::string levelstr = std::to_string(1 + terrainPiece.terrainGraph->GetClearedLines() / 10);
-			for(int i=0; i++;i<time){timeLabels[i].get_style_context()->add_class("timeStickers");}
-			for(int i=time; i++;i <MAX_PREDICTION){timeLabels[i].get_style_context()->add_class("timeStickers");}
+			for(int i=0; i<=time;i++){timeLabels[i].get_style_context()->add_class("timeStickers");}
+			for(int i=time+1; i <MAX_PREDICTION;i++){timeLabels[i].get_style_context()->add_class("timeStickersempty");}
 			// Assignation des textes aux label
 			scoreLabel->set_text("Score: " + scorestr);
 			// timeLabel->set_text("Time: " + timestr);

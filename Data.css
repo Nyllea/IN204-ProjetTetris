@@ -48,7 +48,7 @@
 
 /*Le background du jeu*/
 .mainMenuBackgroud {
-  background-image: url("background.jpg");
+  background-image: url("./Images/background.jpg");
 }
 
 /*Un affichage pour les boutons*/

@@ -1,8 +1,8 @@
 #ifndef GAME_WINDOW_HPP
 #define GAME_WINDOW_HPP
 
-#include "TetrisElements_Graphic-Piece.hpp"
-#include "TetrisElements_Graphic-Terrain.hpp"
+#include "./Affichage-Gtk/TetrisElements_Graphic-Piece.hpp"
+#include "./Affichage-Gtk/TetrisElements_Graphic-Terrain.hpp"
 #include "TimeManager.hpp"
 
 #include <glibmm.h>

@@ -1,7 +1,7 @@
 #ifndef TETRISELEMENTS_GRAPHIC_PIECE_HPP
 #define TETRISELEMENTS_GRAPHIC_PIECE_HPP
 
-#include "TetrisElements-Piece.hpp"
+#include "../GameSystem/TetrisElements-Piece.hpp"
 
 #include <cassert>
 #include <gtkmm-3.0/gtkmm/grid.h>

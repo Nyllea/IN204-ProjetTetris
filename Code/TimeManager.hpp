@@ -1,9 +1,9 @@
 #ifndef PIECES_MANAGER_HPP
 #define PIECES_MANAGER_HPP
 
+#include "./Affichage-Gtk/TetrisElements_Graphic-Piece.hpp"
+#include "./Affichage-Gtk/TetrisElements_Graphic-Terrain.hpp"
 #include "Random.hpp"
-#include "TetrisElements_Graphic-Piece.hpp"
-#include "TetrisElements_Graphic-Terrain.hpp"
 
 #include <cassert>
 #include <deque>

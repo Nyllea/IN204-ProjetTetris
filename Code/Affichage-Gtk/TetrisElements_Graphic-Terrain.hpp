@@ -1,8 +1,8 @@
 #ifndef TETRISELEMENTS_GRAPHIC_TERRAIN_HPP
 #define TETRISELEMENTS_GRAPHIC_TERRAIN_HPP
 
-#include "TetrisElements-Terrain.hpp"
-#include "TimeManager.hpp"
+#include "../GameSystem/TetrisElements-Terrain.hpp"
+#include "../TimeManager.hpp"
 
 #include <cassert>
 #include <gtkmm-3.0/gtkmm/grid.h>

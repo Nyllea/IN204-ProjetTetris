@@ -1,41 +1,58 @@
 # IN204-ProjetTimeTetris
 
-Pour compiler, utiliser C++20 et link gtk avec l'une des commandes suivantes :
+This game works like classic Tetris, with one exception: time travel is possible !
 
-    - cmake . && cmake --build . && ./Time_Tetris
-    - Peut résoudre erreurs de type symbol lookup error : cmake . && cmake --build . && sudo ./Time_Tetris
+## Game Rules
 
-Cela fonctionne comme un Tetris classique, à une exception près : on peut voyager dans le temps !
-Bien sûr tout n'est pas possible avec le voyage dans le temps, il faut faire attention aux GameOver liés aux paradoxes temporels.
-Les règles pour les éviter sont les suivantes:
+Of course, everything is not allowed with time travel, and one has to be careful of Game Over due to time paradoxes.
 
-    - On peut placer une ou plusieurs pièces dans le futur
-    - On peut les placer un cran dans le futur ou deux crans dans le futur
-    - Lorsqu'on est dans le futur le temps s'écoule différemment, les pièces s'empilent mais on n'avance plus dans le temps (par exemple si je suis un cran dans le futur et que je place une pièce, les pièces qui ont été placées deux crans dans le futur ne vont pas s'afficher)
-    - Lorsqu'on revient dans le présent après avoir placé des pièces dans le futur c'est là qu'il faut faire attention: dans le présent, à chaque fois qu'on place une pièce on avance d'un cran dans le temps...
-    - Il faut donc faire attention et se rappeler où l'on a placé les pièces dans le futur, si on place une pièce dans le présent à un endroit où on a déjà placé une pièce dans le futur, c'est le GameOver
-    - Mais pour les plus habiles qui osent s'aventurer dans le futur, il y a des grosses récompenses à la clé en terme de points : on peut compléter bien plus de 4 ligne à la fois, et donc multiplier le score
+The rules to avoid them are as follows
 
-Controles :
+- It's possible to place one or more pieces in the futur
+- The pieces can be placed one or two steps into the futur
+- When in the futur, time flows differently; The pieces are placed but time doesn't pass (for example, if a piece is placed one step into the futur, the pieces placed two steps into the futur won't appear)
+- Be very careful after having placed pieces in the futur and coming back to the present: in the present, each time a piece is placed, time moves one step forward and all the pieces placed one step in the futur will appear at once...
+- If a piece in the present is placed where a piece from the futur appears, it's Game Over. It is therefore important to be careful and remember exactly where each piece placed in the futur is
+- However, using the futur allows for completing more than 4 lines at once and multiplies the score accordingly: time travel involves risks, but also rewards !
 
-    - Fleches droite et gauche pour deplacer la piece
-    - Fleche du bas pour descendre la pièce plus rapidement
-    - a/z pour rotation a droite/gauche
-    - x pour poser instantanément la pièce
-    - q/s pour se déplacer dans le passé/présent
+## Controls
 
-Crédit :
+- Left and right arrows to move the current piece in the desired direction
+- Down arrow to lower the piece faster
+- A/Z to rotate the piece left/right
+- X to instantly place the piece
+- Q/S to move backward/forward in time
 
-    - Tetris game logic : https://javilop.com/gamedev/tetris-tutorial-in-c-platform-independent-focused-in-game-logic-for-beginners/
-    - Regles de rotation Tetris : https://strategywiki.org/wiki/Tetris/Rotation_systems
-    - Bitset manipulation (TemplateRex): https://stackoverflow.com/questions/17857596/how-to-convert-a-range-subset-of-bits-in-a-c-bitset-to-a-number
+## How to compile
 
-    - CMake files with GTK : https://gist.github.com/fracek/3323924#file-cmakelists-txt-L21
+To compile, use C++20 and link GTK with the following commands
 
-    - Creation de la fenetre GTK (Muchi): https://stackoverflow.com/questions/1706550/gtk-modifying-background-color-of-gtkbutton
-    - Choix aleatoires de la couleur et du type de piece (Bart Louwers): https://stackoverflow.com/questions/2999012/generating-random-enums
-    - Ajout du support du clavier (PintoDoido): https://stackoverflow.com/questions/44098084/how-do-i-handle-keyboard-events-in-gtk3
+    cmake . && cmake --build . && ./Time_Tetris
 
-    - Passage a Gtkmm : http://sdz.tdct.org/sdz/creer-des-interfaces-graphiques-en-c-avec-gtkmm.html
+If there is an error of type symbol lookup, use
 
-    - Créer des boutons en CSS : https://www.w3schools.com/css/css3_buttons.asp
+    cmake . && cmake --build . && sudo ./Time_Tetris
+
+_Note: The terminal has to be in the main folder_
+
+## Credits
+
+This game was made by Paul Poirmeur and Walid Outtaleb
+
+## Ressources used
+
+Here are all the ressources used to help us realize this project
+
+- Tetris game logic : https://javilop.com/gamedev/tetris-tutorial-in-c-platform-independent-focused-in-game-logic-for-beginners/
+- Tetris rotation rules : https://strategywiki.org/wiki/Tetris/Rotation_systems
+- Bitset manipulation (TemplateRex): https://stackoverflow.com/questions/17857596/how-to-convert-a-range-subset-of-bits-in-a-c-bitset-to-a-number
+
+- CMake files with GTK : https://gist.github.com/fracek/3323924#file-cmakelists-txt-L21
+
+- Creation of the GTK window (Michi): https://stackoverflow.com/questions/1706550/gtk-modifying-background-color-of-gtkbutton
+- Random choice for the color and type of pieces (Bart Louwers): https://stackoverflow.com/questions/2999012/generating-random-enums
+- Keyboard support with GTK (PintoDoido): https://stackoverflow.com/questions/44098084/how-do-i-handle-keyboard-events-in-gtk3
+
+- Use of Gtkmm : http://sdz.tdct.org/sdz/creer-des-interfaces-graphiques-en-c-avec-gtkmm.html
+
+- Create buttons with CSS : https://www.w3schools.com/css/css3_buttons.asp
